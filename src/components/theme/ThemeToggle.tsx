@@ -22,12 +22,12 @@ export function ThemeToggle() {
           ) : (
             <Moon className="h-5 w-5" />
           )}
-          <span className="sr-only">Toggle theme</span>
+          <span className="sr-only">Alternar tema</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={toggleTheme}>
-          {theme === "light" ? "Dark Mode" : "Light Mode"}
+          {theme === "light" ? "Modo Escuro" : "Modo Claro"}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

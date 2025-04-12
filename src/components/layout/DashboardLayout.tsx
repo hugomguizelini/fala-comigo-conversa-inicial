@@ -63,7 +63,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
 
           <div className="flex-1 md:flex-none flex items-center ml-4">
-            <h2 className="text-lg font-medium hidden md:block">Welcome Back</h2>
+            <h2 className="text-lg font-medium hidden md:block">Relatório</h2>
           </div>
 
           <div className="flex items-center gap-3">

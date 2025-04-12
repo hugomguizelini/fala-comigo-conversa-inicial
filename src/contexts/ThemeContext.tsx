@@ -16,7 +16,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
-    // Check local storage or system preference
+    // Verificar armazenamento local ou preferência do sistema
     const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     
@@ -46,7 +46,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 export function useTheme() {
   const context = useContext(ThemeContext);
   if (context === undefined) {
-    throw new Error("useTheme must be used within a ThemeProvider");
+    throw new Error("useTheme deve ser usado dentro de um ThemeProvider");
   }
   return context;
 }
