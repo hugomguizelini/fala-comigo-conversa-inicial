@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -8,6 +7,7 @@ import { useDropzone } from "react-dropzone";
 import { useToast } from "@/hooks/use-toast";
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 import { MetricsTable } from "./MetricsTable";
+import { ProblemsSuggestionsPanel } from "./ProblemsSuggestionsPanel";
 
 const campaignData = [
   { name: "Jan", value: 400 },
@@ -65,8 +65,11 @@ export default function DashboardContent() {
         </div>
       </div>
       
-      {/* Metrics Table - New Section */}
+      {/* Metrics Table */}
       <MetricsTable />
+      
+      {/* Problems and Suggestions Panel */}
+      <ProblemsSuggestionsPanel />
       
       <div className="grid gap-6 md:grid-cols-2">
         {/* Campaign Breakdown */}
