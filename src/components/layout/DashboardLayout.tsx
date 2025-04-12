@@ -1,12 +1,13 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Bell, LogOut, Settings, Menu, PieChart } from "lucide-react";
+import { User, Bell, LogOut, Search, Menu, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/contexts/ThemeContext";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import SidebarNav from "./SidebarNav";
+import { Input } from "@/components/ui/input";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -17,7 +18,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { theme } = useTheme();
 
   const handleLogout = () => {
-    // Implement actual logout logic here
     navigate("/");
   };
 
@@ -27,8 +27,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <aside className="hidden md:flex w-64 flex-col bg-sidebar border-r border-sidebar-border">
         <div className="p-6">
           <div className="flex items-center gap-2 mb-6">
-            <PieChart className="h-6 w-6 text-sidebar-primary" />
-            <h1 className="text-xl font-semibold text-sidebar-foreground">Dashboard</h1>
+            <div className="h-8 w-8 rounded-md bg-purple-500 flex items-center justify-center">
+              <span className="text-white font-bold">A</span>
+            </div>
+            <h1 className="text-xl font-semibold text-sidebar-foreground">Insight</h1>
           </div>
           <SidebarNav />
         </div>
@@ -49,8 +51,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               <SheetContent side="left" className="bg-sidebar w-64 p-0">
                 <div className="p-6">
                   <div className="flex items-center gap-2 mb-6">
-                    <PieChart className="h-6 w-6 text-sidebar-primary" />
-                    <h1 className="text-xl font-semibold text-sidebar-foreground">Dashboard</h1>
+                    <div className="h-8 w-8 rounded-md bg-purple-500 flex items-center justify-center">
+                      <span className="text-white font-bold">A</span>
+                    </div>
+                    <h1 className="text-xl font-semibold text-sidebar-foreground">Insight</h1>
                   </div>
                   <SidebarNav />
                 </div>
@@ -58,11 +62,25 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             </Sheet>
           </div>
 
-          <div className="flex-1 md:flex-none flex items-center space-x-4">
-            <h2 className="text-lg font-medium hidden md:block">Bem-vindo!</h2>
+          <div className="flex-1 md:flex-none flex items-center ml-4">
+            <h2 className="text-lg font-medium hidden md:block">Welcome Back</h2>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <div className="relative hidden md:flex items-center">
+              <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search..."
+                className="w-[250px] pl-8 rounded-full bg-background border border-input"
+              />
+            </div>
+            <Button variant="outline" size="sm" className="hidden md:flex items-center gap-1 rounded-full">
+              <Search className="h-4 w-4 md:hidden" />
+              Filter
+            </Button>
+            <Button variant="outline" size="sm" className="hidden md:flex items-center gap-1 rounded-full">
+              Export
+            </Button>
             <ThemeToggle />
             <Button variant="ghost" size="icon">
               <Bell className="h-5 w-5" />
@@ -77,7 +95,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         </header>
 
         {/* Main content */}
-        <main className="flex-1 overflow-auto p-4 md:p-6">
+        <main className="flex-1 overflow-auto p-4 md:p-6 bg-muted/30">
           {children}
         </main>
       </div>

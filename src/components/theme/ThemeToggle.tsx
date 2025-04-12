@@ -27,7 +27,7 @@ export function ThemeToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={toggleTheme}>
-          {theme === "light" ? "Modo Escuro" : "Modo Claro"}
+          {theme === "light" ? "Dark Mode" : "Light Mode"}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
