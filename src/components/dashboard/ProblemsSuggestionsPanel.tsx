@@ -104,7 +104,9 @@ export const ProblemsSuggestionsPanel = ({ issues, suggestions }: ProblemsSugges
                              )) ||
                             (suggestion.targetPages && 
                              issue.affectedCampaigns.some(campaign => 
-                               campaign.includes(suggestion.targetPages?.some(page => campaign.includes(page)) ? page : '')
+                               suggestion.targetPages?.some(targetPage => 
+                                 campaign.includes(targetPage)
+                               )
                              ))
                           )
                           .map((suggestion, idx) => (
