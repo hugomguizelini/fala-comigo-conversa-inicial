@@ -7,6 +7,7 @@ import { ArrowUp, Search, Download, Upload, FileText, Settings, Sparkles, Filter
 import { useDropzone } from "react-dropzone";
 import { useToast } from "@/hooks/use-toast";
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
+import { MetricsTable } from "./MetricsTable";
 
 const campaignData = [
   { name: "Jan", value: 400 },
@@ -63,6 +64,9 @@ export default function DashboardContent() {
           </Button>
         </div>
       </div>
+      
+      {/* Metrics Table - New Section */}
+      <MetricsTable />
       
       <div className="grid gap-6 md:grid-cols-2">
         {/* Campaign Breakdown */}
