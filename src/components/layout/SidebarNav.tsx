@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { LayoutDashboard, BarChart2, Settings, FileText, User } from "lucide-react";
+import { LayoutDashboard, BarChart2, Settings, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavItem {

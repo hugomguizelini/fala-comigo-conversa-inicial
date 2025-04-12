@@ -3,11 +3,12 @@ import React, { useState, useCallback } from "react";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowUp, Search, Download, Upload, FileText, Settings, Sparkles } from "lucide-react";
+import { ArrowUp, Search, Download, Upload, FileText, Settings, Sparkles, Filter, Line, ChartBar } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { useToast } from "@/hooks/use-toast";
+import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 
-const vendorData = [
+const campaignData = [
   { name: "Jan", value: 400 },
   { name: "Feb", value: 600 },
   { name: "Mar", value: 300 },
@@ -38,15 +39,76 @@ export default function DashboardContent() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Welcome Back</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold">Welcome Back</h1>
+        
+        <div className="flex items-center gap-3">
+          <div className="relative flex items-center">
+            <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
+            <input 
+              type="search"
+              placeholder="Search..."
+              className="h-10 w-[250px] rounded-md border border-input bg-background pl-8 pr-4 text-sm"
+            />
+          </div>
+          
+          <Button variant="outline" size="sm" className="flex items-center gap-1">
+            <Filter className="h-4 w-4" />
+            <span>Filter</span>
+          </Button>
+          
+          <Button variant="outline" size="sm" className="flex items-center gap-1">
+            <Download className="h-4 w-4" />
+            <span>Export</span>
+          </Button>
+        </div>
+      </div>
       
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Vendor Statistics */}
+        {/* Campaign Breakdown */}
         <Card>
           <CardHeader className="flex flex-row items-start justify-between">
             <div>
-              <CardTitle className="text-lg">Vendor Statistics</CardTitle>
-              <CardDescription>Your employee performance level</CardDescription>
+              <CardTitle className="text-lg">Campaign Breakdown</CardTitle>
+              <CardDescription>Here you can track your campaign's performance everyday.</CardDescription>
+            </div>
+            <Button variant="ghost" size="icon">
+              <Settings className="h-4 w-4" />
+            </Button>
+          </CardHeader>
+          <CardContent className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={campaignData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                <XAxis dataKey="name" />
+                <YAxis hide />
+                <Tooltip />
+                <Bar dataKey="value" fill="#9b87f5" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+          <CardFooter className="border-t px-6 py-3">
+            <div className="flex items-center justify-between w-full">
+              <div className="flex space-x-2">
+                <Button variant="outline" size="sm" className="text-xs">1 day</Button>
+                <Button variant="outline" size="sm" className="text-xs">1 week</Button>
+                <Button variant="outline" size="sm" className="text-xs">1 month</Button>
+                <Button variant="outline" size="sm" className="text-xs">1 year</Button>
+                <Button variant="outline" size="sm" className="text-xs">All Time</Button>
+              </div>
+              <Button variant="outline" size="sm" className="text-xs">
+                <span>View Full Report</span>
+                <Download className="ml-1 h-3 w-3" />
+              </Button>
+            </div>
+          </CardFooter>
+        </Card>
+
+        {/* Campaign Statistics */}
+        <Card>
+          <CardHeader className="flex flex-row items-start justify-between">
+            <div>
+              <CardTitle className="text-lg">Campaign Statistics</CardTitle>
+              <CardDescription>Your campaign performance level</CardDescription>
             </div>
             <Button variant="ghost" size="icon">
               <Settings className="h-4 w-4" />
@@ -86,54 +148,14 @@ export default function DashboardContent() {
             </Button>
           </CardContent>
         </Card>
-
-        {/* Vendor Breakdown */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-lg">Vendor Breakdown</CardTitle>
-                <CardDescription>Here you can track your vendor's performance everyday.</CardDescription>
-              </div>
-              <Button variant="ghost" size="icon">
-                <Settings className="h-4 w-4" />
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={vendorData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                <XAxis dataKey="name" />
-                <YAxis hide />
-                <Tooltip />
-                <Bar dataKey="value" fill="#8884d8" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-          <CardFooter className="border-t px-6 py-3">
-            <div className="flex items-center justify-between w-full">
-              <div className="flex space-x-2">
-                <Button variant="outline" size="sm" className="text-xs">1 day</Button>
-                <Button variant="outline" size="sm" className="text-xs">1 week</Button>
-                <Button variant="outline" size="sm" className="text-xs">1 month</Button>
-                <Button variant="outline" size="sm" className="text-xs">1 year</Button>
-                <Button variant="outline" size="sm" className="text-xs">All Time</Button>
-              </div>
-              <Button variant="outline" size="sm" className="text-xs">
-                <span>View Full Report</span>
-                <Download className="ml-1 h-3 w-3" />
-              </Button>
-            </div>
-          </CardFooter>
-        </Card>
       </div>
 
       {/* File Upload Area */}
       <Card>
         <CardHeader>
-          <CardTitle>Upload Documents</CardTitle>
+          <CardTitle>Upload Campaign Documents</CardTitle>
           <CardDescription>
-            Drag and drop your documents here for quick upload
+            Drag and drop your campaign documents here for AI analysis
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -150,7 +172,7 @@ export default function DashboardContent() {
               </div>
               <div className="space-y-1 text-center">
                 <p className="text-sm font-medium">
-                  {isDragActive ? "Drop the files here" : "Drag & drop files here"}
+                  {isDragActive ? "Drop the files here" : "Drag & drop campaign files here"}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   or click to browse files
@@ -178,7 +200,7 @@ export default function DashboardContent() {
         </CardContent>
       </Card>
 
-      {/* Additional Information Cards */}
+      {/* AI Insights Cards */}
       <div className="grid gap-6 md:grid-cols-3">
         <Card className="bg-purple-900 text-white">
           <CardHeader>
@@ -186,7 +208,7 @@ export default function DashboardContent() {
           </CardHeader>
           <CardContent>
             <p className="text-sm opacity-90">
-              Explore detailed historical statistics to identify long-term trends and patterns.
+              Explore detailed historical statistics to identify long-term campaign trends and patterns.
             </p>
           </CardContent>
         </Card>
@@ -197,7 +219,7 @@ export default function DashboardContent() {
           </CardHeader>
           <CardContent>
             <p className="text-sm opacity-90">
-              Create personalized dashboards to focus on the metrics and KPIs that matter most.
+              Create personalized dashboards to focus on the campaign metrics and KPIs that matter most.
             </p>
           </CardContent>
         </Card>
@@ -208,7 +230,7 @@ export default function DashboardContent() {
           </CardHeader>
           <CardContent>
             <p className="text-sm opacity-90">
-              Generate detailed reports automatically, ensuring accuracy and saving valuable time.
+              Generate detailed campaign reports automatically, ensuring accuracy and saving valuable time.
             </p>
           </CardContent>
         </Card>

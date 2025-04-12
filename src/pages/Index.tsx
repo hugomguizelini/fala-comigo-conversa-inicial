@@ -6,9 +6,11 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 
 const Index = () => {
   return (
-    <DashboardLayout>
-      <DashboardContent />
-    </DashboardLayout>
+    <ThemeProvider>
+      <DashboardLayout>
+        <DashboardContent />
+      </DashboardLayout>
+    </ThemeProvider>
   );
 };
 

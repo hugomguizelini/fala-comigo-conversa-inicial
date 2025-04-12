@@ -28,9 +28,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="p-6">
           <div className="flex items-center gap-2 mb-6">
             <div className="h-8 w-8 rounded-md bg-purple-500 flex items-center justify-center">
-              <span className="text-white font-bold">A</span>
+              <span className="text-white font-bold">I</span>
             </div>
-            <h1 className="text-xl font-semibold text-sidebar-foreground">Insight</h1>
+            <h1 className="text-xl font-semibold text-sidebar-foreground">Insightor.AI</h1>
           </div>
           <SidebarNav />
         </div>
@@ -52,9 +52,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <div className="p-6">
                   <div className="flex items-center gap-2 mb-6">
                     <div className="h-8 w-8 rounded-md bg-purple-500 flex items-center justify-center">
-                      <span className="text-white font-bold">A</span>
+                      <span className="text-white font-bold">I</span>
                     </div>
-                    <h1 className="text-xl font-semibold text-sidebar-foreground">Insight</h1>
+                    <h1 className="text-xl font-semibold text-sidebar-foreground">Insightor.AI</h1>
                   </div>
                   <SidebarNav />
                 </div>
@@ -67,20 +67,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="relative hidden md:flex items-center">
-              <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search..."
-                className="w-[250px] pl-8 rounded-full bg-background border border-input"
-              />
-            </div>
-            <Button variant="outline" size="sm" className="hidden md:flex items-center gap-1 rounded-full">
-              <Search className="h-4 w-4 md:hidden" />
-              Filter
-            </Button>
-            <Button variant="outline" size="sm" className="hidden md:flex items-center gap-1 rounded-full">
-              Export
-            </Button>
             <ThemeToggle />
             <Button variant="ghost" size="icon">
               <Bell className="h-5 w-5" />
