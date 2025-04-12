@@ -3,12 +3,12 @@ import { ArrowRight, BarChart3, BrainCircuit, LightbulbIcon, Rocket } from "luci
 
 const AuthHeadline = () => {
   return (
-    <div className="relative h-full flex flex-col justify-center bg-gradient-to-br from-[#4F2C87] to-[#7C3AED]">
+    <div className="relative h-full flex flex-col justify-center bg-gradient-to-br from-[#1A1F2C] to-[#111827]">
       {/* Padrão de fundo estilizado */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-0 right-0 w-full h-full">
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-white/10 rounded-full filter blur-3xl" />
-          <div className="absolute top-1/4 left-1/3 w-72 h-72 bg-white/5 rounded-full filter blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#8B5CF6]/20 rounded-full filter blur-3xl" />
+          <div className="absolute top-1/4 left-1/3 w-72 h-72 bg-[#1EAEDB]/10 rounded-full filter blur-3xl" />
         </div>
         <div className="grid grid-cols-8 h-full opacity-10">
           {Array(64).fill(null).map((_, i) => (
@@ -26,11 +26,11 @@ const AuthHeadline = () => {
           </div>
 
           <h1 className="text-5xl font-bold text-white leading-tight tracking-tight">
-            Transforme <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD166] to-[#FF9A5C]">insights</span> em 
+            Transforme <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8B5CF6] to-[#1EAEDB]">insights</span> em 
             <span className="relative ml-3">
               resultados
               <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 138 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1.5 5.5C36.5 -0.5 104 -0.5 136.5 5.5" stroke="#FF9A5C" strokeWidth="3" strokeLinecap="round"/>
+                <path d="M1.5 5.5C36.5 -0.5 104 -0.5 136.5 5.5" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round"/>
               </svg>
             </span>
           </h1>
@@ -43,7 +43,7 @@ const AuthHeadline = () => {
         <div className="space-y-5">
           <div className="flex items-start gap-3">
             <div className="rounded-full p-1.5 bg-white/10">
-              <LightbulbIcon className="w-5 h-5 text-[#FFD166]" />
+              <LightbulbIcon className="w-5 h-5 text-[#8B5CF6]" />
             </div>
             <p className="text-white/70">
               <span className="text-white font-medium">Decisões baseadas em dados</span>{" "}
@@ -52,7 +52,7 @@ const AuthHeadline = () => {
           </div>
           <div className="flex items-start gap-3">
             <div className="rounded-full p-1.5 bg-white/10">
-              <BarChart3 className="w-5 h-5 text-[#FFD166]" />
+              <BarChart3 className="w-5 h-5 text-[#8B5CF6]" />
             </div>
             <p className="text-white/70">
               <span className="text-white font-medium">Otimização de campanhas</span>{" "}
@@ -61,7 +61,7 @@ const AuthHeadline = () => {
           </div>
           <div className="flex items-start gap-3">
             <div className="rounded-full p-1.5 bg-white/10">
-              <Rocket className="w-5 h-5 text-[#FFD166]" />
+              <Rocket className="w-5 h-5 text-[#8B5CF6]" />
             </div>
             <p className="text-white/70">
               <span className="text-white font-medium">Segmentação avançada</span>{" "}
@@ -72,9 +72,9 @@ const AuthHeadline = () => {
 
         <div className="flex items-center">
           <div className="flex -space-x-3">
-            <img src="https://i.pravatar.cc/100?img=1" alt="Avatar" className="w-10 h-10 rounded-full border-2 border-[#4F2C87]" />
-            <img src="https://i.pravatar.cc/100?img=2" alt="Avatar" className="w-10 h-10 rounded-full border-2 border-[#4F2C87]" />
-            <img src="https://i.pravatar.cc/100?img=3" alt="Avatar" className="w-10 h-10 rounded-full border-2 border-[#4F2C87]" />
+            <img src="https://i.pravatar.cc/100?img=1" alt="Avatar" className="w-10 h-10 rounded-full border-2 border-[#1A1F2C]" />
+            <img src="https://i.pravatar.cc/100?img=2" alt="Avatar" className="w-10 h-10 rounded-full border-2 border-[#1A1F2C]" />
+            <img src="https://i.pravatar.cc/100?img=3" alt="Avatar" className="w-10 h-10 rounded-full border-2 border-[#1A1F2C]" />
           </div>
           <div className="ml-4">
             <p className="text-white text-sm font-medium">+2.500 profissionais de marketing</p>
