@@ -12,22 +12,20 @@ import { ProblemsSuggestionsPanel } from "./ProblemsSuggestionsPanel";
 import { CampaignsTable } from "./CampaignsTable";
 import dashboardData from "@/data/dashboard-data.json";
 
-// Preparando os dados para o gráfico mensal
-const monthlyData = dashboardData.monthlyPerformance.months.map((month) => {
-  const matchingData = dashboardData.monthlyPerformance.data.find(
-    (item) => item.month === month
-  );
-  
-  return {
-    name: month,
-    value: matchingData ? matchingData.impressions : 0,
-  };
-});
+// Preparando os dados para o gráfico mensal com todas as métricas disponíveis
+const monthlyData = dashboardData.monthlyPerformance.data.map((item) => ({
+  name: item.month,
+  impressions: item.impressions,
+  clicks: item.clicks,
+  conversions: item.conversions,
+  cost: item.cost
+}));
 
 export default function DashboardContent() {
   const { toast } = useToast();
   const [files, setFiles] = useState<File[]>([]);
   const [timeRange, setTimeRange] = useState<string>("month");
+  const [activeMetric, setActiveMetric] = useState<string>("impressions");
   
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFiles(prev => [...prev, ...acceptedFiles]);
@@ -38,6 +36,36 @@ export default function DashboardContent() {
   }, [toast]);
   
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
+  // Configurando cores do gráfico por métrica
+  const metricColors = {
+    impressions: "#9b87f5",
+    clicks: "#4287f5",
+    conversions: "#f5a742",
+    cost: "#f54242"
+  };
+
+  // Função para formatar o tooltip do gráfico
+  const renderCustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="rounded-lg border bg-background p-3 shadow-md">
+          <div className="font-semibold mb-1">{label}</div>
+          {payload.map((entry: any, index: number) => (
+            <div key={index} className="grid grid-cols-2 gap-2 text-sm">
+              <span style={{ color: entry.color }}>{entry.name}:</span>
+              <span className="font-mono text-right">
+                {entry.name === "cost" 
+                  ? `R$ ${entry.value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                  : entry.value.toLocaleString()}
+              </span>
+            </div>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="space-y-6">
@@ -80,36 +108,59 @@ export default function DashboardContent() {
         <Card>
           <CardHeader className="flex flex-row items-start justify-between">
             <div>
-              <CardTitle className="text-lg">Detalhamento da Campanha</CardTitle>
-              <CardDescription>Aqui você pode acompanhar o desempenho diário da sua campanha.</CardDescription>
+              <CardTitle className="text-lg">Desempenho Mensal</CardTitle>
+              <CardDescription>Análise da performance da campanha ao longo do tempo</CardDescription>
             </div>
-            <Button variant="ghost" size="icon">
-              <Settings className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button 
+                variant={activeMetric === "impressions" ? "default" : "outline"} 
+                size="sm" 
+                className="text-xs"
+                onClick={() => setActiveMetric("impressions")}
+              >
+                Impressões
+              </Button>
+              <Button 
+                variant={activeMetric === "clicks" ? "default" : "outline"} 
+                size="sm"
+                className="text-xs" 
+                onClick={() => setActiveMetric("clicks")}
+              >
+                Cliques
+              </Button>
+              <Button 
+                variant={activeMetric === "conversions" ? "default" : "outline"} 
+                size="sm" 
+                className="text-xs"
+                onClick={() => setActiveMetric("conversions")}
+              >
+                Conversões
+              </Button>
+              <Button 
+                variant={activeMetric === "cost" ? "default" : "outline"} 
+                size="sm" 
+                className="text-xs"
+                onClick={() => setActiveMetric("cost")}
+              >
+                Custo
+              </Button>
+            </div>
           </CardHeader>
           <CardContent className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={monthlyData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
                 <XAxis dataKey="name" />
-                <YAxis hide />
-                <Tooltip 
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      const data = payload[0];
-                      return (
-                        <div className="rounded-lg border bg-background p-2 shadow-md">
-                          <div className="grid grid-cols-2 gap-2">
-                            <span className="font-medium">{data.name}:</span>
-                            <span className="font-mono text-right">{Number(data.value).toLocaleString()}</span>
-                          </div>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
+                <YAxis />
+                <Tooltip content={renderCustomTooltip} />
+                <Bar 
+                  dataKey={activeMetric} 
+                  fill={metricColors[activeMetric as keyof typeof metricColors]} 
+                  radius={[4, 4, 0, 0]} 
+                  name={activeMetric === "impressions" ? "Impressões" : 
+                       activeMetric === "clicks" ? "Cliques" :
+                       activeMetric === "conversions" ? "Conversões" : "Custo"}
                 />
-                <Bar dataKey="value" fill="#9b87f5" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>

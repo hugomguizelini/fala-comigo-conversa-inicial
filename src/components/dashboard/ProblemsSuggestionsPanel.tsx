@@ -98,9 +98,14 @@ export const ProblemsSuggestionsPanel = ({ issues, suggestions }: ProblemsSugges
                         <h4 className="text-sm font-medium mb-2">Sugestões relacionadas</h4>
                         {[...suggestions.campaign, ...suggestions.funnel]
                           .filter(suggestion => 
-                            suggestion.targetCampaigns?.some(campaign => 
-                              issue.affectedCampaigns.includes(campaign)
-                            )
+                            (suggestion.targetCampaigns && 
+                             suggestion.targetCampaigns.some(campaign => 
+                               issue.affectedCampaigns.includes(campaign)
+                             )) ||
+                            (suggestion.targetPages && 
+                             issue.affectedCampaigns.some(campaign => 
+                               campaign.includes(suggestion.targetPages?.some(page => campaign.includes(page)) ? page : '')
+                             ))
                           )
                           .map((suggestion, idx) => (
                             <div key={idx} className="flex items-start gap-2 mb-3">
@@ -168,6 +173,18 @@ export const ProblemsSuggestionsPanel = ({ issues, suggestions }: ProblemsSugges
                         Implementar <ArrowRight className="h-3 w-3 ml-1" />
                       </button>
                     </div>
+                    {suggestion.targetCampaigns && (
+                      <div className="mt-2">
+                        <p className="text-xs text-muted-foreground">Campanhas alvo:</p>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {suggestion.targetCampaigns.map((campaign, idx) => (
+                            <span key={idx} className="text-xs bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 px-2 py-0.5 rounded-full">
+                              {campaign.split('-').pop()}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -191,6 +208,26 @@ export const ProblemsSuggestionsPanel = ({ issues, suggestions }: ProblemsSugges
                         Implementar <ArrowRight className="h-3 w-3 ml-1" />
                       </button>
                     </div>
+                    {suggestion.targetPages && (
+                      <div className="mt-2">
+                        <p className="text-xs text-muted-foreground">Páginas alvo:</p>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {suggestion.targetPages.map((page, idx) => (
+                            <span key={idx} className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-0.5 rounded-full">
+                              {page}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {suggestion.targetAudience && (
+                      <div className="mt-2">
+                        <p className="text-xs text-muted-foreground">Público-alvo:</p>
+                        <span className="text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 px-2 py-0.5 rounded-full">
+                          {suggestion.targetAudience}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
