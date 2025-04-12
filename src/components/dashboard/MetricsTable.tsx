@@ -12,67 +12,74 @@ import {
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ArrowUp, ArrowDown, TrendingUp, Target, ArrowRight, Eye, MousePointer, CreditCard } from "lucide-react";
 
-type Metric = {
-  name: string;
-  value: string | number;
-  change: number;
-  status: "increase" | "decrease" | "neutral";
-  icon: React.ReactNode;
-  description: string;
+type MetricsProps = {
+  metrics: {
+    impressions: { value: string; variation: string };
+    clicks: { value: string; variation: string };
+    ctr: { value: string; variation: string };
+    conversions: { value: string; variation: string };
+    cpc: { value: string; variation: string };
+    totalCost: { value: string; variation: string };
+  };
 };
 
-const metrics: Metric[] = [
-  {
-    name: "Impressões",
-    value: "240.8K",
-    change: 12.5,
-    status: "increase",
-    icon: <Eye className="h-4 w-4 text-green-500" />,
-    description: "Total de vezes que seus anúncios foram exibidos"
-  },
-  {
-    name: "Cliques",
-    value: "12.4K",
-    change: 8.2,
-    status: "increase",
-    icon: <MousePointer className="h-4 w-4 text-blue-500" />,
-    description: "Total de cliques em seus anúncios"
-  },
-  {
-    name: "CTR",
-    value: "5.2%",
-    change: -1.8,
-    status: "decrease",
-    icon: <TrendingUp className="h-4 w-4 text-amber-500" />,
-    description: "Taxa de cliques (Cliques / Impressões)"
-  },
-  {
-    name: "Conversões",
-    value: "2.8K",
-    change: 15.3,
-    status: "increase",
-    icon: <Target className="h-4 w-4 text-purple-500" />,
-    description: "Total de ações completadas após cliques"
-  },
-  {
-    name: "CPC",
-    value: "R$ 2,45",
-    change: -3.2,
-    status: "increase",
-    icon: <CreditCard className="h-4 w-4 text-emerald-500" />,
-    description: "Custo por clique médio"
-  },
-  {
-    name: "Custo Total",
-    value: "R$ 30.4K",
-    change: 5.7,
-    status: "increase",
-    icon: <CreditCard className="h-4 w-4 text-red-500" />,
-    description: "Total gasto na campanha"
-  },
-];
+export const MetricsTable = ({ metrics }: MetricsProps) => {
+  // Helper para determinar se uma variação é positiva ou negativa
+  const getVariationStatus = (variation: string) => {
+    return variation.startsWith('+') ? "increase" : variation.startsWith('-') ? "decrease" : "neutral";
+  };
 
-export const MetricsTable = () => {
+  const metricsData = [
+    {
+      name: "Impressões",
+      value: metrics.impressions.value,
+      change: metrics.impressions.variation,
+      status: getVariationStatus(metrics.impressions.variation),
+      icon: <Eye className="h-4 w-4 text-green-500" />,
+      description: "Total de vezes que seus anúncios foram exibidos"
+    },
+    {
+      name: "Cliques",
+      value: metrics.clicks.value,
+      change: metrics.clicks.variation,
+      status: getVariationStatus(metrics.clicks.variation),
+      icon: <MousePointer className="h-4 w-4 text-blue-500" />,
+      description: "Total de cliques em seus anúncios"
+    },
+    {
+      name: "CTR",
+      value: metrics.ctr.value,
+      change: metrics.ctr.variation,
+      status: getVariationStatus(metrics.ctr.variation),
+      icon: <TrendingUp className="h-4 w-4 text-amber-500" />,
+      description: "Taxa de cliques (Cliques / Impressões)"
+    },
+    {
+      name: "Conversões",
+      value: metrics.conversions.value,
+      change: metrics.conversions.variation,
+      status: getVariationStatus(metrics.conversions.variation),
+      icon: <Target className="h-4 w-4 text-purple-500" />,
+      description: "Total de ações completadas após cliques"
+    },
+    {
+      name: "CPC",
+      value: metrics.cpc.value,
+      change: metrics.cpc.variation,
+      status: getVariationStatus(metrics.cpc.variation),
+      icon: <CreditCard className="h-4 w-4 text-emerald-500" />,
+      description: "Custo por clique médio"
+    },
+    {
+      name: "Custo Total",
+      value: metrics.totalCost.value,
+      change: metrics.totalCost.variation,
+      status: getVariationStatus(metrics.totalCost.variation),
+      icon: <CreditCard className="h-4 w-4 text-red-500" />,
+      description: "Total gasto na campanha"
+    }
+  ];
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-start justify-between">
@@ -93,7 +100,7 @@ export const MetricsTable = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {metrics.map((metric) => (
+            {metricsData.map((metric) => (
               <TableRow key={metric.name}>
                 <TableCell className="flex items-center gap-2 font-medium">
                   {metric.icon}
@@ -107,7 +114,7 @@ export const MetricsTable = () => {
                     <ArrowDown className="h-4 w-4 text-red-500" />
                   ) : null}
                   <span className={metric.status === "increase" ? "text-green-500" : metric.status === "decrease" ? "text-red-500" : ""}>
-                    {metric.change}%
+                    {metric.change}
                   </span>
                 </TableCell>
                 <TableCell className="text-muted-foreground">{metric.description}</TableCell>

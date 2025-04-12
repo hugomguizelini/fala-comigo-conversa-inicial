@@ -1,0 +1,200 @@
+
+{
+  "metrics": {
+    "impressions": {
+      "value": "240.8K",
+      "variation": "+12.5%"
+    },
+    "clicks": {
+      "value": "12.4K", 
+      "variation": "+8.2%"
+    },
+    "ctr": {
+      "value": "5.2%",
+      "variation": "-1.8%"
+    },
+    "conversions": {
+      "value": "2.8K",
+      "variation": "+15.3%"
+    },
+    "cpc": {
+      "value": "R$ 2,45",
+      "variation": "-3.2%"
+    },
+    "totalCost": {
+      "value": "R$ 30.4K",
+      "variation": "+5.7%"
+    }
+  },
+  "monthlyPerformance": {
+    "months": ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+    "data": [
+      {
+        "month": "Mar",
+        "impressions": 102461,
+        "clicks": 5842,
+        "conversions": 20,
+        "cost": 5820.45
+      },
+      {
+        "month": "Abr",
+        "impressions": 138335,
+        "clicks": 6558, 
+        "conversions": 26,
+        "cost": 6566.83
+      }
+    ]
+  },
+  "identifiedIssues": [
+    {
+      "issue": "Taxa de cliques em queda",
+      "description": "O CTR geral diminuiu em 1.8% em comparação com o período anterior",
+      "relatedTo": "CTR",
+      "affectedCampaigns": [
+        "Meta-DSF-P-Warm-ABO-Lp1-Mundo-Dos-Homens",
+        "Meta-DSF-P-Hot-ABO-Lp1-Mundo-Dos-Homens"
+      ]
+    },
+    {
+      "issue": "Custo por clique elevado",
+      "description": "Algumas campanhas apresentam CPC acima da média de R$ 2,45",
+      "relatedTo": "CPC",
+      "affectedCampaigns": [
+        "Meta-DSF-P-Advantage-ABO-Lp1-7Erros",
+        "Meta-DSF-P-Advantage-ABO-Lp1-Podcast",
+        "Meta-DSF-P-Warm-ABO-Lp1-Mundo-Dos-Homens"
+      ]
+    },
+    {
+      "issue": "Taxa de conversão abaixo do esperado",
+      "description": "Campanhas com alto volume de cliques mas baixa taxa de conversão",
+      "relatedTo": "Conversões",
+      "affectedCampaigns": [
+        "Meta-DSF-P-Warm-ABO-Lp1-Mundo-Dos-Homens",
+        "Meta-DSF-P-Hot-ABO-Lp1-Mundo-Dos-Homens"
+      ]
+    }
+  ],
+  "optimizationSuggestions": {
+    "campaign": [
+      {
+        "title": "Revisar textos e criativos dos anúncios",
+        "description": "Atualize os textos e imagens dos anúncios para melhorar a relevância e aumentar o CTR. Teste diferentes chamadas para ação e propostas de valor.",
+        "impact": "alto",
+        "targetCampaigns": [
+          "Meta-DSF-P-Advantage-ABO-Lp1-7Erros",
+          "Meta-DSF-P-Advantage-Lp1-Homem-Marrento"
+        ]
+      },
+      {
+        "title": "Segmentar audiência com mais precisão",
+        "description": "Refine os critérios de segmentação para atingir pessoas com maior probabilidade de interesse no produto, diminuindo o CPC e aumentando a relevância.",
+        "impact": "alto",
+        "targetCampaigns": [
+          "Meta-DSF-P-Warm-ABO-Lp1-Mundo-Dos-Homens",
+          "Meta-DSF-P-Hot-ABO-Lp1-Mundo-Dos-Homens"
+        ]
+      },
+      {
+        "title": "Implementar remarketing para visitantes",
+        "description": "Crie campanhas específicas para pessoas que visitaram o site mas não converteram. Ofereça incentivos para completarem a ação desejada.",
+        "impact": "médio",
+        "targetCampaigns": [
+          "Meta-DSF-P-Advantage-ABO-Lp1-Podcast"
+        ]
+      }
+    ],
+    "funnel": [
+      {
+        "title": "Otimizar página de destino",
+        "description": "Melhore a experiência de usuário e velocidade de carregamento da página de destino. Certifique-se que a proposta de valor está clara e que há um caminho óbvio para a conversão.",
+        "impact": "alto",
+        "targetPages": [
+          "Lp1-7Erros",
+          "Lp1-Homem-Marrento"
+        ]
+      },
+      {
+        "title": "Implementar remarketing para visitantes",
+        "description": "Crie campanhas específicas para pessoas que visitaram o site mas não converteram. Ofereça incentivos para completarem a ação desejada.",
+        "impact": "médio",
+        "targetAudience": "Visitantes não convertidos"
+      }
+    ]
+  },
+  "campaignDetails": [
+    {
+      "name": "Meta-DSF-P-Advantage-ABO-Lp1-7Erros",
+      "status": "active",
+      "budget": "Usando o orçamento do conjunto de anúncios",
+      "impressions": 70444,
+      "clicks": 766,
+      "ctr": "1.09%",
+      "conversions": 11,
+      "conversionType": "purchase",
+      "cpc": "R$ 2,66",
+      "totalCost": "R$ 2.038,77",
+      "roas": "1.58"
+    },
+    {
+      "name": "Meta-DSF-P-Advantage-Lp1-Homem-Marrento",
+      "status": "active",
+      "budget": "Usando o orçamento do conjunto de anúncios",
+      "impressions": 33554,
+      "clicks": 379,
+      "ctr": "1.13%",
+      "conversions": 9,
+      "conversionType": "purchase",
+      "cpc": "R$ 2,83",
+      "totalCost": "R$ 1.073,37",
+      "roas": "2.46"
+    },
+    {
+      "name": "Meta-DSF-P-Advantage-ABO-Lp1-Podcast",
+      "status": "active",
+      "budget": "Usando o orçamento do conjunto de anúncios",
+      "impressions": 41422,
+      "clicks": 536,
+      "ctr": "1.29%",
+      "conversions": 6,
+      "conversionType": "purchase",
+      "cpc": "R$ 2,31",
+      "totalCost": "R$ 1.236,08",
+      "roas": "1.36"
+    },
+    {
+      "name": "Meta-DSF-P-Warm-ABO-Lp1-Mundo-Dos-Homens",
+      "status": "active",
+      "budget": "Usando o orçamento do conjunto de anúncios",
+      "impressions": 48801,
+      "clicks": 219,
+      "ctr": "0.45%",
+      "conversions": 4,
+      "conversionType": "purchase",
+      "cpc": "R$ 7,42",
+      "totalCost": "R$ 1.625,23",
+      "roas": "0.66"
+    },
+    {
+      "name": "Meta-DSF-P-Hot-ABO-Lp1-Mundo-Dos-Homens",
+      "status": "active",
+      "budget": "Usando o orçamento do conjunto de anúncios",
+      "impressions": 27072,
+      "clicks": 121,
+      "ctr": "0.45%",
+      "conversions": 4,
+      "conversionType": "purchase",
+      "cpc": "R$ 7,83",
+      "totalCost": "R$ 947,15",
+      "roas": "1.12"
+    }
+  ],
+  "spaceUsage": {
+    "used": "72.2%",
+    "free": "27.8%",
+    "growth": {
+      "positive": "19.2%",
+      "negative": "7.2%"
+    }
+  }
+}

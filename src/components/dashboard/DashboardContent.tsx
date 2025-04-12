@@ -1,6 +1,6 @@
 
 import React, { useState, useCallback } from "react";
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowUp, Search, Download, Upload, FileText, Settings, Sparkles, Filter, ChartBar } from "lucide-react";
@@ -9,25 +9,25 @@ import { useToast } from "@/hooks/use-toast";
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 import { MetricsTable } from "./MetricsTable";
 import { ProblemsSuggestionsPanel } from "./ProblemsSuggestionsPanel";
+import { CampaignsTable } from "./CampaignsTable";
+import dashboardData from "@/data/dashboard-data.json";
 
-const campaignData = [
-  { name: "Jan", value: 400 },
-  { name: "Fev", value: 600 },
-  { name: "Mar", value: 300 },
-  { name: "Abr", value: 700 },
-  { name: "Mai", value: 600 },
-  { name: "Jun", value: 400 },
-  { name: "Jul", value: 500 },
-  { name: "Ago", value: 600 },
-  { name: "Set", value: 800 },
-  { name: "Out", value: 650 },
-  { name: "Nov", value: 550 },
-  { name: "Dez", value: 400 },
-];
+// Preparando os dados para o gráfico mensal
+const monthlyData = dashboardData.monthlyPerformance.months.map((month) => {
+  const matchingData = dashboardData.monthlyPerformance.data.find(
+    (item) => item.month === month
+  );
+  
+  return {
+    name: month,
+    value: matchingData ? matchingData.impressions : 0,
+  };
+});
 
 export default function DashboardContent() {
   const { toast } = useToast();
   const [files, setFiles] = useState<File[]>([]);
+  const [timeRange, setTimeRange] = useState<string>("month");
   
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFiles(prev => [...prev, ...acceptedFiles]);
@@ -67,10 +67,13 @@ export default function DashboardContent() {
       </div>
       
       {/* Métricas */}
-      <MetricsTable />
+      <MetricsTable metrics={dashboardData.metrics} />
       
       {/* Painel de Problemas e Sugestões */}
-      <ProblemsSuggestionsPanel />
+      <ProblemsSuggestionsPanel 
+        issues={dashboardData.identifiedIssues} 
+        suggestions={dashboardData.optimizationSuggestions} 
+      />
       
       <div className="grid gap-6 md:grid-cols-2">
         {/* Detalhamento da Campanha */}
@@ -86,10 +89,26 @@ export default function DashboardContent() {
           </CardHeader>
           <CardContent className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={campaignData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+              <BarChart data={monthlyData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
                 <XAxis dataKey="name" />
                 <YAxis hide />
-                <Tooltip />
+                <Tooltip 
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      const data = payload[0];
+                      return (
+                        <div className="rounded-lg border bg-background p-2 shadow-md">
+                          <div className="grid grid-cols-2 gap-2">
+                            <span className="font-medium">{data.name}:</span>
+                            <span className="font-mono text-right">{Number(data.value).toLocaleString()}</span>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
                 <Bar dataKey="value" fill="#9b87f5" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -97,11 +116,46 @@ export default function DashboardContent() {
           <CardFooter className="border-t px-6 py-3">
             <div className="flex items-center justify-between w-full">
               <div className="flex space-x-2">
-                <Button variant="outline" size="sm" className="text-xs">1 dia</Button>
-                <Button variant="outline" size="sm" className="text-xs">1 semana</Button>
-                <Button variant="outline" size="sm" className="text-xs">1 mês</Button>
-                <Button variant="outline" size="sm" className="text-xs">1 ano</Button>
-                <Button variant="outline" size="sm" className="text-xs">Todo período</Button>
+                <Button 
+                  variant={timeRange === "day" ? "default" : "outline"} 
+                  size="sm" 
+                  className="text-xs"
+                  onClick={() => setTimeRange("day")}
+                >
+                  1 dia
+                </Button>
+                <Button 
+                  variant={timeRange === "week" ? "default" : "outline"} 
+                  size="sm" 
+                  className="text-xs"
+                  onClick={() => setTimeRange("week")}
+                >
+                  1 semana
+                </Button>
+                <Button 
+                  variant={timeRange === "month" ? "default" : "outline"} 
+                  size="sm" 
+                  className="text-xs"
+                  onClick={() => setTimeRange("month")}
+                >
+                  1 mês
+                </Button>
+                <Button 
+                  variant={timeRange === "year" ? "default" : "outline"} 
+                  size="sm" 
+                  className="text-xs"
+                  onClick={() => setTimeRange("year")}
+                >
+                  1 ano
+                </Button>
+                <Button 
+                  variant={timeRange === "all" ? "default" : "outline"} 
+                  size="sm" 
+                  className="text-xs"
+                  onClick={() => setTimeRange("all")}
+                >
+                  Todo período
+                </Button>
               </div>
               <Button variant="outline" size="sm" className="text-xs">
                 <span>Ver Relatório Completo</span>
@@ -127,25 +181,25 @@ export default function DashboardContent() {
               <div className="relative w-32 h-32">
                 <div className="w-full h-full rounded-full border-8 border-purple-500/30"></div>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-3xl font-bold">72.2%</div>
+                  <div className="text-3xl font-bold">{dashboardData.spaceUsage.used}</div>
                 </div>
               </div>
               
               <div className="text-center space-y-1">
                 <h4 className="font-medium">Você está quase no limite!</h4>
-                <p className="text-sm text-muted-foreground">Você já usou cerca de 72% do seu espaço livre.</p>
+                <p className="text-sm text-muted-foreground">Você já usou cerca de {dashboardData.spaceUsage.used} do seu espaço livre.</p>
               </div>
               
               <div className="flex gap-4 text-sm">
                 <div className="flex items-center">
                   <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
                   <ArrowUp className="h-3 w-3 text-green-500 mr-1" />
-                  <span className="text-green-500">19.2%</span>
+                  <span className="text-green-500">{dashboardData.spaceUsage.growth.positive}</span>
                 </div>
                 <div className="flex items-center">
                   <span className="w-2 h-2 bg-red-500 rounded-full mr-1"></span>
                   <ArrowUp className="h-3 w-3 text-red-500 mr-1 rotate-180" />
-                  <span className="text-red-500">7.2%</span>
+                  <span className="text-red-500">{dashboardData.spaceUsage.growth.negative}</span>
                 </div>
               </div>
             </div>
@@ -157,6 +211,9 @@ export default function DashboardContent() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Tabela de Campanhas */}
+      <CampaignsTable campaigns={dashboardData.campaignDetails} />
 
       {/* Área de Upload de Arquivos */}
       <Card>
