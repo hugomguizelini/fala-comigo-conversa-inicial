@@ -3,7 +3,7 @@ import React, { useState, useCallback } from "react";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowUp, Search, Download, Upload, FileText, Settings, Sparkles, Filter, Line, ChartBar } from "lucide-react";
+import { ArrowUp, Search, Download, Upload, FileText, Settings, Sparkles, Filter, ChartBar } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { useToast } from "@/hooks/use-toast";
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
