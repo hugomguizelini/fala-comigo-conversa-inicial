@@ -50,8 +50,10 @@ export default function SidebarNav() {
               : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
           )}
         >
-          {item.icon}
-          {item.title}
+          <div className="w-5 flex justify-center">
+            {item.icon}
+          </div>
+          <span className="truncate">{item.title}</span>
         </Link>
       ))}
     </nav>
