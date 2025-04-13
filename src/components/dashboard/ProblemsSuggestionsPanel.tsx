@@ -23,7 +23,7 @@ export const ProblemsSuggestionsPanel = ({ issues, suggestions }: ProblemsSugges
   
   return (
     <div className="space-y-4">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <Tabs defaultValue="problems" value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-2 mb-4">
           <TabsTrigger value="problems" className="flex justify-center items-center gap-2">
             <AlertTriangle className="h-4 w-4 text-red-500" />
@@ -45,10 +45,10 @@ export const ProblemsSuggestionsPanel = ({ issues, suggestions }: ProblemsSugges
           </TabsTrigger>
         </TabsList>
         
-        <TabsContent value="problems">
+        <TabsContent value="problems" className="mt-0">
           <ProblemsPanel issues={issues} suggestions={suggestions} />
         </TabsContent>
-        <TabsContent value="suggestions">
+        <TabsContent value="suggestions" className="mt-0">
           <SuggestionsPanel suggestions={suggestions} />
         </TabsContent>
       </Tabs>

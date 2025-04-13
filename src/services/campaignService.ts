@@ -64,16 +64,3 @@ export const deleteCampaign = async (id: string): Promise<void> => {
     throw error;
   }
 };
-
-// Função para excluir todos os dados de campanhas
-export const deleteCampaignData = async (): Promise<void> => {
-  const { error } = await supabase
-    .from('campaign_data')
-    .delete()
-    .not('id', 'is', null); // Garante que todas as linhas sejam deletadas
-  
-  if (error) {
-    console.error('Error deleting all campaign data:', error);
-    throw error;
-  }
-};
