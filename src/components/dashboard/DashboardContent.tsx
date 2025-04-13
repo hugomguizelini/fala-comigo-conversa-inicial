@@ -18,6 +18,9 @@ import {
   MonthlyPerformance
 } from "@/services/supabaseService";
 
+// Importando dados do dashboard para uso temporário
+import dashboardData from "@/data/dashboard-data.json";
+
 export default function DashboardContent() {
   const { toast } = useToast();
   const [files, setFiles] = useState<File[]>([]);
@@ -69,9 +72,12 @@ export default function DashboardContent() {
           cpc: { value: `R$ ${cpc.toFixed(2)}`, variation: "-3%" },
           totalCost: { value: `R$ ${totalCost.toFixed(2)}`, variation: "+7%" }
         });
+      } else {
+        setMetrics(dashboardData.metrics);
       }
     } catch (error) {
       console.error("Error loading data:", error);
+      setMetrics(dashboardData.metrics);
       toast({
         title: "Erro ao carregar dados",
         description: "Não foi possível carregar os dados do dashboard.",
@@ -144,13 +150,13 @@ export default function DashboardContent() {
     return null;
   };
 
-  const chartData = monthlyData.map(item => ({
+  const chartData = monthlyData.length > 0 ? monthlyData.map(item => ({
     name: item.month,
     impressions: item.impressions,
     clicks: item.clicks,
     conversions: item.conversions,
     cost: item.cost
-  }));
+  })) : dashboardData.monthlyPerformance.data;
 
   return (
     <div className="space-y-6">
@@ -182,34 +188,8 @@ export default function DashboardContent() {
       <MetricsTable metrics={metrics} />
       
       <ProblemsSuggestionsPanel 
-        issues={[
-          {
-            name: "Otimize sua taxa de conversão",
-            description: "Suas campanhas têm um CTR alto, mas a taxa de conversão está abaixo do esperado."
-          },
-          {
-            name: "Revise seus gastos com anúncios",
-            description: "O CPC está acima da média do setor para algumas campanhas."
-          }
-        ]} 
-        suggestions={[
-          {
-            name: "Teste novas variações de imagens",
-            description: "Imagens com pessoas reais têm maior engajamento."
-          },
-          {
-            name: "Implemente segmentação avançada",
-            description: "Segmentar por comportamento de usuários recentes."
-          }
-        ]}
-        campaign={{
-          name: "Campanha Principal",
-          performance: "Média"
-        }}
-        funnel={{
-          stages: ["Visualização", "Clique", "Conversão"],
-          dropoffs: [20, 65]
-        }}
+        issues={dashboardData.identifiedIssues}
+        suggestions={dashboardData.optimizationSuggestions}
       />
       
       <div className="grid gap-6 md:grid-cols-2">
@@ -432,7 +412,7 @@ export default function DashboardContent() {
           </CardHeader>
           <CardContent>
             <p className="text-sm opacity-90">
-              Explore estatísticas históricas detalhadas para identificar tendências e padrões de longo prazo da campanha.
+              Explore estatísticas hist��ricas detalhadas para identificar tendências e padrões de longo prazo da campanha.
             </p>
           </CardContent>
         </Card>

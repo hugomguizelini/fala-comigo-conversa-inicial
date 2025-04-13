@@ -45,6 +45,10 @@ export const ProblemsSuggestionsPanel = ({ issues, suggestions }: ProblemsSugges
       default: return "text-muted-foreground";
     }
   };
+  
+  // Adicionando verificação para evitar erros quando suggestions.campaign ou suggestions.funnel forem undefined
+  const campaignSuggestions = suggestions?.campaign || [];
+  const funnelSuggestions = suggestions?.funnel || [];
 
   return (
     <div className="space-y-6">
@@ -96,7 +100,7 @@ export const ProblemsSuggestionsPanel = ({ issues, suggestions }: ProblemsSugges
                       {/* Sugestões relacionadas */}
                       <div className="mt-4">
                         <h4 className="text-sm font-medium mb-2">Sugestões relacionadas</h4>
-                        {[...suggestions.campaign, ...suggestions.funnel]
+                        {[...campaignSuggestions, ...funnelSuggestions]
                           .filter(suggestion => 
                             (suggestion.targetCampaigns && 
                              suggestion.targetCampaigns.some(campaign => 
@@ -163,7 +167,7 @@ export const ProblemsSuggestionsPanel = ({ issues, suggestions }: ProblemsSugges
                 Otimizações para Campanha
               </h3>
               <div className="space-y-3">
-                {suggestions.campaign.map((suggestion, index) => (
+                {campaignSuggestions.map((suggestion, index) => (
                   <div key={index} className="bg-muted/50 p-3 rounded-lg">
                     <h4 className="text-sm font-medium">{suggestion.title}</h4>
                     <p className="text-xs text-muted-foreground mt-1">{suggestion.description}</p>
@@ -198,7 +202,7 @@ export const ProblemsSuggestionsPanel = ({ issues, suggestions }: ProblemsSugges
                 Otimizações para Funil
               </h3>
               <div className="space-y-3">
-                {suggestions.funnel.map((suggestion, index) => (
+                {funnelSuggestions.map((suggestion, index) => (
                   <div key={index} className="bg-muted/50 p-3 rounded-lg">
                     <h4 className="text-sm font-medium">{suggestion.title}</h4>
                     <p className="text-xs text-muted-foreground mt-1">{suggestion.description}</p>
