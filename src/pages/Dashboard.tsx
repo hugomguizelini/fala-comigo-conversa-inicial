@@ -17,6 +17,13 @@ const Dashboard = () => {
         "Caso os dados não apareçam após o upload, verifique se o arquivo CSV tem o formato correto com colunas como 'nome', 'impressões', 'cliques', etc."
       );
     }, 5500);
+    
+    // Third toast message about numeric format (new)
+    setTimeout(() => {
+      toast.info(
+        "Os valores numéricos podem ser formatados como '1000', '1.000' ou '1,000'. Valores monetários podem incluir 'R$'."
+      );
+    }, 11000);
   }, []);
 
   return (

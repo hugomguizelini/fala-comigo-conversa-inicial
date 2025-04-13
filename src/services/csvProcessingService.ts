@@ -9,16 +9,42 @@ import { toast } from "sonner";
 export const extractNumericValue = (valueStr: string): number => {
   if (!valueStr) return 0;
   
-  // Melhorar o tratamento de valores numéricos
+  // Verificar se o valor já é um número
+  if (typeof valueStr === 'number') return valueStr;
+  
   try {
-    // Remover caracteres não numéricos, mantendo pontos e vírgulas
-    const cleanValue = valueStr.toString().replace(/[^\d.,]/g, "");
-    // Substituir vírgula por ponto para parsing correto
-    const normalizedValue = cleanValue.replace(",", ".");
-    // Converter para float
-    return parseFloat(normalizedValue) || 0;
+    // Converte para string caso seja passado outro tipo
+    const strValue = String(valueStr).trim();
+    
+    // Se já for um número simples, retorna diretamente
+    if (!isNaN(Number(strValue)) && !strValue.includes(',') && !strValue.includes('.')) {
+      return Number(strValue);
+    }
+    
+    // Remover todos os caracteres não numéricos, exceto ponto e vírgula
+    // como R$, %, etc.
+    let cleanValue = strValue.replace(/[^\d.,]/g, '');
+    
+    // Lidar com formatos diferentes (1.000,50 ou 1,000.50)
+    if (cleanValue.includes(',') && cleanValue.includes('.')) {
+      // Formato brasileiro: 1.000,50
+      if (cleanValue.lastIndexOf(',') > cleanValue.lastIndexOf('.')) {
+        cleanValue = cleanValue.replace(/\./g, '').replace(',', '.');
+      } 
+      // Formato americano: 1,000.50
+      else {
+        cleanValue = cleanValue.replace(/,/g, '');
+      }
+    } else if (cleanValue.includes(',')) {
+      // Se só tem vírgula, assume formato brasileiro e substitui por ponto
+      cleanValue = cleanValue.replace(',', '.');
+    }
+    
+    // Converter para número
+    const result = parseFloat(cleanValue);
+    return isNaN(result) ? 0 : result;
   } catch (error) {
-    console.error("Erro ao extrair valor numérico:", error);
+    console.error("Erro ao extrair valor numérico:", error, "para valor:", valueStr);
     return 0;
   }
 };
@@ -26,13 +52,41 @@ export const extractNumericValue = (valueStr: string): number => {
 // Função para extrair porcentagem de uma string
 export const extractPercentage = (percentStr: string): string => {
   if (!percentStr) return "0%";
-  return percentStr.trim();
+  
+  try {
+    // Se já termina com %, mantém como está
+    if (percentStr.toString().trim().endsWith('%')) {
+      return percentStr.toString().trim();
+    }
+    
+    // Se for um número sem o símbolo %, adiciona o símbolo
+    const numValue = extractNumericValue(percentStr);
+    return `${numValue}%`;
+  } catch (error) {
+    console.error("Erro ao extrair percentagem:", error);
+    return "0%";
+  }
 };
 
 // Função para extrair valor monetário de uma string
 export const extractMonetaryValue = (moneyStr: string): string => {
   if (!moneyStr) return "R$ 0,00";
-  return moneyStr.trim();
+  
+  try {
+    // Se já começa com R$, mantém como está
+    if (moneyStr.toString().trim().startsWith('R$')) {
+      return moneyStr.toString().trim();
+    }
+    
+    // Extrai o valor numérico
+    const numValue = extractNumericValue(moneyStr);
+    
+    // Formata como valor monetário brasileiro
+    return `R$ ${numValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  } catch (error) {
+    console.error("Erro ao extrair valor monetário:", error);
+    return "R$ 0,00";
+  }
 };
 
 // Função para processar arquivo CSV
@@ -53,38 +107,52 @@ export const processCsvFile = (file: File): Promise<Papa.ParseResult<any>> => {
 
 // Normalizar dados de campanhas sem depender de nomes de colunas específicos
 const normalizeCampaignData = (row: any): CampaignData => {
-  // Logging para debugging
   console.log("Processando linha do CSV:", row);
   
   // Mapear campos comuns com seus possíveis nomes alternativos
-  const nameField = row.nome || row.name || row.campanha || "Campanha sem nome";
+  const nameField = row.nome || row.name || row.campanha || row.campaign || "Campanha sem nome";
   const statusField = row.status || "active";
-  const budgetField = row.budget || row.orçamento || row.orcamento || "R$ 0";
-  const impressionsField = row.impressions || row.impressões || row.impressoes || "0";
-  const clicksField = row.clicks || row.cliques || "0";
-  const ctrField = row.ctr || "0%";
-  const conversionsField = row.conversions || row.conversões || row.conversoes || "0";
+  const budgetField = row.budget || row.orçamento || row.orcamento || row.budget || "R$ 0";
+  const impressionsField = row.impressions || row.impressões || row.impressoes || row.impressoes || row["impressões"] || "0";
+  const clicksField = row.clicks || row.cliques || row.cliques || "0";
+  const ctrField = row.ctr || row["taxa de cliques"] || row["taxa_de_cliques"] || "0%";
+  const conversionsField = row.conversions || row.conversões || row.conversoes || row.conversoes || row["conversões"] || "0";
   const conversionTypeField = row.conversion_type || row.tipo_conversão || row.tipo_conversao || "";
-  const cpcField = row.cpc || row.custo_por_clique || "R$ 0,00";
-  const totalCostField = row.total_cost || row.custo_total || row.custo || "R$ 0,00";
-  const roasField = row.roas || row.retorno || "0%";
+  const cpcField = row.cpc || row.custo_por_clique || row["custo por clique"] || "R$ 0,00";
+  const totalCostField = row.total_cost || row.custo_total || row.custo || row["custo total"] || "R$ 0,00";
+  const roasField = row.roas || row.retorno || row["retorno sobre investimento"] || "0%";
   
-  // Debug log dos campos extraídos
-  console.log("Campos extraídos:", {
+  console.log("Campos extraídos brutos:", {
     nome: nameField,
     impressoes: impressionsField,
-    cliques: clicksField
+    cliques: clicksField,
+    conversoes: conversionsField,
+    custo: totalCostField
   });
   
-  // Processamento melhorado dos valores numéricos
-  const impressions = extractNumericValue(String(impressionsField));
-  const clicks = extractNumericValue(String(clicksField));
-  const conversions = extractNumericValue(String(conversionsField));
+  // Processamento dos valores numéricos
+  const impressions = extractNumericValue(impressionsField);
+  const clicks = extractNumericValue(clicksField);
+  const conversions = extractNumericValue(conversionsField);
+  const costRaw = extractNumericValue(totalCostField);
   
-  console.log("Valores processados:", {
+  console.log("Valores processados após conversão:", {
     impressoes: impressions,
     cliques: clicks,
-    conversoes: conversions
+    conversoes: conversions,
+    custo: costRaw
+  });
+  
+  const totalCost = extractMonetaryValue(totalCostField);
+  const cpc = extractMonetaryValue(cpcField);
+  const ctr = extractPercentage(ctrField);
+  const roas = extractPercentage(roasField);
+  
+  console.log("Valores formatados finais:", {
+    custo_total: totalCost,
+    cpc: cpc,
+    ctr: ctr,
+    roas: roas
   });
   
   return {
@@ -93,12 +161,12 @@ const normalizeCampaignData = (row: any): CampaignData => {
     budget: extractMonetaryValue(String(budgetField)),
     impressions: impressions,
     clicks: clicks,
-    ctr: extractPercentage(String(ctrField)),
+    ctr: ctr,
     conversions: conversions,
     conversion_type: String(conversionTypeField),
-    cpc: extractMonetaryValue(String(cpcField)),
-    total_cost: extractMonetaryValue(String(totalCostField)),
-    roas: extractPercentage(String(roasField))
+    cpc: cpc,
+    total_cost: totalCost,
+    roas: roas
   };
 };
 
@@ -106,6 +174,8 @@ const normalizeCampaignData = (row: any): CampaignData => {
 export const processAndInsertCampaignData = async (data: any[]): Promise<CampaignData[]> => {
   try {
     const processedData: CampaignData[] = [];
+    
+    console.log("Processando", data.length, "linhas de dados CSV");
     
     for (const row of data) {
       const campaignData = normalizeCampaignData(row);
@@ -144,13 +214,36 @@ const normalizeMonthlyData = (row: any): MonthlyPerformance => {
   const conversionsField = row.conversions || row.conversões || row.conversoes || "0";
   const costField = row.cost || row.custo || "0";
   
+  // Log detalhado para debug
+  console.log("Processando dados mensais:", {
+    month: monthField,
+    year: yearField,
+    impressions: impressionsField,
+    clicks: clicksField,
+    conversions: conversionsField,
+    cost: costField
+  });
+  
+  // Extrair valores numéricos corretamente
+  const impressions = extractNumericValue(impressionsField);
+  const clicks = extractNumericValue(clicksField);
+  const conversions = extractNumericValue(conversionsField);
+  const cost = extractNumericValue(costField);
+  
+  console.log("Valores mensais processados:", {
+    impressions: impressions,
+    clicks: clicks,
+    conversions: conversions,
+    cost: cost
+  });
+  
   return {
     month: String(monthField),
     year: parseInt(String(yearField)),
-    impressions: extractNumericValue(String(impressionsField)),
-    clicks: extractNumericValue(String(clicksField)),
-    conversions: extractNumericValue(String(conversionsField)),
-    cost: extractNumericValue(String(costField))
+    impressions: impressions,
+    clicks: clicks,
+    conversions: conversions,
+    cost: cost
   };
 };
 

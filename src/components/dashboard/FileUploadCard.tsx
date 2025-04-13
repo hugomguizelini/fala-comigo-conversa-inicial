@@ -31,12 +31,14 @@ const FileUploadCard = ({ onFilesProcessed, isLoading, setIsLoading }: FileUploa
     setProcessingProgress(0);
     
     try {
+      console.log("Arquivos recebidos:", acceptedFiles.map(f => f.name));
+      
       for (let i = 0; i < acceptedFiles.length; i++) {
         const file = acceptedFiles[i];
         setProcessingFile(file.name);
         
         // Update progress based on file position
-        setProcessingProgress(Math.round((i / acceptedFiles.length) * 50));
+        setProcessingProgress(Math.round((i / acceptedFiles.length) * 30));
         
         // First process the CSV file to get the data
         console.log(`Processando arquivo: ${file.name}`);
@@ -46,17 +48,26 @@ const FileUploadCard = ({ onFilesProcessed, isLoading, setIsLoading }: FileUploa
           console.error("Error parsing CSV:", parseResult.errors);
           throw new Error(`Erro ao processar ${file.name}: ${parseResult.errors[0].message}`);
         }
+        
+        console.log("Dados do CSV:", parseResult.data);
+        console.log("Total de linhas:", parseResult.data.length);
+        
+        if (parseResult.data.length === 0) {
+          toast.warning(`O arquivo ${file.name} está vazio ou não contém dados válidos.`);
+          continue;
+        }
 
         // Update progress after parsing
-        setProcessingProgress(Math.round(50 + (i / acceptedFiles.length) * 25));
+        setProcessingProgress(Math.round(30 + (i / acceptedFiles.length) * 30));
         
         // Then pass the parsed data to the insertion functions
         try {
-          if (file.name.toLowerCase().includes("campaign") || file.name.toLowerCase().includes("campanha")) {
+          const fileName = file.name.toLowerCase();
+          if (fileName.includes("campaign") || fileName.includes("campanha")) {
             console.log("Identificado como arquivo de campanhas");
             await processAndInsertCampaignData(parseResult.data);
             toast.success(`Arquivo de campanha processado: ${file.name}`);
-          } else if (file.name.toLowerCase().includes("monthly") || file.name.toLowerCase().includes("mensal")) {
+          } else if (fileName.includes("monthly") || fileName.includes("mensal")) {
             console.log("Identificado como arquivo de dados mensais");
             await processAndInsertMonthlyData(parseResult.data);
             toast.success(`Arquivo de dados mensais processado: ${file.name}`);
@@ -72,13 +83,14 @@ const FileUploadCard = ({ onFilesProcessed, isLoading, setIsLoading }: FileUploa
         }
         
         // Update progress after insertion
-        setProcessingProgress(Math.round(75 + (i / acceptedFiles.length) * 25));
+        setProcessingProgress(Math.round(60 + (i / acceptedFiles.length) * 40));
       }
       
       // All files processed, update progress to 100%
       setProcessingProgress(100);
       
       // Recarregar dados no dashboard
+      console.log("Todos os arquivos processados, recarregando dados no dashboard");
       await onFilesProcessed();
       
       setFiles(prev => [...prev, ...acceptedFiles]);
