@@ -6,15 +6,19 @@ import { toast } from "sonner";
 
 const Dashboard = () => {
   useEffect(() => {
-    // Apenas uma mensagem combinada em vez de várias separadas
     toast.info(
-      "Dica: Faça upload de arquivos CSV para visualizar dados no dashboard. Suportamos formatos de campanhas, Meta Ads e outros.",
+      "Bem-vindo ao Dashboard de Análise de Campanhas",
       {
-        description: "Os valores podem estar formatados como '1000', '1.000' ou '1,000'.",
+        description: "Faça upload de arquivos CSV para visualizar insights e otimizações personalizadas para suas campanhas.",
         duration: 8000,
         action: {
-          label: "Saiba mais",
-          onClick: () => toast.info("Para mais informações, consulte nosso guia de importação de dados.")
+          label: "Explorar recursos",
+          onClick: () => toast.info(
+            "Novos recursos disponíveis!",
+            {
+              description: "Análise avançada com IA, filtros de impacto, e sugestões inteligentes baseadas em regras de gestores experientes de tráfego."
+            }
+          )
         }
       }
     );
