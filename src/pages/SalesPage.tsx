@@ -56,35 +56,35 @@ const SalesPage: React.FC = () => {
     }
   };
 
-  // Statistics data
+  // Estatísticas atualizadas
   const statistics = [
     { 
-      value: "3200+", 
-      label: "Marketing Campaigns Optimized",
+      value: "3.200+", 
+      label: "Campanhas de Marketing Otimizadas",
       icon: <Gift className="h-8 w-8 text-purple-500" />
     },
     { 
       value: "84%", 
-      label: "Average Conversion Improvement",
+      label: "Melhoria Média de Conversão",
       icon: <Award className="h-8 w-8 text-purple-500" /> 
     },
     { 
       value: "12M+", 
-      label: "Ad Spend Analyzed",
+      label: "Gastos em Anúncios Analisados",
       icon: <Shield className="h-8 w-8 text-purple-500" /> 
     },
     { 
-      value: "28.3%", 
-      label: "ROI Increase",
+      value: "28,3%", 
+      label: "Aumento de Retorno sobre Investimento",
       icon: <Users className="h-8 w-8 text-purple-500" /> 
     },
   ];
 
-  // Features data
+  // Recursos atualizados
   const features = [
     {
-      title: "AI-Powered Analytics",
-      description: "Advanced algorithms analyze your marketing data, identifying patterns humans might miss and providing actionable insights.",
+      title: "Análise de Marketing por IA",
+      description: "Algoritmos avançados analisam seus dados de marketing, identificando padrões que humanos podem perder e fornecendo insights acionáveis.",
       icon: <svg className="w-10 h-10 text-purple-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M21 10.5V8.25C21 6.18 19.32 4.5 17.25 4.5H16.5V4.125C16.5 2.679 15.321 1.5 13.875 1.5H10.125C8.679 1.5 7.5 2.679 7.5 4.125V4.5H6.75C4.68 4.5 3 6.18 3 8.25V18.75C3 20.82 4.68 22.5 6.75 22.5H17.25C19.32 22.5 21 20.82 21 18.75V18M16.5 1.5V9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         <path d="M7.5 1.5V9M12 10.5V19.5M18 15H6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -92,16 +92,16 @@ const SalesPage: React.FC = () => {
       imageUrl: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&w=1600"
     },
     {
-      title: "Real-time Campaign Monitoring",
-      description: "Track your marketing campaign performance in real-time, allowing for immediate adjustments and optimization.",
+      title: "Monitoramento de Campanhas em Tempo Real",
+      description: "Acompanhe o desempenho de suas campanhas de marketing em tempo real, permitindo ajustes imediatos e otimização.",
       icon: <svg className="w-10 h-10 text-purple-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 6V12L16 14M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>,
       imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&w=1600"
     },
     {
-      title: "Custom AI Recommendations",
-      description: "Get personalized suggestions tailored to your specific marketing goals, audience, and industry benchmarks.",
+      title: "Recomendações Personalizadas por IA",
+      description: "Obtenha sugestões personalizadas adaptadas aos seus objetivos específicos de marketing, público-alvo e referências do setor.",
       icon: <svg className="w-10 h-10 text-purple-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M9 22H15C20 22 22 20 22 15V9C22 4 20 2 15 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         <path d="M15.5699 18.5001V14.6001M15.5699 9.45007V5.55007M15.5699 14.6001C15.5699 13.1601 16.4999 12.0001 17.5599 12.0001C18.6299 12.0001 19.5599 13.1601 19.5599 14.6001C19.5599 16.0401 18.6299 17.2001 17.5599 17.2001C16.4999 17.2001 15.5699 16.0401 15.5699 14.6001ZM15.5699 9.45007C15.5699 8.01007 16.4999 6.85007 17.5599 6.85007C18.6299 6.85007 19.5599 8.01007 19.5599 9.45007C19.5599 10.8901 18.6299 12.0501 17.5599 12.0501C16.4999 12.0501 15.5699 10.8901 15.5699 9.45007Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -110,8 +110,8 @@ const SalesPage: React.FC = () => {
       imageUrl: "https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&w=1600"
     },
     {
-      title: "Competitive Intelligence",
-      description: "Benchmark your performance against competitors and industry standards to stay ahead of market trends.",
+      title: "Inteligência Competitiva",
+      description: "Compare seu desempenho com concorrentes e padrões do setor para se manter à frente das tendências de mercado.",
       icon: <svg className="w-10 h-10 text-purple-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M3 22H21M5 8.5C5 5.87 7.13 3.75 9.76 3.75C11.17 3.75 12.4 4.38 13.24 5.38C14.08 4.38 15.3 3.75 16.71 3.75C19.34 3.75 21.47 5.87 21.47 8.5C21.47 9.8 21 11 20.17 11.9C19.09 13.07 17.13 14.38 14.41 16.31L13.24 17.16L12.06 16.31C9.34 14.38 7.38 13.07 6.3 11.9C5.48 11 5 9.8 5 8.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>,
@@ -121,15 +121,15 @@ const SalesPage: React.FC = () => {
 
   return (
     <div className="bg-gradient-to-b from-[#0f0f1a] to-[#1a1a2e] text-white min-h-screen">
-      {/* Header */}
+      {/* Cabeçalho */}
       <SalesHeader />
       
-      {/* Hero Section */}
+      {/* Seção Hero */}
       <section ref={(ref) => addSectionRef('hero', ref as HTMLDivElement)} className="relative">
         <SalesHero />
       </section>
       
-      {/* Statistics Section */}
+      {/* Seção de Estatísticas */}
       <section 
         ref={(ref) => addSectionRef('statistics', ref as HTMLDivElement)} 
         className={`py-20 ${breakpoint === "xs" || breakpoint === "sm" ? "px-4" : "px-8 md:px-12 lg:px-24"}`}
@@ -142,10 +142,10 @@ const SalesPage: React.FC = () => {
         >
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
-              Transforming Marketing With AI
+              Transformando Marketing com IA
             </h2>
             <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-              Our platform has helped thousands of businesses achieve unprecedented results through AI-powered marketing intelligence.
+              Nossa plataforma ajudou milhares de empresas a alcançarem resultados sem precedentes através de inteligência de marketing por IA.
             </p>
           </div>
           
@@ -164,7 +164,7 @@ const SalesPage: React.FC = () => {
         </motion.div>
       </section>
 
-      {/* Features Section */}
+      {/* Seção de Recursos */}
       <section 
         ref={(ref) => addSectionRef('features', ref as HTMLDivElement)} 
         className={`py-20 ${breakpoint === "xs" || breakpoint === "sm" ? "px-4" : "px-8 md:px-12 lg:px-24"} bg-[#12121e]`}
@@ -177,10 +177,10 @@ const SalesPage: React.FC = () => {
         >
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
-              Powerful Features
+              Recursos Poderosos
             </h2>
             <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-              Discover how our AI-powered platform can transform your marketing strategy and drive exceptional results.
+              Descubra como nossa plataforma alimentada por IA pode transformar sua estratégia de marketing e impulsionar resultados excepcionais.
             </p>
           </div>
           
@@ -201,7 +201,7 @@ const SalesPage: React.FC = () => {
         </motion.div>
       </section>
 
-      {/* Testimonial Section */}
+      {/* Seção de Depoimentos */}
       <section 
         ref={(ref) => addSectionRef('testimonials', ref as HTMLDivElement)} 
         className={`py-20 ${breakpoint === "xs" || breakpoint === "sm" ? "px-4" : "px-8 md:px-12 lg:px-24"}`}
@@ -214,10 +214,10 @@ const SalesPage: React.FC = () => {
         >
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
-              What Our Clients Say
+              O Que Nossos Clientes Dizem
             </h2>
             <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-              Don't just take our word for it. See what marketing professionals and businesses have achieved with Insighor.AI.
+              Não confie apenas em nossa palavra. Veja o que profissionais de marketing e empresas alcançaram com a Insighor.AI.
             </p>
           </div>
           
@@ -225,7 +225,7 @@ const SalesPage: React.FC = () => {
         </motion.div>
       </section>
 
-      {/* Pricing Section */}
+      {/* Seção de Preços */}
       <section 
         ref={(ref) => addSectionRef('pricing', ref as HTMLDivElement)} 
         className={`py-20 ${breakpoint === "xs" || breakpoint === "sm" ? "px-4" : "px-8 md:px-12 lg:px-24"} bg-[#12121e]`}
@@ -238,10 +238,10 @@ const SalesPage: React.FC = () => {
         >
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
-              Simple, Transparent Pricing
+              Preços Simples e Transparentes
             </h2>
             <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-              Choose the plan that's right for your business needs. No hidden fees, no surprises.
+              Escolha o plano ideal para as necessidades do seu negócio. Sem taxas escondidas, sem surpresas.
             </p>
           </div>
           
@@ -249,7 +249,7 @@ const SalesPage: React.FC = () => {
         </motion.div>
       </section>
 
-      {/* CTA Section */}
+      {/* Seção CTA */}
       <section 
         ref={(ref) => addSectionRef('cta', ref as HTMLDivElement)} 
         className="py-20 relative overflow-hidden"
@@ -267,10 +267,10 @@ const SalesPage: React.FC = () => {
           className={`max-w-5xl mx-auto text-center relative z-10 ${breakpoint === "xs" || breakpoint === "sm" ? "px-4" : "px-8"}`}
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
-            Ready to Transform Your Marketing?
+            Pronto para Transformar seu Marketing?
           </h2>
           <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-10">
-            Join thousands of businesses that are already leveraging the power of AI to optimize their marketing campaigns and drive growth.
+            Junte-se a milhares de empresas que já estão aproveitando o poder da IA para otimizar campanhas de marketing e impulsionar o crescimento.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
@@ -278,7 +278,7 @@ const SalesPage: React.FC = () => {
               className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white border-0"
               onClick={() => navigate('/register')}
             >
-              Start for Free <ArrowRight className="ml-2 h-5 w-5" />
+              Comece de Graça <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             <Button 
               size={breakpoint === "xs" ? "xs" : "lg"} 
@@ -286,13 +286,13 @@ const SalesPage: React.FC = () => {
               className="border-purple-400 text-purple-200 hover:bg-purple-900/20"
               onClick={() => navigate('/login')}
             >
-              Login
+              Entrar
             </Button>
           </div>
         </motion.div>
       </section>
 
-      {/* FAQ Section */}
+      {/* Seção de Perguntas Frequentes */}
       <section 
         ref={(ref) => addSectionRef('faq', ref as HTMLDivElement)} 
         className={`py-20 ${breakpoint === "xs" || breakpoint === "sm" ? "px-4" : "px-8 md:px-12 lg:px-24"} bg-[#12121e]`}
@@ -305,10 +305,10 @@ const SalesPage: React.FC = () => {
         >
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
-              Frequently Asked Questions
+              Perguntas Frequentes
             </h2>
             <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-              Find answers to common questions about our platform, pricing, and features.
+              Encontre respostas para perguntas comuns sobre nossa plataforma, preços e recursos.
             </p>
           </div>
           
@@ -316,7 +316,7 @@ const SalesPage: React.FC = () => {
         </motion.div>
       </section>
 
-      {/* Contact Section */}
+      {/* Seção de Contato */}
       <section 
         ref={(ref) => addSectionRef('contact', ref as HTMLDivElement)} 
         className={`py-20 ${breakpoint === "xs" || breakpoint === "sm" ? "px-4" : "px-8 md:px-12 lg:px-24"}`}
@@ -329,10 +329,10 @@ const SalesPage: React.FC = () => {
         >
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">
-              Get in Touch
+              Entre em Contato
             </h2>
             <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-              Have questions or need personalized advice? Our team is here to help.
+              Tem dúvidas ou precisa de consultoria personalizada? Nossa equipe está aqui para ajudar.
             </p>
           </div>
           
@@ -340,7 +340,7 @@ const SalesPage: React.FC = () => {
         </motion.div>
       </section>
 
-      {/* Footer */}
+      {/* Rodapé */}
       <SalesFooter />
     </div>
   );
