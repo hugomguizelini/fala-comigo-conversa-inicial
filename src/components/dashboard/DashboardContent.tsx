@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -52,15 +53,14 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
     navigate("/import");
   };
 
-  const handleResetData = async () => {
+  const handleResetData = async (): Promise<void> => {
     try {
       await deleteCampaignData();
       await deleteMonthlyData();
       await loadData();
-      return true;
     } catch (error) {
       console.error("Error resetting data:", error);
-      return false;
+      toast.error("Erro ao resetar dados. Tente novamente.");
     }
   };
 

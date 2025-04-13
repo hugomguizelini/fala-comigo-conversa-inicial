@@ -64,3 +64,16 @@ export const deleteMonthlyPerformance = async (id: string): Promise<void> => {
     throw error;
   }
 };
+
+// Função adicional para deletar todos os dados mensais
+export const deleteMonthlyData = async (): Promise<void> => {
+  const { error } = await supabase
+    .from('monthly_performance')
+    .delete()
+    .not('id', 'is', null); // Garante que todas as linhas sejam deletadas
+  
+  if (error) {
+    console.error('Error deleting all monthly performance data:', error);
+    throw error;
+  }
+};
