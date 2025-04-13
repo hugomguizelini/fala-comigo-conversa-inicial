@@ -14,16 +14,19 @@ import { resetAllData } from "@/services/dataResetService";
 import { GptAnalysisResult } from "@/hooks/dashboard/useGptAnalysis";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+
 type DashboardContentProps = {
   onOpenAiChat?: (analysis: GptAnalysisResult | null) => void;
   onUpdateChatContext?: (campaigns: any[], monthlyData: any[], metrics: any, issues: any[], suggestions: any) => void;
 };
+
 export default function DashboardContent({
   onOpenAiChat,
   onUpdateChatContext
 }: DashboardContentProps) {
   const [timeRange, setTimeRange] = useState<string>("month");
   const [activeMetric, setActiveMetric] = useState<string>("impressions");
+
   const {
     isLoading,
     isAiLoading,
@@ -40,14 +43,12 @@ export default function DashboardContent({
     lastLoadTime
   } = useDashboardData();
 
-  // Atualizar o contexto do chat quando os dados mudarem
   useEffect(() => {
     if (onUpdateChatContext && campaigns.length > 0) {
       onUpdateChatContext(campaigns, monthlyData, metrics, issues, suggestions);
     }
   }, [campaigns, monthlyData, metrics, issues, suggestions, onUpdateChatContext]);
 
-  // Define the chart data type
   type ChartDataType = {
     name: string;
     impressions: number;
@@ -56,28 +57,23 @@ export default function DashboardContent({
     cost: number;
   }[];
 
-  // Transform data for the chart
   const chartData: ChartDataType = monthlyData.map(item => ({
     name: item.month,
-    // Map 'month' to 'name' for chart labels
     impressions: item.impressions,
     clicks: item.clicks,
     conversions: item.conversions,
     cost: item.cost
   }));
 
-  // Formatação da data da última atualização
   const formattedLastUpdate = lastLoadTime ? format(lastLoadTime, "'Última atualização em' dd 'de' MMMM', às' HH:mm", {
     locale: ptBR
   }) : "Dados não carregados";
 
-  // Função para resetar todos os dados - Corrigida para retornar Promise<void> em vez de Promise<boolean>
   const handleResetData = async (): Promise<void> => {
     if (isLoading) return;
     setIsLoading(true);
     try {
       await resetAllData();
-      // Recarregar a página após limpar os dados para redefini-los
       await loadData();
     } catch (error) {
       console.error("Error resetting data:", error);
@@ -86,34 +82,29 @@ export default function DashboardContent({
     }
   };
 
-  // Função para executar análise e abrir o chat
   const handleAnalyzeAndOpenChat = async () => {
     if (!onOpenAiChat) return;
     try {
-      // Se já temos análise, só abrimos o chat
       if (gptAnalysis) {
         onOpenAiChat(gptAnalysis);
       } else {
-        // Caso contrário, tentamos executar análise e depois abrir o chat
-        onOpenAiChat(null); // Abrir chat sem análise por enquanto
+        onOpenAiChat(null);
       }
     } catch (error) {
       console.error("Erro ao preparar chat:", error);
-      // Abrir chat mesmo sem análise em caso de erro
       onOpenAiChat(null);
     }
   };
 
-  // Função simplificada para apenas abrir o chat
   const handleOpenChat = () => {
     if (onOpenAiChat) {
-      // Passamos a análise existente ou null
       onOpenAiChat(gptAnalysis);
     }
   };
+
   return <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
-        <h1 className="text-3xl font-bold mx-0 px-0 my-[30px] text-purple-600">          Insights com IA</h1>
+        <h1 className="text-3xl font-bold mx-0 px-0 my-[30px] text-purple-600">          Insights com IA</h1>
         
         <div className="flex items-center gap-3 flex-wrap">
           <div className="relative flex items-center">
@@ -139,8 +130,7 @@ export default function DashboardContent({
       
       <MetricsTable metrics={metrics} />
       
-      <GptAnalysisPanel isLoading={isAiLoading} analysis={gptAnalysis} onAnalyze={runAiAnalysis} onChat={handleOpenChat} // Usando a função correta aqui
-    />
+      <GptAnalysisPanel isLoading={isAiLoading} analysis={gptAnalysis} onAnalyze={runAiAnalysis} onChat={handleOpenChat} />
       
       <ProblemsSuggestionsPanel issues={issues || []} suggestions={suggestions || {
       campaign: [],
@@ -157,8 +147,7 @@ export default function DashboardContent({
             </p>
           </div>}
 
-        <StatisticsCard isLoading={isLoading} metrics={metrics} onAnalyzeClick={handleOpenChat} // Usando a função correta aqui
-      />
+        <StatisticsCard isLoading={isLoading} metrics={metrics} onAnalyzeClick={handleOpenChat} />
       </div>
 
       <CampaignsTable campaigns={campaigns} onDataReset={handleResetData} />

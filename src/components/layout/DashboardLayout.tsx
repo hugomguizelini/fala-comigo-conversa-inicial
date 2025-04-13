@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { User, Bell, LogOut, Menu, Settings } from "lucide-react";
@@ -77,9 +78,11 @@ export default function DashboardLayout({
           </div>
         </header>
 
-        {/* Main content */}
-        <main className="flex-1 overflow-auto bg-muted/30">
-          {children}
+        {/* Main content - modificado para ter overflow-y-auto e pb-6 para padding no final */}
+        <main className="flex-1 overflow-y-auto bg-muted/30 pb-6">
+          <div className="container mx-auto px-4">
+            {children}
+          </div>
         </main>
       </div>
     </div>;
