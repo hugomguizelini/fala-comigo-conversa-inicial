@@ -5,32 +5,79 @@ import DashboardContent from "@/components/dashboard/DashboardContent";
 import { toast } from "sonner";
 import AiChatDialog from "@/components/ai/AiChatDialog";
 import { GptAnalysisResult } from "@/hooks/dashboard/useGptAnalysis";
+import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
   const [chatOpen, setChatOpen] = useState(false);
   const [initialAnalysis, setInitialAnalysis] = useState<GptAnalysisResult | null>(null);
   const [isLoadingChat, setIsLoadingChat] = useState(false);
+  const [chatMessages, setChatMessages] = useState<{role: 'user'|'assistant'|'system', content: string}[]>([]);
+  const [chatContext, setChatContext] = useState<any>(null);
   
   // Abrir o chat com análise inicial
   const handleOpenChat = (analysis: GptAnalysisResult | null) => {
     console.log("Abrindo chat com análise:", analysis ? "disponível" : "não disponível");
     setInitialAnalysis(analysis);
     setChatOpen(true);
+    
+    // Armazenar o contexto atual para o chat
+    if (chatContext === null) {
+      // Será preenchido na primeira mensagem
+      setChatContext({});
+    }
   };
 
-  // Função simulada para o envio de mensagem (sem fazer chamadas reais à API)
+  // Função para enviar mensagem para a Edge Function
   const handleSendMessage = async (message: string): Promise<string> => {
     setIsLoadingChat(true);
     
     try {
-      // Simulando uma pequena demora para parecer mais realista
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Preparar o payload com a mensagem e contexto
+      const payload = {
+        type: 'chat',
+        message: message,
+        previousMessages: chatMessages,
+        ...chatContext
+      };
+
+      // Chamar a função edge
+      const { data, error } = await supabase.functions.invoke('gpt-analysis', {
+        body: payload
+      });
       
-      // Resposta simulada
-      return "Esta é uma resposta simulada para demonstrar a interface do chat. Em uma implementação completa, esta mensagem viria da API.";
+      if (error) {
+        console.error("Erro ao processar mensagem:", error);
+        throw new Error(`Falha ao processar mensagem: ${error.message}`);
+      }
+      
+      if (!data.success) {
+        throw new Error(data.error || "Erro desconhecido no processamento da mensagem");
+      }
+      
+      // Adicionar a nova mensagem ao histórico
+      const newUserMessage = { role: 'user' as const, content: message };
+      const newAssistantMessage = { role: 'assistant' as const, content: data.reply };
+      setChatMessages(prev => [...prev, newUserMessage, newAssistantMessage]);
+      
+      return data.reply;
+    } catch (error) {
+      console.error("Erro no chat:", error);
+      toast.error("Ocorreu um erro ao processar sua mensagem. Tente novamente.");
+      return "Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente mais tarde.";
     } finally {
       setIsLoadingChat(false);
     }
+  };
+
+  // Atualizar o contexto do chat quando necessário
+  const updateChatContext = (campaigns, monthlyData, metrics, issues, suggestions) => {
+    setChatContext({
+      campaignData: campaigns,
+      monthlyData: monthlyData,
+      metrics: metrics,
+      issues: issues,
+      suggestions: suggestions
+    });
   };
 
   useEffect(() => {
@@ -56,7 +103,10 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
-      <DashboardContent onOpenAiChat={handleOpenChat} />
+      <DashboardContent 
+        onOpenAiChat={handleOpenChat} 
+        onUpdateChatContext={updateChatContext}
+      />
       
       <AiChatDialog
         open={chatOpen}

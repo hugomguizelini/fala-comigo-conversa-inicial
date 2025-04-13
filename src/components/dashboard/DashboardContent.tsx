@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowUp, Search, Filter, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -20,9 +20,10 @@ import { ptBR } from "date-fns/locale";
 
 type DashboardContentProps = {
   onOpenAiChat?: (analysis: GptAnalysisResult | null) => void;
+  onUpdateChatContext?: (campaigns: any[], monthlyData: any[], metrics: any, issues: any[], suggestions: any) => void;
 };
 
-export default function DashboardContent({ onOpenAiChat }: DashboardContentProps) {
+export default function DashboardContent({ onOpenAiChat, onUpdateChatContext }: DashboardContentProps) {
   const [timeRange, setTimeRange] = useState<string>("month");
   const [activeMetric, setActiveMetric] = useState<string>("impressions");
   
@@ -41,6 +42,13 @@ export default function DashboardContent({ onOpenAiChat }: DashboardContentProps
     isAuthenticated,
     lastLoadTime
   } = useDashboardData();
+
+  // Atualizar o contexto do chat quando os dados mudarem
+  useEffect(() => {
+    if (onUpdateChatContext && campaigns.length > 0) {
+      onUpdateChatContext(campaigns, monthlyData, metrics, issues, suggestions);
+    }
+  }, [campaigns, monthlyData, metrics, issues, suggestions, onUpdateChatContext]);
 
   // Define the chart data type
   type ChartDataType = { 
