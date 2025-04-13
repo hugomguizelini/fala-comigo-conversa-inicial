@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from "react";
 import { InsighorLogo } from "@/components/auth/InsighorLogo";
 import { 
@@ -6,7 +5,7 @@ import {
   LayoutDashboard, Settings, FileText, Monitor,
   CircleUser, BarChart3, LineChart, BrainCircuit, Download,
   LogIn, UserPlus, Home, Bell, MessageSquare, BarChart2,
-  PieChart, ShoppingCart, Search, Calendar
+  PieChart, ShoppingCart, Search, Calendar, Circle
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
