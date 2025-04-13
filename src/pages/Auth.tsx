@@ -1,10 +1,10 @@
 
 import React from 'react';
-import { LoginForm } from '@/components/auth/LoginForm';
-import { RegisterForm } from '@/components/auth/RegisterForm';
-import { RecoveryForm } from '@/components/auth/RecoveryForm';
+import LoginForm from '@/components/auth/LoginForm';
+import RegisterForm from '@/components/auth/RegisterForm';
+import RecoveryForm from '@/components/auth/RecoveryForm';
 import { InsighorLogo } from '@/components/auth/InsighorLogo';
-import { AuthHeadline } from '@/components/auth/AuthHeadline';
+import AuthHeadline from '@/components/auth/AuthHeadline';
 
 // Definir os tipos de props aceitos pelo componente Auth
 interface AuthProps {
