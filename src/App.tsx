@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Architecture from "./pages/Architecture";
+import ImportData from "./pages/ImportData";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -35,6 +36,7 @@ const App = () => {
               <Route path="/dashboard/profile" element={<Index />} />
               <Route path="/dashboard/settings" element={<Index />} />
               <Route path="/dashboard/reports" element={<Index />} />
+              <Route path="/dashboard/import" element={<ImportData />} />
               <Route path="/architecture" element={<Architecture />} />
               <Route path="/login" element={<Auth />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
