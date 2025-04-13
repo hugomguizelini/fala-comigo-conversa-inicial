@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, Bell, LogOut, Menu, Settings, X } from "lucide-react";
@@ -8,6 +7,8 @@ import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import SidebarNav from "./SidebarNav";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useAuthStatus } from "@/hooks/dashboard/useAuthStatus";
+import { toast } from "sonner";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -20,13 +21,20 @@ export default function DashboardLayout({
   const { theme } = useTheme();
   const isMobile = useIsMobile();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  
-  const handleLogout = () => {
-    navigate("/");
+  const { signOut } = useAuthStatus();
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      toast.success("Você foi desconectado com sucesso!");
+      navigate("/");
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+      toast.error("Erro ao fazer logout. Por favor, tente novamente.");
+    }
   };
-  
+
   return <div className="flex h-screen w-full overflow-hidden bg-background">
-      {/* Sidebar - visible on larger screens */}
       <aside className="hidden md:flex w-64 flex-col bg-sidebar border-r border-sidebar-border">
         <div className="p-4">
           <div className="flex items-center gap-2 mb-6">
@@ -39,11 +47,8 @@ export default function DashboardLayout({
         </div>
       </aside>
 
-      {/* Main content area */}
       <div className="flex-1 flex flex-col w-full overflow-hidden">
-        {/* Header */}
         <header className="h-14 sm:h-16 border-b flex items-center justify-between px-3 sm:px-4 bg-background">
-          {/* Mobile menu */}
           <div className="md:hidden">
             <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
               <SheetTrigger asChild>
@@ -82,13 +87,17 @@ export default function DashboardLayout({
             <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-9 sm:w-9">
               <User className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={handleLogout} className="h-8 w-8 sm:h-9 sm:w-9">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={handleLogout} 
+              className="h-8 w-8 sm:h-9 sm:w-9"
+            >
               <LogOut className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
           </div>
         </header>
 
-        {/* Main content - modificado para ter overflow-y-auto e pb-6 para padding no final */}
         <main className="flex-1 overflow-y-auto bg-muted/30 pb-6">
           <div className="container mx-auto px-4">
             {children}
