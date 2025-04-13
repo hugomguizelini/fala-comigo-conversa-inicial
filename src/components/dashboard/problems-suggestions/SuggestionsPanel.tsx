@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Lightbulb, Filter, TrendingUp, Target, ArrowRight, ChevronDown } from "lucide-react";
 import { Suggestion } from "@/types/dataTypes";
 import { SuggestionsList } from "./SuggestionsList";
+import { SuggestionItem } from "./SuggestionItem";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
