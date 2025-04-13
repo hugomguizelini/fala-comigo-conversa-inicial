@@ -115,132 +115,32 @@ serve(async (req) => {
 
 // Nova função para processar mensagens de chat com contexto dos dados
 async function handleChatMessage(requestData, openaiApiKey, corsHeaders) {
-  const { 
-    message, 
-    campaignData, 
-    monthlyData, 
-    metrics, 
-    issues, 
-    suggestions, 
-    previousMessages = [] 
-  } = requestData;
-  
-  // Log de depuração para verificar se os dados de contexto estão chegando
-  console.log("Contexto recebido:", {
-    temMessage: Boolean(message),
-    temCampaignData: Boolean(campaignData && campaignData.length > 0),
-    temMonthlyData: Boolean(monthlyData && monthlyData.length > 0),
-    temMetrics: Boolean(metrics),
-    temIssues: Boolean(issues && issues.length > 0),
-    temSuggestions: Boolean(suggestions),
-    temPreviousMessages: Boolean(previousMessages && previousMessages.length > 0)
-  });
+  const { message, campaignData, monthlyData, metrics, issues, suggestions, previousMessages = [] } = requestData;
   
   // Construir contexto com os dados disponíveis
-  let contextPrompt = `
+  const contextPrompt = `
 Você é um assistente especializado em marketing digital, com foco em análise de campanhas publicitárias.
 
-INSTRUÇÕES IMPORTANTES:
-- Responda sempre em português do Brasil
-- Seja direto e claro nas suas respostas
-- Forneça insights úteis baseados nos dados disponíveis
-- Se solicitado um detalhe específico que não está nos dados, diga que não tem essa informação
-- Use os dados reais para embasar suas respostas
-
 CONTEXTO ATUAL:
-`;
+${campaignData ? `- Dados de ${campaignData.length} campanhas disponíveis` : '- Não há dados de campanhas disponíveis'}
+${monthlyData ? `- Dados de desempenho mensal de ${monthlyData.length} meses disponíveis` : '- Não há dados mensais disponíveis'}
+${issues ? `- ${issues.length} problemas identificados nas campanhas` : '- Nenhum problema identificado'}
+${suggestions ? `- ${suggestions.campaign?.length || 0} sugestões para campanhas, ${suggestions.funnel?.length || 0} sugestões para funil` : '- Nenhuma sugestão disponível'}
 
-  // Adicionar detalhes dos dados disponíveis
-  if (campaignData && campaignData.length > 0) {
-    contextPrompt += `
-- Dados de ${campaignData.length} campanhas disponíveis 
-- Nomes das campanhas: ${campaignData.map(c => c.name).join(', ')}
-- Métricas disponíveis: impressões, cliques, CTR, conversões, CPC, custo total, ROAS
-`;
+SUAS RESPONSABILIDADES:
+1. Ajudar o usuário a entender seus dados de marketing
+2. Sugerir melhorias específicas baseadas nos dados disponíveis
+3. Responder dúvidas sobre estratégias de marketing digital
+4. Fornecer recomendações práticas e acionáveis
+5. Sempre ser útil, profissional e direto nas suas respostas
 
-    // Adicionar algumas estatísticas gerais
-    const totalImpressions = campaignData.reduce((sum, c) => sum + c.impressions, 0);
-    const totalClicks = campaignData.reduce((sum, c) => sum + c.clicks, 0);
-    const totalConversions = campaignData.reduce((sum, c) => sum + c.conversions, 0);
-    const avgCTR = totalImpressions > 0 ? ((totalClicks / totalImpressions) * 100).toFixed(2) : "N/A";
-    
-    contextPrompt += `
-- Métricas totais: ${totalImpressions} impressões, ${totalClicks} cliques, ${totalConversions} conversões, CTR médio de ${avgCTR}%
+REGRAS:
+- Se você não sabe algo, admita isso claramente
+- Concentre-se em dados e métricas reais, evite generalidades quando dados específicos estiverem disponíveis
+- Priorize sugestões de alto impacto que possam trazer resultados rápidos
+- Sempre indique o raciocínio por trás das suas recomendações
+- Dê exemplos concretos e instruções passo a passo quando possível
 `;
-
-    // Adicionar informações sobre as campanhas com melhor e pior desempenho
-    if (campaignData.length > 1) {
-      const sortedByCTR = [...campaignData].sort((a, b) => {
-        const ctrA = parseFloat(a.ctr.replace('%', ''));
-        const ctrB = parseFloat(b.ctr.replace('%', ''));
-        return ctrB - ctrA;
-      });
-      
-      contextPrompt += `
-- Campanha com melhor CTR: ${sortedByCTR[0].name} (${sortedByCTR[0].ctr})
-- Campanha com pior CTR: ${sortedByCTR[sortedByCTR.length - 1].name} (${sortedByCTR[sortedByCTR.length - 1].ctr})
-`;
-    }
-  } else {
-    contextPrompt += `- Não há dados de campanhas disponíveis\n`;
-  }
-  
-  if (monthlyData && monthlyData.length > 0) {
-    contextPrompt += `- Dados de desempenho mensal de ${monthlyData.length} meses disponíveis\n`;
-    
-    // Adicionar tendências se houver dados suficientes
-    if (monthlyData.length > 1) {
-      // Ordenar por data
-      const sortedMonthly = [...monthlyData].sort((a, b) => {
-        if (a.year !== b.year) return a.year - b.year;
-        const monthOrder = { 'jan': 0, 'fev': 1, 'mar': 2, 'abr': 3, 'mai': 4, 'jun': 5, 'jul': 6, 'ago': 7, 'set': 8, 'out': 9, 'nov': 10, 'dez': 11 };
-        return monthOrder[a.month.toLowerCase().substring(0, 3)] - monthOrder[b.month.toLowerCase().substring(0, 3)];
-      });
-      
-      const first = sortedMonthly[0];
-      const last = sortedMonthly[sortedMonthly.length - 1];
-      
-      const clicksTrend = last.clicks > first.clicks ? "crescente" : "decrescente";
-      const conversionsTrend = last.conversions > first.conversions ? "crescente" : "decrescente";
-      
-      contextPrompt += `
-- Tendência de cliques: ${clicksTrend}
-- Tendência de conversões: ${conversionsTrend}
-`;
-    }
-  } else {
-    contextPrompt += `- Não há dados mensais disponíveis\n`;
-  }
-  
-  if (issues && issues.length > 0) {
-    contextPrompt += `- ${issues.length} problemas identificados nas campanhas:\n`;
-    issues.forEach(issue => {
-      contextPrompt += `  * ${issue.issue}: ${issue.description}\n`;
-    });
-  } else {
-    contextPrompt += `- Nenhum problema identificado\n`;
-  }
-  
-  if (suggestions) {
-    const campaignSuggestions = suggestions.campaign || [];
-    const funnelSuggestions = suggestions.funnel || [];
-    
-    if (campaignSuggestions.length > 0 || funnelSuggestions.length > 0) {
-      contextPrompt += `- Sugestões disponíveis:\n`;
-      
-      campaignSuggestions.forEach(s => {
-        contextPrompt += `  * Para campanhas: ${s.title} - ${s.description}\n`;
-      });
-      
-      funnelSuggestions.forEach(s => {
-        contextPrompt += `  * Para funil: ${s.title} - ${s.description}\n`;
-      });
-    } else {
-      contextPrompt += `- Nenhuma sugestão disponível\n`;
-    }
-  } else {
-    contextPrompt += `- Nenhuma sugestão disponível\n`;
-  }
 
   // Formatar histórico de mensagens para o API
   const formattedMessages = [
@@ -338,16 +238,11 @@ function generateFallbackAnalysis(campaignData, monthlyData) {
       totalImpressions += campaign.impressions || 0;
       totalClicks += campaign.clicks || 0;
       totalConversions += campaign.conversions || 0;
-      totalCost += parseFloat(campaign.total_cost.replace(/[^0-9.-]+/g,"")) || 0;
+      totalCost += campaign.total_cost || 0;
     });
     
-    // Identificar melhores e piores campanhas por CTR
-    const sortedCampaigns = [...campaignData].sort((a, b) => {
-      const ctrA = parseFloat(a.ctr.replace('%', ''));
-      const ctrB = parseFloat(b.ctr.replace('%', ''));
-      return ctrB - ctrA;
-    });
-    
+    // Identificar melhores e piores campanhas por ROAS se disponível
+    const sortedCampaigns = [...campaignData].sort((a, b) => (b.roas || 0) - (a.roas || 0));
     bestCampaigns = sortedCampaigns.slice(0, 2).map(c => c.name);
     worstCampaigns = sortedCampaigns.slice(-2).map(c => c.name);
   }
@@ -356,7 +251,7 @@ function generateFallbackAnalysis(campaignData, monthlyData) {
   return `# Análise de Campanhas (Modo Offline)
 
 ## Resumo Geral
-Analisamos ${campaignData ? campaignData.length : 0} campanhas com um total de ${totalImpressions} impressões, ${totalClicks} cliques e ${totalConversions} conversões. O custo total foi de R$ ${totalCost.toFixed(2)}.
+Analisamos ${campaignData ? campaignData.length : 0} campanhas com um total de ${totalImpressions} impressões, ${totalClicks} cliques e ${totalConversions} conversões. O custo total foi de ${totalCost.toFixed(2)}.
 
 ## Problemas Identificados
 - Algumas campanhas podem estar com desempenho abaixo do ideal
@@ -424,6 +319,6 @@ Forneça uma análise detalhada cobrindo:
 4. Ações recomendadas em ordem de prioridade
 5. Tendências observadas nos dados mensais
 
-Estruture sua resposta em seções claras e responda em português do Brasil.
+Estruture sua resposta em seções claras.
 `;
 }

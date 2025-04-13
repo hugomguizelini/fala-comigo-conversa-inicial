@@ -53,7 +53,7 @@ const GptAnalysisPanel: React.FC<GptAnalysisPanelProps> = ({
           </div>
         ) : (
           <div className="space-y-6">
-            <Tabs defaultValue="resumo">
+            <Tabs defaultValue="resumo" className="w-full">
               <TabsList className="grid grid-cols-5 mb-4">
                 <TabsTrigger value="resumo">Resumo</TabsTrigger>
                 <TabsTrigger value="problemas">Problemas</TabsTrigger>

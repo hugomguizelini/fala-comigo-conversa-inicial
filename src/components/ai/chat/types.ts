@@ -15,12 +15,3 @@ export type AiChatDialogProps = {
   isLoading: boolean;
   fallbackMode?: boolean;
 };
-
-// Adicionando um tipo para o contexto do chat
-export type ChatContext = {
-  campaignData?: any[] | null;
-  monthlyData?: any[] | null;
-  metrics?: any | null;
-  issues?: any[] | null;
-  suggestions?: any | null;
-};
