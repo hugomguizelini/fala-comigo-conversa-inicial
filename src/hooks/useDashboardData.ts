@@ -68,7 +68,9 @@ export const useDashboardData = () => {
   }, []);
   
   useEffect(() => {
-    updateMetrics();
+    if (campaigns && campaigns.length > 0) {
+      updateMetrics();
+    }
   }, [campaigns]);
 
   return {

@@ -16,32 +16,42 @@ const StatisticsCard = ({ isLoading, metrics, onAnalyzeClick }: StatisticsCardPr
   const calculateEfficiencyScore = () => {
     if (isLoading) return "...";
     
-    const ctrValue = parseFloat(metrics.ctr.value.replace('%', ''));
-    const cpcValue = parseFloat(metrics.cpc.value.replace('R$ ', '').replace(',', '.'));
-    
-    // Cálculo simplificado para score de eficiência
-    // Quanto maior o CTR e menor o CPC, melhor a eficiência
-    let score = 0;
-    
-    if (ctrValue > 2.0) score += 40; // Bom CTR
-    else if (ctrValue > 1.0) score += 20; // CTR médio
-    else score += 10; // CTR baixo
-    
-    if (cpcValue < 1.0) score += 40; // CPC excelente
-    else if (cpcValue < 2.5) score += 30; // CPC bom
-    else if (cpcValue < 5.0) score += 20; // CPC regular
-    else score += 10; // CPC alto
-    
-    // Classificação
-    let rating = "Regular";
-    if (score >= 60) rating = "Excelente";
-    else if (score >= 50) rating = "Ótimo";
-    else if (score >= 40) rating = "Bom";
-    
-    return { score, rating };
+    try {
+      const ctrValue = parseFloat((metrics?.ctr?.value || "0%").replace('%', ''));
+      const cpcValue = parseFloat((metrics?.cpc?.value || "R$ 0,00").replace('R$ ', '').replace(',', '.'));
+      
+      // Cálculo simplificado para score de eficiência
+      // Quanto maior o CTR e menor o CPC, melhor a eficiência
+      let score = 0;
+      
+      if (ctrValue > 2.0) score += 40; // Bom CTR
+      else if (ctrValue > 1.0) score += 20; // CTR médio
+      else score += 10; // CTR baixo
+      
+      if (cpcValue < 1.0) score += 40; // CPC excelente
+      else if (cpcValue < 2.5) score += 30; // CPC bom
+      else if (cpcValue < 5.0) score += 20; // CPC regular
+      else score += 10; // CPC alto
+      
+      // Classificação
+      let rating = "Regular";
+      if (score >= 60) rating = "Excelente";
+      else if (score >= 50) rating = "Ótimo";
+      else if (score >= 40) rating = "Bom";
+      
+      return { score, rating };
+    } catch (error) {
+      console.error("Erro ao calcular eficiência:", error);
+      return { score: 0, rating: "Indisponível" };
+    }
   };
   
   const efficiencyData = calculateEfficiencyScore();
+
+  const safeMetrics = {
+    ctr: { value: metrics?.ctr?.value || "0%", variation: metrics?.ctr?.variation || "0%" },
+    cpc: { value: metrics?.cpc?.value || "R$ 0,00", variation: metrics?.cpc?.variation || "0%" }
+  };
 
   return (
     <Card>
@@ -76,12 +86,12 @@ const StatisticsCard = ({ isLoading, metrics, onAnalyzeClick }: StatisticsCardPr
             <div className="flex items-center">
               <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
               <ChevronUp className="h-3 w-3 text-green-500 mr-1" />
-              <span className="text-green-500">{metrics.ctr.value}</span>
+              <span className="text-green-500">{safeMetrics.ctr.value}</span>
             </div>
             <div className="flex items-center">
               <span className="w-2 h-2 bg-amber-500 rounded-full mr-1"></span>
               <ChevronDown className="h-3 w-3 text-amber-500 mr-1" />
-              <span className="text-amber-500">{metrics.cpc.value}</span>
+              <span className="text-amber-500">{safeMetrics.cpc.value}</span>
             </div>
           </div>
         </div>
