@@ -29,7 +29,14 @@ export default function DashboardContent() {
   } = useDashboardData();
 
   // Transform monthlyData to the format expected by PerformanceChart
-  const chartData = monthlyData.length > 0 
+  // Explicitly type the result as the expected chart data type
+  const chartData: { 
+    name: string; 
+    impressions: number; 
+    clicks: number; 
+    conversions: number; 
+    cost: number 
+  }[] = monthlyData.length > 0 
     ? monthlyData.map(item => ({
         name: item.month, // Map 'month' to 'name' for chart labels
         impressions: item.impressions,
