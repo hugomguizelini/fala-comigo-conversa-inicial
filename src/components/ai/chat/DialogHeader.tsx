@@ -29,8 +29,10 @@ const DialogHeader: React.FC<DialogHeaderProps> = ({ onClose, fallbackMode }) =>
         size="icon" 
         onClick={onClose}
         className="h-8 w-8 absolute right-4 top-4"
+        aria-label="Fechar"
       >
         <X className="h-4 w-4" />
+        <span className="sr-only">Fechar</span>
       </Button>
     </UIDialogHeader>
   );

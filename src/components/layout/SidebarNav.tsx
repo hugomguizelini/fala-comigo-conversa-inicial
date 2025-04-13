@@ -44,13 +44,13 @@ export default function SidebarNav() {
           key={item.href}
           to={item.href}
           className={cn(
-            "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+            "flex items-center gap-4 px-4 py-2 rounded-md text-sm font-medium transition-colors",
             pathname === item.href || (pathname === "/" && item.href === "/")
               ? "bg-primary/10 text-primary"
               : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
           )}
         >
-          <div className="w-5 flex justify-center">
+          <div className="flex-shrink-0">
             {item.icon}
           </div>
           <span className="truncate">{item.title}</span>
