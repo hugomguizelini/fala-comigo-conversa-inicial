@@ -1,14 +1,19 @@
 
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStatus } from '@/hooks/dashboard/useAuthStatus';
 
 const RedirectToDashboard = () => {
   const navigate = useNavigate();
+  const { isAuthenticated, isLoading } = useAuthStatus();
 
   useEffect(() => {
-    // Redireciona diretamente para o dashboard no MVP
-    navigate('/');
-  }, [navigate]);
+    if (!isLoading) {
+      // Se estiver autenticado, redireciona para o dashboard
+      // Se não estiver, redireciona para a página de login
+      navigate(isAuthenticated ? '/dashboard' : '/login');
+    }
+  }, [navigate, isAuthenticated, isLoading]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
