@@ -73,8 +73,8 @@ export default function DashboardContent({ onOpenAiChat, onUpdateChatContext }: 
     ? format(lastLoadTime, "'Última atualização em' dd 'de' MMMM', às' HH:mm", {locale: ptBR})
     : "Dados não carregados";
 
-  // Função para resetar todos os dados
-  const handleResetData = async () => {
+  // Função para resetar todos os dados - Corrigida para retornar Promise<void> em vez de Promise<boolean>
+  const handleResetData = async (): Promise<void> => {
     if (isLoading) return;
     
     setIsLoading(true);
