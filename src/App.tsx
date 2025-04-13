@@ -12,6 +12,7 @@ import Dashboard from './pages/Dashboard';
 import Reports from './pages/Reports';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
+import SalesPage from './pages/SalesPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import PublicRoute from './components/auth/PublicRoute';
 import RedirectToDashboard from './pages/RedirectToDashboard';
@@ -33,8 +34,11 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <Router>
           <Routes>
-            {/* Rota inicial que determina para onde redirecionar */}
-            <Route path="/" element={<RedirectToDashboard />} />
+            {/* Sales page as the entry point */}
+            <Route path="/" element={<SalesPage />} />
+
+            {/* Authentication check and redirect route */}
+            <Route path="/dashboard-redirect" element={<RedirectToDashboard />} />
 
             {/* Rotas públicas - acessíveis sem autenticação */}
             <Route 
