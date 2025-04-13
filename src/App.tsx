@@ -23,6 +23,7 @@ function App() {
           <Routes>
             {/* Para o MVP, substituímos a rota de login pelo redirecionamento */}
             <Route path="/login" element={<RedirectToDashboard />} />
+            {/* Ajuste para o Auth component, passando a prop dentro do elemento Auth */}
             <Route path="/register" element={<Auth type="register" />} />
             <Route path="/recovery" element={<Auth type="recovery" />} />
             
