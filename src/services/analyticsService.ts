@@ -1,7 +1,5 @@
 
 import { CampaignData, MonthlyPerformance, Issue, Suggestion } from "@/types/dataTypes";
-import { insertIssue, getIssues } from "./issuesService";
-import { insertSuggestion, getSuggestions } from "./suggestionsService";
 
 // Função para detectar campanhas com baixo CTR
 export const detectLowCTRCampaigns = async (campaigns: CampaignData[]): Promise<Issue[]> => {
@@ -22,7 +20,7 @@ export const detectLowCTRCampaigns = async (campaigns: CampaignData[]): Promise<
     };
     
     issues.push(issue);
-    await insertIssue(issue).catch(err => console.error("Erro ao salvar problema:", err));
+    // Removemos a tentativa de inserir no banco para evitar erros de RLS
   }
   
   return issues;
@@ -54,7 +52,7 @@ export const detectBudgetDistributionIssues = async (campaigns: CampaignData[]):
     };
     
     issues.push(issue);
-    await insertIssue(issue).catch(err => console.error("Erro ao salvar problema:", err));
+    // Removemos a tentativa de inserir no banco para evitar erros de RLS
   }
   
   return issues;
@@ -90,7 +88,7 @@ export const detectNegativeTrends = async (performanceData: MonthlyPerformance[]
     };
     
     issues.push(issue);
-    await insertIssue(issue).catch(err => console.error("Erro ao salvar problema:", err));
+    // Removemos a tentativa de inserir no banco para evitar erros de RLS
   }
   
   return issues;
@@ -116,7 +114,7 @@ export const generateCampaignSuggestions = async (campaigns: CampaignData[]): Pr
     };
     
     suggestions.push(suggestion);
-    await insertSuggestion(suggestion).catch(err => console.error("Erro ao salvar sugestão:", err));
+    // Removemos a tentativa de inserir no banco para evitar erros de RLS
   }
   
   // Sugestões de teste A/B para campanhas de médio desempenho
@@ -135,7 +133,7 @@ export const generateCampaignSuggestions = async (campaigns: CampaignData[]): Pr
     };
     
     suggestions.push(suggestion);
-    await insertSuggestion(suggestion).catch(err => console.error("Erro ao salvar sugestão:", err));
+    // Removemos a tentativa de inserir no banco para evitar erros de RLS
   }
   
   return suggestions;
@@ -164,7 +162,7 @@ export const generateFunnelSuggestions = async (performanceData: MonthlyPerforma
     };
     
     suggestions.push(suggestion);
-    await insertSuggestion(suggestion).catch(err => console.error("Erro ao salvar sugestão:", err));
+    // Removemos a tentativa de inserir no banco para evitar erros de RLS
     
     // Sugestão adicional para páginas de captura
     const capturePageSuggestion: Suggestion = {
@@ -176,7 +174,7 @@ export const generateFunnelSuggestions = async (performanceData: MonthlyPerforma
     };
     
     suggestions.push(capturePageSuggestion);
-    await insertSuggestion(capturePageSuggestion).catch(err => console.error("Erro ao salvar sugestão:", err));
+    // Removemos a tentativa de inserir no banco para evitar erros de RLS
   }
   
   return suggestions;
@@ -219,23 +217,8 @@ export const getAnalytics = async (campaigns: CampaignData[], performanceData: M
   };
 }> => {
   try {
-    // Primeiro, tente buscar problemas e sugestões existentes
-    const existingIssues = await getIssues();
-    const existingSuggestions = await getSuggestions();
-    
-    // Se não houver dados existentes, execute a análise
-    if (existingIssues.length === 0 || existingSuggestions.length === 0) {
-      return await analyzeAllData(campaigns, performanceData);
-    }
-    
-    // Caso contrário, organize os dados existentes
-    return {
-      issues: existingIssues,
-      suggestions: {
-        campaign: existingSuggestions.filter(s => s.type === 'campaign'),
-        funnel: existingSuggestions.filter(s => s.type === 'funnel')
-      }
-    };
+    // Como estamos enfrentando problemas com RLS, vamos sempre executar a análise sob demanda
+    return await analyzeAllData(campaigns, performanceData);
   } catch (error) {
     console.error("Erro ao buscar ou analisar dados:", error);
     // Em caso de erro, retorne dados vazios

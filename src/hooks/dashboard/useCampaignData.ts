@@ -2,12 +2,9 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { toast } from "sonner";
-import { 
-  getCampaigns, 
-  getMonthlyPerformance,
-  CampaignData,
-  MonthlyPerformance
-} from "@/services/supabaseService";
+import { getCampaigns } from "@/services/campaignService";
+import { getMonthlyPerformance } from "@/services/performanceService";
+import { CampaignData, MonthlyPerformance } from "@/types/dataTypes";
 
 export const useCampaignData = () => {
   const { toast: toastLegacy } = useToast();
