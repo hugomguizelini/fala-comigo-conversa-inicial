@@ -16,6 +16,7 @@ import {
   Legend
 } from "recharts";
 import { ChartContainer } from "@/components/ui/chart";
+import { useIsMobile, useIsSmallMobile } from "@/hooks/use-mobile";
 
 interface ReportsPerformanceChartProps {
   chartType: string;
@@ -26,6 +27,9 @@ const ReportsPerformanceChart: React.FC<ReportsPerformanceChartProps> = ({
   chartType, 
   dateRange 
 }) => {
+  const isMobile = useIsMobile();
+  const isSmallMobile = useIsSmallMobile();
+  
   // Dados simulados para os gráficos
   const weeklyData = [
     { name: "Seg", impressions: 8400, clicks: 240, conversions: 20, cost: 680 },
@@ -86,6 +90,18 @@ const ReportsPerformanceChart: React.FC<ReportsPerformanceChartProps> = ({
     { name: 'Custo', value: chartData.reduce((sum, item) => sum + item.cost, 0) },
   ];
 
+  // Apenas mostrar os campos relevantes em mobile para evitar sobrecarregar o gráfico
+  const getVisibleKeys = () => {
+    if (isSmallMobile) {
+      return ['impressions', 'clicks']; // Apenas 2 métricas para telas muito pequenas
+    } else if (isMobile) {
+      return ['impressions', 'clicks', 'conversions']; // 3 métricas para telas móveis
+    }
+    return ['impressions', 'clicks', 'conversions', 'cost']; // Todas as métricas para desktop
+  };
+
+  const visibleKeys = getVisibleKeys();
+  
   const chartConfig = {
     impressions: { label: "Impressões", theme: { light: "#8B5CF6", dark: "#A78BFA" } },
     clicks: { label: "Cliques", theme: { light: "#EC4899", dark: "#F472B6" } },
@@ -93,77 +109,161 @@ const ReportsPerformanceChart: React.FC<ReportsPerformanceChartProps> = ({
     cost: { label: "Custo", theme: { light: "#F59E0B", dark: "#FBBF24" } },
   };
   
+  const chartHeight = isSmallMobile ? 200 : isMobile ? 250 : 300;
+  
   // Renderiza o gráfico adequado com base no tipo selecionado
   const renderChart = () => {
     switch(chartType) {
       case "line":
         return (
-          <ChartContainer config={chartConfig} className="h-80">
+          <ChartContainer config={chartConfig} className={`h-[${chartHeight}px]`}>
             <LineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip contentStyle={{ backgroundColor: 'white', borderRadius: '8px' }} />
-              <Legend />
-              <Line type="monotone" dataKey="impressions" stroke={colors[0]} strokeWidth={2} />
-              <Line type="monotone" dataKey="clicks" stroke={colors[1]} strokeWidth={2} />
-              <Line type="monotone" dataKey="conversions" stroke={colors[2]} strokeWidth={2} />
-              <Line type="monotone" dataKey="cost" stroke={colors[3]} strokeWidth={2} />
+              <XAxis 
+                dataKey="name" 
+                tick={{ fontSize: isSmallMobile ? 10 : 12 }}
+                height={isSmallMobile ? 20 : undefined}
+              />
+              <YAxis tick={{ fontSize: isSmallMobile ? 10 : 12 }} />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: 'white', 
+                  borderRadius: '8px',
+                  fontSize: isSmallMobile ? '10px' : undefined 
+                }}
+              />
+              <Legend 
+                verticalAlign={isSmallMobile ? "top" : "bottom"}
+                height={isSmallMobile ? 30 : undefined}
+                wrapperStyle={{ fontSize: isSmallMobile ? '10px' : undefined }}
+              />
+              {visibleKeys.includes('impressions') && (
+                <Line type="monotone" dataKey="impressions" stroke={colors[0]} strokeWidth={2} />
+              )}
+              {visibleKeys.includes('clicks') && (
+                <Line type="monotone" dataKey="clicks" stroke={colors[1]} strokeWidth={2} />
+              )}
+              {visibleKeys.includes('conversions') && (
+                <Line type="monotone" dataKey="conversions" stroke={colors[2]} strokeWidth={2} />
+              )}
+              {visibleKeys.includes('cost') && (
+                <Line type="monotone" dataKey="cost" stroke={colors[3]} strokeWidth={2} />
+              )}
             </LineChart>
           </ChartContainer>
         );
       case "bar":
         return (
-          <ChartContainer config={chartConfig} className="h-80">
+          <ChartContainer config={chartConfig} className={`h-[${chartHeight}px]`}>
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip contentStyle={{ backgroundColor: 'white', borderRadius: '8px' }} />
-              <Legend />
-              <Bar dataKey="impressions" fill={colors[0]} />
-              <Bar dataKey="clicks" fill={colors[1]} />
-              <Bar dataKey="conversions" fill={colors[2]} />
-              <Bar dataKey="cost" fill={colors[3]} />
+              <XAxis 
+                dataKey="name" 
+                tick={{ fontSize: isSmallMobile ? 10 : 12 }}
+                height={isSmallMobile ? 20 : undefined}
+              />
+              <YAxis tick={{ fontSize: isSmallMobile ? 10 : 12 }} />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: 'white', 
+                  borderRadius: '8px',
+                  fontSize: isSmallMobile ? '10px' : undefined 
+                }} 
+              />
+              <Legend 
+                verticalAlign={isSmallMobile ? "top" : "bottom"}
+                height={isSmallMobile ? 30 : undefined}
+                wrapperStyle={{ fontSize: isSmallMobile ? '10px' : undefined }}
+              />
+              {visibleKeys.includes('impressions') && (
+                <Bar dataKey="impressions" fill={colors[0]} />
+              )}
+              {visibleKeys.includes('clicks') && (
+                <Bar dataKey="clicks" fill={colors[1]} />
+              )}
+              {visibleKeys.includes('conversions') && (
+                <Bar dataKey="conversions" fill={colors[2]} />
+              )}
+              {visibleKeys.includes('cost') && (
+                <Bar dataKey="cost" fill={colors[3]} />
+              )}
             </BarChart>
           </ChartContainer>
         );
       case "pie":
+        // Filtrar pieData para incluir apenas as keys visíveis
+        const filteredPieData = pieData.filter((item, index) => 
+          visibleKeys.includes(['impressions', 'clicks', 'conversions', 'cost'][index])
+        );
+        
         return (
-          <ChartContainer config={chartConfig} className="h-80">
+          <ChartContainer config={chartConfig} className={`h-[${chartHeight}px]`}>
             <PieChart>
               <Pie
-                data={pieData}
+                data={filteredPieData}
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                outerRadius={100}
+                outerRadius={isSmallMobile ? 60 : isMobile ? 80 : 100}
                 fill="#8884d8"
                 dataKey="value"
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                label={({ name, percent }) => 
+                  isSmallMobile ? `${percent > 0.1 ? name.substring(0, 1) : ''}` : 
+                  `${name} ${(percent * 100).toFixed(0)}%`
+                }
               >
-                {pieData.map((entry, index) => (
+                {filteredPieData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
                 ))}
               </Pie>
-              <Tooltip contentStyle={{ backgroundColor: 'white', borderRadius: '8px' }} />
-              <Legend />
+              <Tooltip contentStyle={{ 
+                backgroundColor: 'white', 
+                borderRadius: '8px',
+                fontSize: isSmallMobile ? '10px' : undefined 
+              }} />
+              <Legend 
+                verticalAlign="bottom"
+                height={isSmallMobile ? 30 : undefined}
+                wrapperStyle={{ fontSize: isSmallMobile ? '10px' : undefined }}
+              />
             </PieChart>
           </ChartContainer>
         );
       default:
         return (
-          <ChartContainer config={chartConfig} className="h-80">
+          <ChartContainer config={chartConfig} className={`h-[${chartHeight}px]`}>
             <LineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip contentStyle={{ backgroundColor: 'white', borderRadius: '8px' }} />
-              <Legend />
-              <Line type="monotone" dataKey="impressions" stroke={colors[0]} strokeWidth={2} />
-              <Line type="monotone" dataKey="clicks" stroke={colors[1]} strokeWidth={2} />
-              <Line type="monotone" dataKey="conversions" stroke={colors[2]} strokeWidth={2} />
-              <Line type="monotone" dataKey="cost" stroke={colors[3]} strokeWidth={2} />
+              <XAxis 
+                dataKey="name" 
+                tick={{ fontSize: isSmallMobile ? 10 : 12 }}
+                height={isSmallMobile ? 20 : undefined} 
+              />
+              <YAxis tick={{ fontSize: isSmallMobile ? 10 : 12 }} />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: 'white', 
+                  borderRadius: '8px',
+                  fontSize: isSmallMobile ? '10px' : undefined 
+                }} 
+              />
+              <Legend 
+                verticalAlign={isSmallMobile ? "top" : "bottom"}
+                height={isSmallMobile ? 30 : undefined}
+                wrapperStyle={{ fontSize: isSmallMobile ? '10px' : undefined }}
+              />
+              {visibleKeys.includes('impressions') && (
+                <Line type="monotone" dataKey="impressions" stroke={colors[0]} strokeWidth={2} />
+              )}
+              {visibleKeys.includes('clicks') && (
+                <Line type="monotone" dataKey="clicks" stroke={colors[1]} strokeWidth={2} />
+              )}
+              {visibleKeys.includes('conversions') && (
+                <Line type="monotone" dataKey="conversions" stroke={colors[2]} strokeWidth={2} />
+              )}
+              {visibleKeys.includes('cost') && (
+                <Line type="monotone" dataKey="cost" stroke={colors[3]} strokeWidth={2} />
+              )}
             </LineChart>
           </ChartContainer>
         );
