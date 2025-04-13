@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { ArrowUp, Search, Filter, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -167,7 +168,7 @@ export default function DashboardContent({ onOpenAiChat }: DashboardContentProps
         <StatisticsCard 
           isLoading={isLoading} 
           metrics={metrics} 
-          onAnalyzeClick={handleAnalyzeAndOpenChat}
+          onAnalyzeClick={handleOpenChat}
         />
       </div>
 
