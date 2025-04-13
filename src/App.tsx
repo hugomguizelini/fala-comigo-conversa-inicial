@@ -27,6 +27,9 @@ function App() {
             <Route path="/register" element={<Auth type="register" />} />
             <Route path="/recovery" element={<Auth type="recovery" />} />
             
+            {/* Rota de login explícita para acessar a página de autenticação */}
+            <Route path="/auth" element={<Auth type="login" />} />
+            
             {/* Rotas do dashboard - sem proteção para o MVP */}
             <Route path="/" element={<Index />} />
             <Route path="/import" element={<ImportData />} />

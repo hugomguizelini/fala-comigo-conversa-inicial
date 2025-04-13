@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import LoginForm from '@/components/auth/LoginForm';
 import RegisterForm from '@/components/auth/RegisterForm';
 import RecoveryForm from '@/components/auth/RecoveryForm';
@@ -11,18 +11,39 @@ interface AuthProps {
   type: 'login' | 'register' | 'recovery';
 }
 
-const Auth: React.FC<AuthProps> = ({ type }) => {
+const Auth: React.FC<AuthProps> = ({ type: initialType }) => {
+  // Estado para controlar qual formulário mostrar
+  const [currentType, setCurrentType] = useState<'login' | 'register' | 'recovery'>(initialType);
+  
+  // Funções de navegação entre formulários
+  const handleNavigateToLogin = () => setCurrentType('login');
+  const handleNavigateToRegister = () => setCurrentType('register');
+  const handleNavigateToRecovery = () => setCurrentType('recovery');
+
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
       {/* Seção de formulário - menor em telas grandes */}
       <div className="w-full lg:w-1/2 p-6 lg:p-12 flex flex-col justify-center">
         <div className="mx-auto w-full max-w-md">
           <InsighorLogo className="mb-8 h-12 w-auto" />
-          <AuthHeadline type={type} />
+          <AuthHeadline type={currentType} />
           
-          {type === 'login' && <LoginForm />}
-          {type === 'register' && <RegisterForm />}
-          {type === 'recovery' && <RecoveryForm />}
+          {currentType === 'login' && (
+            <LoginForm 
+              onRegisterClick={handleNavigateToRegister} 
+              onRecoveryClick={handleNavigateToRecovery} 
+            />
+          )}
+          {currentType === 'register' && (
+            <RegisterForm 
+              onLoginClick={handleNavigateToLogin} 
+            />
+          )}
+          {currentType === 'recovery' && (
+            <RecoveryForm 
+              onLoginClick={handleNavigateToLogin} 
+            />
+          )}
         </div>
       </div>
 
