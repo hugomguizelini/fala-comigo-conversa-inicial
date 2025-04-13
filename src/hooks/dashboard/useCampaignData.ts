@@ -34,7 +34,6 @@ export const useCampaignData = () => {
       };
     } catch (error) {
       console.error("Error loading campaign data:", error);
-      toast.error("Não foi possível carregar os dados de campanhas.");
       return { success: false, campaigns: [], monthlyData: [] };
     } finally {
       setIsLoading(false);

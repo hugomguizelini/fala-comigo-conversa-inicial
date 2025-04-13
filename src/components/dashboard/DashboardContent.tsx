@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { ArrowUp, Search, Filter, Download, Loader2, Trash2 } from "lucide-react";
+import { ArrowUp, Search, Filter, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import { MetricsTable } from "./MetricsTable";
@@ -12,7 +11,6 @@ import FileUploadCard from "./FileUploadCard";
 import FeatureCards from "./FeatureCards";
 import GptAnalysisPanel from "./GptAnalysisPanel";
 import { useDashboardData } from "@/hooks/useDashboardData";
-import { Issue, Suggestion } from "@/types/dataTypes";
 import { resetAllData } from "@/services/dataResetService";
 
 import { format } from "date-fns";

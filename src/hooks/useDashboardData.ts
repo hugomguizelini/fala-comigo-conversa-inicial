@@ -30,9 +30,12 @@ export const useDashboardData = () => {
     if (isLoading) return;
     
     setIsLoading(true);
+    // Armazenar o ID do toast para poder removê-lo depois
+    const loadingToastId = toast.loading("Carregando dados...", {
+      duration: 30000, // timeout máximo para garantir que o toast não fique preso
+    });
+    
     try {
-      toast.loading("Carregando dados...");
-      
       // Carregar dados independentemente do status de autenticação para o MVP
       const campaignResult = await loadCampaignData();
       
@@ -44,22 +47,42 @@ export const useDashboardData = () => {
         
         setLastLoadTime(new Date());
         
-        toast.success("Dados atualizados com sucesso!");
+        // Remover o toast de carregamento e mostrar o de sucesso
+        toast.dismiss(loadingToastId);
+        toast.success("Dados atualizados com sucesso!", { duration: 3000 });
+      } else {
+        // Remover o toast de carregamento e mostrar o de erro
+        toast.dismiss(loadingToastId);
+        toast.error("Erro ao carregar dados.", { duration: 3000 });
       }
     } catch (error) {
       console.error("Error loading dashboard data:", error);
-      toast.error("Erro ao carregar dados. Tente novamente mais tarde.");
+      // Remover o toast de carregamento e mostrar o de erro
+      toast.dismiss(loadingToastId);
+      toast.error("Erro ao carregar dados. Tente novamente mais tarde.", { duration: 3000 });
     } finally {
       setIsLoading(false);
     }
   };
 
   const runAiAnalysis = async () => {
+    const analysisToastId = toast.loading("Executando análise de IA...", { 
+      duration: 30000 // timeout máximo para garantir que o toast não fique preso
+    });
+    
     try {
-      return await runGptAnalysis(campaigns, monthlyData);
+      const result = await runGptAnalysis(campaigns, monthlyData);
+      toast.dismiss(analysisToastId);
+      
+      if (result) {
+        toast.success("Análise concluída com sucesso!", { duration: 3000 });
+      }
+      
+      return result;
     } catch (error) {
       console.error("Error running AI analysis:", error);
-      toast.error("Erro ao executar análise de IA. Tente novamente mais tarde.");
+      toast.dismiss(analysisToastId);
+      toast.error("Erro ao executar análise de IA. Tente novamente mais tarde.", { duration: 3000 });
       return null;
     }
   };

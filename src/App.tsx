@@ -16,7 +16,14 @@ import Settings from './pages/Settings';
 import './App.css';
 
 // Inicializar o cliente de consulta para React Query
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1, // Reduzir tentativas para evitar notificações repetidas
+      staleTime: 30000 // Dados são considerados "frescos" por 30 segundos
+    },
+  },
+});
 
 function App() {
   return (
