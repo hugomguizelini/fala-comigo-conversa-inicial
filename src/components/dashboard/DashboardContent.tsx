@@ -37,8 +37,7 @@ export default function DashboardContent() {
     cost: number 
   }[];
   
-  // Transform monthlyData to the format expected by PerformanceChart
-  // Use a more explicit transformation to ensure type safety
+  // Transform both monthlyData and fallback data to ensure they match ChartDataType
   const chartData: ChartDataType = monthlyData.length > 0 
     ? monthlyData.map((item) => ({
         name: item.month, // Map 'month' to 'name' for chart labels
@@ -47,7 +46,13 @@ export default function DashboardContent() {
         conversions: item.conversions,
         cost: item.cost
       }))
-    : (dashboardData.monthlyPerformance.data as ChartDataType); // Add explicit type assertion
+    : (dashboardData.monthlyPerformance.data as any[]).map(item => ({
+        name: item.month, // Também transformamos os dados de fallback
+        impressions: item.impressions,
+        clicks: item.clicks,
+        conversions: item.conversions,
+        cost: item.cost
+      }));
 
   return (
     <div className="space-y-6">
