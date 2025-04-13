@@ -1,11 +1,7 @@
 
 import { ArrowRight, BarChart3, BrainCircuit, LightbulbIcon, Rocket } from "lucide-react";
 
-interface AuthHeadlineProps {
-  type: 'login' | 'register' | 'recovery';
-}
-
-const AuthHeadline = ({ type }: AuthHeadlineProps) => {
+const AuthHeadline = () => {
   return (
     <div className="relative h-full flex flex-col justify-center bg-gradient-to-br from-[#1A1F2C] to-[#111827]">
       {/* Padrão de fundo estilizado */}
