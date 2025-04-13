@@ -28,13 +28,16 @@ export default function DashboardContent() {
     loadData,
   } = useDashboardData();
 
-  const chartData = monthlyData.length > 0 ? monthlyData.map(item => ({
-    name: item.month,
-    impressions: item.impressions,
-    clicks: item.clicks,
-    conversions: item.conversions,
-    cost: item.cost
-  })) : dashboardData.monthlyPerformance.data;
+  // Transform monthlyData to the format expected by PerformanceChart
+  const chartData = monthlyData.length > 0 
+    ? monthlyData.map(item => ({
+        name: item.month, // Map 'month' to 'name' for chart labels
+        impressions: item.impressions,
+        clicks: item.clicks,
+        conversions: item.conversions,
+        cost: item.cost
+      })) 
+    : dashboardData.monthlyPerformance.data;
 
   return (
     <div className="space-y-6">
