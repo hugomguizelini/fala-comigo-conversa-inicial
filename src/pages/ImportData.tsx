@@ -86,7 +86,7 @@ const ImportData = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="campaign">Campanhas</TabsTrigger>
                 <TabsTrigger value="monthly">Desempenho Mensal</TabsTrigger>

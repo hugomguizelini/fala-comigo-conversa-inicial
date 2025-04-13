@@ -15,15 +15,13 @@ type ProblemsSuggestionsPanelProps = {
 };
 
 export const ProblemsSuggestionsPanel = ({ issues, suggestions }: ProblemsSuggestionsPanelProps) => {
-  const [activeTab, setActiveTab] = useState<string>("problems");
-  
   // Calcular o número total de problemas e sugestões para exibir nos badges
   const totalIssues = issues.length;
   const totalSuggestions = suggestions.campaign.length + suggestions.funnel.length;
   
   return (
     <div className="space-y-4">
-      <Tabs defaultValue="problems" value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <Tabs defaultValue="problems" className="w-full">
         <TabsList className="grid w-full grid-cols-2 mb-4">
           <TabsTrigger value="problems" className="flex justify-center items-center gap-2">
             <AlertTriangle className="h-4 w-4 text-red-500" />
