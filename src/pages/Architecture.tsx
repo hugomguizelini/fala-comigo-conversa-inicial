@@ -7,11 +7,12 @@ import {
   LogIn, UserPlus, Home, Bell, MessageSquare, BarChart2,
   PieChart, ShoppingCart, Search, Calendar, Circle,
   CheckCircle, XCircle, ClipboardCheck, ClipboardX, Info,
-  ListChecked, ListOrdered, Rocket, Clock, Cpu, Puzzle
+  ListCheck, ListOrdered, Rocket, Clock, Cpu, Puzzle
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -132,600 +133,448 @@ const Architecture = () => {
           </div>
         </header>
         
-        <main className="container py-8" ref={contentRef}>
-          <div className="mx-auto max-w-5xl space-y-12 pb-16">
-            <section className="space-y-6">
+        <main className="container pt-6 pb-16" ref={contentRef}>
+          <div className="mx-auto max-w-5xl">
+            <section className="mb-6">
               <div className="space-y-2">
-                <h1 className="text-4xl font-bold tracking-tight">Arquitetura e Fluxo</h1>
-                <p className="text-muted-foreground text-lg">
-                  Documentação completa da arquitetura, componentes e fluxos do sistema Insightor.AI
+                <h1 className="text-3xl font-bold tracking-tight">Arquitetura e Fluxo</h1>
+                <p className="text-muted-foreground">
+                  Documentação da arquitetura, componentes e fluxos do sistema Insightor.AI
                 </p>
               </div>
-              <Separator />
+              <Separator className="my-4" />
             </section>
             
-            {/* Nova seção: VALIDAÇÃO DO PROBLEMA */}
-            <section id="problem-validation" className="space-y-6">
-              <h2 className="text-2xl font-semibold tracking-tight">1. VALIDAÇÃO DO PROBLEMA</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <ClipboardCheck className="h-5 w-5 text-primary" />
-                      Como validamos
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                        <p>Entrevistas em profundidade com 15 potenciais usuários</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                        <p>Pesquisa quantitativa online com 150 respondentes</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                        <p>Análise de dados de uso de soluções similares no mercado</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                        <p>Testes de conceito com protótipos de baixa fidelidade</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Info className="h-5 w-5 text-primary" />
-                      O que descobrimos
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-3">
-                      <div className="flex items-start gap-2">
-                        <Info className="h-4 w-4 text-blue-500 mt-1" />
-                        <p>78% dos usuários reportaram dificuldade em conectar diferentes plataformas de marketing</p>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <Info className="h-4 w-4 text-blue-500 mt-1" />
-                        <p>A análise manual de dados consome em média 12 horas semanais dos profissionais</p>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <Info className="h-4 w-4 text-blue-500 mt-1" />
-                        <p>Há uma lacuna significativa entre coleta de dados e geração de insights acionáveis</p>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <Info className="h-4 w-4 text-blue-500 mt-1" />
-                        <p>Decisões baseadas apenas em experiência pessoal resultam em 35% menos eficiência</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <ClipboardX className="h-5 w-5 text-primary" />
-                      Ajustes realizados
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-3">
-                      <div className="flex items-start gap-2">
-                        <ArrowRight className="h-4 w-4 text-amber-500 mt-1" />
-                        <p>Redirecionamos o foco de "visualização" para "automação de análises"</p>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <ArrowRight className="h-4 w-4 text-amber-500 mt-1" />
-                        <p>Simplificamos a jornada do usuário para reduzir a curva de aprendizado</p>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <ArrowRight className="h-4 w-4 text-amber-500 mt-1" />
-                        <p>Priorizamos integrações com as três principais plataformas de marketing</p>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <ArrowRight className="h-4 w-4 text-amber-500 mt-1" />
-                        <p>Removemos recursos inicialmente planejados que se mostraram pouco relevantes</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </section>
-            
-            {/* Nova seção: MVP ESSENCIAL */}
-            <section id="mvp-essential" className="space-y-6">
-              <h2 className="text-2xl font-semibold tracking-tight">2. MVP ESSENCIAL</h2>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Rocket className="h-5 w-5 text-primary" />
-                    Proposta de valor central
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="bg-muted rounded-lg p-6">
-                    <p className="text-lg mb-4">Nosso MVP resolverá concretamente:</p>
-                    <ul className="space-y-3">
-                      <li className="flex items-start gap-3">
-                        <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center shrink-0 mt-0.5">1</div>
-                        <div>
-                          <p>Automatização da coleta e processamento de dados de múltiplas fontes</p>
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center shrink-0 mt-0.5">2</div>
-                        <div>
-                          <p>Análise inteligente que identifica padrões não óbvios nas campanhas de marketing</p>
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center shrink-0 mt-0.5">3</div>
-                        <div>
-                          <p>Geração de insights acionáveis com recomendações práticas para otimização</p>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
+            <Tabs defaultValue="problem" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-3 mb-2">
+                <TabsTrigger value="problem">1. Validação do Problema</TabsTrigger>
+                <TabsTrigger value="mvp">2. MVP Essencial</TabsTrigger>
+                <TabsTrigger value="tech">3. Tecnologia & Implementação</TabsTrigger>
+              </TabsList>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <ListChecked className="h-5 w-5 text-primary" />
-                      Funcionalidades prioritárias
+              {/* TAB 1: VALIDAÇÃO DO PROBLEMA */}
+              <TabsContent value="problem" className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex items-center gap-2 text-lg">
+                        <ClipboardCheck className="h-5 w-5 text-primary" />
+                        Como validamos
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2 text-sm">
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-500 mt-0.5" />
+                        <p>Entrevistas com 15 potenciais usuários</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-500 mt-0.5" />
+                        <p>Pesquisa quantitativa com 150 respondentes</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-500 mt-0.5" />
+                        <p>Análise de dados de soluções similares</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-500 mt-0.5" />
+                        <p>Testes com protótipos de baixa fidelidade</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex items-center gap-2 text-lg">
+                        <Info className="h-5 w-5 text-primary" />
+                        O que descobrimos
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2 text-sm">
+                      <div className="flex items-start gap-2">
+                        <Info className="h-4 w-4 text-blue-500 mt-0.5" />
+                        <p>78% têm dificuldade em conectar plataformas</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <Info className="h-4 w-4 text-blue-500 mt-0.5" />
+                        <p>Análise manual consome 12h semanais</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <Info className="h-4 w-4 text-blue-500 mt-0.5" />
+                        <p>Lacuna entre coleta e insights acionáveis</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <Info className="h-4 w-4 text-blue-500 mt-0.5" />
+                        <p>Decisões sem dados: 35% menos eficiência</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex items-center gap-2 text-lg">
+                        <ClipboardX className="h-5 w-5 text-primary" />
+                        Ajustes realizados
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2 text-sm">
+                      <div className="flex items-start gap-2">
+                        <ArrowRight className="h-4 w-4 text-amber-500 mt-0.5" />
+                        <p>De "visualização" para "automação"</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <ArrowRight className="h-4 w-4 text-amber-500 mt-0.5" />
+                        <p>Simplificação da jornada do usuário</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <ArrowRight className="h-4 w-4 text-amber-500 mt-0.5" />
+                        <p>Priorização de 3 integrações principais</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <ArrowRight className="h-4 w-4 text-amber-500 mt-0.5" />
+                        <p>Remoção de recursos pouco relevantes</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+              
+              {/* TAB 2: MVP ESSENCIAL */}
+              <TabsContent value="mvp" className="space-y-4">
+                <Card className="mb-4">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <Rocket className="h-5 w-5 text-primary" />
+                      Proposta de valor central
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-4">
-                      <div className="border rounded-lg p-4 bg-muted/30">
-                        <h3 className="font-medium text-lg mb-2 flex items-center gap-2">
-                          <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center shrink-0">1</div>
+                    <div className="bg-muted rounded-lg p-3">
+                      <p className="text-sm mb-2">Nosso MVP resolverá concretamente:</p>
+                      <ul className="space-y-2">
+                        <li className="flex items-start gap-3">
+                          <div className="bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center shrink-0 mt-0.5 text-xs">1</div>
+                          <p className="text-sm">Automatização da coleta e processamento de dados de múltiplas fontes</p>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <div className="bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center shrink-0 mt-0.5 text-xs">2</div>
+                          <p className="text-sm">Análise inteligente que identifica padrões não óbvios nas campanhas</p>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <div className="bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center shrink-0 mt-0.5 text-xs">3</div>
+                          <p className="text-sm">Geração de insights acionáveis com recomendações práticas</p>
+                        </li>
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex items-center gap-2 text-lg">
+                        <ListCheck className="h-5 w-5 text-primary" />
+                        Funcionalidades prioritárias
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <div className="border rounded-lg p-3 bg-muted/30">
+                        <h3 className="font-medium text-sm mb-1 flex items-center gap-2">
+                          <div className="bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center shrink-0 text-xs">1</div>
                           Integração com plataformas
                         </h3>
-                        <p>Conexão simplificada com Google Ads, Facebook Ads e Analytics em poucos cliques</p>
+                        <p className="text-xs">Conexão com Google Ads, Facebook Ads e Analytics em poucos cliques</p>
                       </div>
                       
-                      <div className="border rounded-lg p-4 bg-muted/30">
-                        <h3 className="font-medium text-lg mb-2 flex items-center gap-2">
-                          <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center shrink-0">2</div>
-                          Análise de desempenho automatizada
+                      <div className="border rounded-lg p-3 bg-muted/30">
+                        <h3 className="font-medium text-sm mb-1 flex items-center gap-2">
+                          <div className="bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center shrink-0 text-xs">2</div>
+                          Análise de desempenho automática
                         </h3>
-                        <p>IA que processa dados e identifica oportunidades de melhoria com base em padrões históricos</p>
+                        <p className="text-xs">IA que processa dados e identifica oportunidades de melhoria</p>
                       </div>
                       
-                      <div className="border rounded-lg p-4 bg-muted/30">
-                        <h3 className="font-medium text-lg mb-2 flex items-center gap-2">
-                          <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center shrink-0">3</div>
+                      <div className="border rounded-lg p-3 bg-muted/30">
+                        <h3 className="font-medium text-sm mb-1 flex items-center gap-2">
+                          <div className="bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center shrink-0 text-xs">3</div>
                           Recomendações acionáveis
                         </h3>
-                        <p>Sugestões práticas de otimização com estimativa de impacto e dificuldade de implementação</p>
+                        <p className="text-xs">Sugestões práticas com estimativa de impacto e dificuldade</p>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex items-center gap-2 text-lg">
+                        <ListOrdered className="h-5 w-5 text-primary" />
+                        Jornada simplificada
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="relative">
+                        <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-border"></div>
+                        
+                        <div className="space-y-3 relative">
+                          <div className="ml-7 relative">
+                            <div className="absolute -left-7 w-4 h-4 rounded-full bg-primary flex items-center justify-center text-xs">
+                              <span className="text-xs text-primary-foreground font-medium">1</span>
+                            </div>
+                            <h4 className="text-xs font-medium">Identifica necessidade</h4>
+                            <p className="text-xs text-muted-foreground">Problema de marketing digital</p>
+                          </div>
+                          
+                          <div className="ml-7 relative">
+                            <div className="absolute -left-7 w-4 h-4 rounded-full bg-primary flex items-center justify-center text-xs">
+                              <span className="text-xs text-primary-foreground font-medium">2</span>
+                            </div>
+                            <h4 className="text-xs font-medium">Acessa a solução</h4>
+                            <p className="text-xs text-muted-foreground">Interface com onboarding simplificado</p>
+                          </div>
+                          
+                          <div className="ml-7 relative">
+                            <div className="absolute -left-7 w-4 h-4 rounded-full bg-primary flex items-center justify-center text-xs">
+                              <span className="text-xs text-primary-foreground font-medium">3</span>
+                            </div>
+                            <h4 className="text-xs font-medium">Configura parâmetros</h4>
+                            <p className="text-xs text-muted-foreground">Conecta contas, define objetivos</p>
+                          </div>
+                          
+                          <div className="ml-7 relative">
+                            <div className="absolute -left-7 w-4 h-4 rounded-full bg-primary flex items-center justify-center text-xs">
+                              <span className="text-xs text-primary-foreground font-medium">4</span>
+                            </div>
+                            <h4 className="text-xs font-medium">Sistema processa com IA</h4>
+                            <p className="text-xs text-muted-foreground">Análise, identificação de padrões</p>
+                          </div>
+                          
+                          <div className="ml-7 relative">
+                            <div className="absolute -left-7 w-4 h-4 rounded-full bg-primary flex items-center justify-center text-xs">
+                              <span className="text-xs text-primary-foreground font-medium">5</span>
+                            </div>
+                            <h4 className="text-xs font-medium">Resultado entregue</h4>
+                            <p className="text-xs text-muted-foreground">Dashboard com insights</p>
+                          </div>
+                          
+                          <div className="ml-7 relative">
+                            <div className="absolute -left-7 w-4 h-4 rounded-full bg-primary flex items-center justify-center text-xs">
+                              <span className="text-xs text-primary-foreground font-medium">6</span>
+                            </div>
+                            <h4 className="text-xs font-medium">Feedback/Iteração</h4>
+                            <p className="text-xs text-muted-foreground">Aplica e informa resultados</p>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+              
+              {/* TAB 3: TECNOLOGIA & IMPLEMENTAÇÃO */}
+              <TabsContent value="tech" className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex items-center gap-2 text-lg">
+                        <BrainCircuit className="h-5 w-5 text-primary" />
+                        IAs e automações
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="flex items-center gap-2 p-2 border rounded-lg bg-muted/20">
+                          <div className="h-7 w-7 rounded-lg bg-primary/20 flex items-center justify-center">
+                            <BrainCircuit className="h-4 w-4 text-primary" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs font-medium">OpenAI GPT-4o</h3>
+                            <p className="text-[10px] text-muted-foreground">NLP e recomendações</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 p-2 border rounded-lg bg-muted/20">
+                          <div className="h-7 w-7 rounded-lg bg-primary/20 flex items-center justify-center">
+                            <BarChart3 className="h-4 w-4 text-primary" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs font-medium">TensorFlow</h3>
+                            <p className="text-[10px] text-muted-foreground">Análise preditiva</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 p-2 border rounded-lg bg-muted/20">
+                          <div className="h-7 w-7 rounded-lg bg-primary/20 flex items-center justify-center">
+                            <Layers className="h-4 w-4 text-primary" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs font-medium">Airflow</h3>
+                            <p className="text-[10px] text-muted-foreground">Orquestração</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 p-2 border rounded-lg bg-muted/20">
+                          <div className="h-7 w-7 rounded-lg bg-primary/20 flex items-center justify-center">
+                            <Puzzle className="h-4 w-4 text-primary" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs font-medium">APIs Nativas</h3>
+                            <p className="text-[10px] text-muted-foreground">Integrações</p>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex items-center gap-2 text-lg">
+                        <Clock className="h-5 w-5 text-primary" />
+                        Plano de execução
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <div className="space-y-2">
+                        <div className="p-2 border rounded-lg bg-muted/20">
+                          <h3 className="text-xs font-medium flex items-center gap-2">
+                            <div className="bg-primary text-primary-foreground rounded-md px-1.5 py-0.5 text-[10px]">H 1-2</div>
+                            Setup ambiente
+                          </h3>
+                          <div className="mt-1 text-[10px] flex gap-2">
+                            <span className="flex items-center"><CheckCircle className="h-2.5 w-2.5 text-green-500 mr-0.5" /> React</span>
+                            <span className="flex items-center"><CheckCircle className="h-2.5 w-2.5 text-green-500 mr-0.5" /> Node.js</span>
+                            <span className="flex items-center"><CheckCircle className="h-2.5 w-2.5 text-green-500 mr-0.5" /> BD</span>
+                          </div>
+                        </div>
+                        
+                        <div className="p-2 border rounded-lg bg-muted/20">
+                          <h3 className="text-xs font-medium flex items-center gap-2">
+                            <div className="bg-primary text-primary-foreground rounded-md px-1.5 py-0.5 text-[10px]">H 3-5</div>
+                            Integrações
+                          </h3>
+                          <div className="mt-1 text-[10px] flex gap-2">
+                            <span className="flex items-center"><CheckCircle className="h-2.5 w-2.5 text-green-500 mr-0.5" /> Auth</span>
+                            <span className="flex items-center"><CheckCircle className="h-2.5 w-2.5 text-green-500 mr-0.5" /> Ads</span>
+                            <span className="flex items-center"><CheckCircle className="h-2.5 w-2.5 text-green-500 mr-0.5" /> Fluxo</span>
+                          </div>
+                        </div>
+                        
+                        <div className="p-2 border rounded-lg bg-muted/20">
+                          <h3 className="text-xs font-medium flex items-center gap-2">
+                            <div className="bg-primary text-primary-foreground rounded-md px-1.5 py-0.5 text-[10px]">H 6-8</div>
+                            Core de IA
+                          </h3>
+                          <div className="mt-1 text-[10px] flex gap-2">
+                            <span className="flex items-center"><CheckCircle className="h-2.5 w-2.5 text-green-500 mr-0.5" /> Dados</span>
+                            <span className="flex items-center"><CheckCircle className="h-2.5 w-2.5 text-green-500 mr-0.5" /> Modelos</span>
+                            <span className="flex items-center"><CheckCircle className="h-2.5 w-2.5 text-green-500 mr-0.5" /> Testes</span>
+                          </div>
+                        </div>
+                        
+                        <div className="p-2 border rounded-lg bg-muted/20">
+                          <h3 className="text-xs font-medium flex items-center gap-2">
+                            <div className="bg-primary text-primary-foreground rounded-md px-1.5 py-0.5 text-[10px]">H 9-12</div>
+                            UI e testes
+                          </h3>
+                          <div className="mt-1 text-[10px] flex gap-2">
+                            <span className="flex items-center"><CheckCircle className="h-2.5 w-2.5 text-green-500 mr-0.5" /> Interface</span>
+                            <span className="flex items-center"><CheckCircle className="h-2.5 w-2.5 text-green-500 mr-0.5" /> Test</span>
+                            <span className="flex items-center"><CheckCircle className="h-2.5 w-2.5 text-green-500 mr-0.5" /> Demo</span>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
                 
                 <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <ListOrdered className="h-5 w-5 text-primary" />
-                      Jornada simplificada do usuário
+                  <CardHeader className="pb-2">
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <Layers className="h-5 w-5 text-primary" />
+                      Arquitetura básica
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="relative">
-                      <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-border"></div>
-                      
-                      <div className="space-y-6 relative">
-                        <div className="ml-10 relative">
-                          <div className="absolute -left-10 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                            <span className="text-xs text-primary-foreground font-medium">1</span>
-                          </div>
-                          <h4 className="text-sm font-medium">Identifica necessidade</h4>
-                          <p className="text-sm text-muted-foreground">Problema específico de marketing digital</p>
-                        </div>
-                        
-                        <div className="ml-10 relative">
-                          <div className="absolute -left-10 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                            <span className="text-xs text-primary-foreground font-medium">2</span>
-                          </div>
-                          <h4 className="text-sm font-medium">Acessa a solução</h4>
-                          <p className="text-sm text-muted-foreground">Interface intuitiva com onboarding simplificado</p>
-                        </div>
-                        
-                        <div className="ml-10 relative">
-                          <div className="absolute -left-10 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                            <span className="text-xs text-primary-foreground font-medium">3</span>
-                          </div>
-                          <h4 className="text-sm font-medium">Configura parâmetros</h4>
-                          <p className="text-sm text-muted-foreground">Conecta contas, define objetivos, configura preferências</p>
-                        </div>
-                        
-                        <div className="ml-10 relative">
-                          <div className="absolute -left-10 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                            <span className="text-xs text-primary-foreground font-medium">4</span>
-                          </div>
-                          <h4 className="text-sm font-medium">Sistema processa com IA</h4>
-                          <p className="text-sm text-muted-foreground">Análise de dados, identificação de padrões, geração de insights</p>
-                        </div>
-                        
-                        <div className="ml-10 relative">
-                          <div className="absolute -left-10 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                            <span className="text-xs text-primary-foreground font-medium">5</span>
-                          </div>
-                          <h4 className="text-sm font-medium">Resultado entregue</h4>
-                          <p className="text-sm text-muted-foreground">Dashboard com insights e recomendações acionáveis</p>
-                        </div>
-                        
-                        <div className="ml-10 relative">
-                          <div className="absolute -left-10 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                            <span className="text-xs text-primary-foreground font-medium">6</span>
-                          </div>
-                          <h4 className="text-sm font-medium">Feedback/Iteração</h4>
-                          <p className="text-sm text-muted-foreground">Usuário aplica recomendações e informa resultados</p>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </section>
-            
-            {/* Nova seção: TECNOLOGIA & IMPLEMENTAÇÃO */}
-            <section id="tech-implementation" className="space-y-6">
-              <h2 className="text-2xl font-semibold tracking-tight">3. TECNOLOGIA & IMPLEMENTAÇÃO</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <BrainCircuit className="h-5 w-5 text-primary" />
-                      IAs e automações
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3 p-3 border rounded-lg bg-muted/20">
-                        <div className="h-10 w-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                          <BrainCircuit className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium">OpenAI GPT-4o</h3>
-                          <p className="text-xs text-muted-foreground">Processamento de linguagem natural e geração das recomendações</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-3 p-3 border rounded-lg bg-muted/20">
-                        <div className="h-10 w-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                          <BarChart3 className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium">TensorFlow Decision Forests</h3>
-                          <p className="text-xs text-muted-foreground">Análise preditiva e identificação de padrões</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-3 p-3 border rounded-lg bg-muted/20">
-                        <div className="h-10 w-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                          <Layers className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium">Airflow</h3>
-                          <p className="text-xs text-muted-foreground">Orquestração de fluxos de dados e automação</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-3 p-3 border rounded-lg bg-muted/20">
-                        <div className="h-10 w-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                          <Puzzle className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium">APIs nativas</h3>
-                          <p className="text-xs text-muted-foreground">Integração direta com plataformas publicitárias</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-3 p-3 border rounded-lg bg-muted/20">
-                        <div className="h-10 w-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                          <Database className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium">Redis</h3>
-                          <p className="text-xs text-muted-foreground">Cache e processamento em tempo real</p>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Clock className="h-5 w-5 text-primary" />
-                      Plano de execução
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="p-3 border rounded-lg bg-muted/20">
-                        <h3 className="font-medium flex items-center gap-2">
-                          <div className="bg-primary text-primary-foreground rounded-md px-2 py-0.5 text-xs">Horas 1-2</div>
-                          Configuração do ambiente
-                        </h3>
-                        <ul className="mt-2 space-y-1 text-sm">
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-3 w-3 text-green-500" />
-                            Setup do React + TypeScript frontend
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-3 w-3 text-green-500" />
-                            Configuração do Node.js backend
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-3 w-3 text-green-500" />
-                            Estruturação do banco de dados
-                          </li>
-                        </ul>
-                      </div>
-                      
-                      <div className="p-3 border rounded-lg bg-muted/20">
-                        <h3 className="font-medium flex items-center gap-2">
-                          <div className="bg-primary text-primary-foreground rounded-md px-2 py-0.5 text-xs">Horas 3-5</div>
-                          Desenvolvimento das integrações básicas
-                        </h3>
-                        <ul className="mt-2 space-y-1 text-sm">
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-3 w-3 text-green-500" />
-                            Implementação das APIs de autenticação
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-3 w-3 text-green-500" />
-                            Conexão com Google Ads e Facebook
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-3 w-3 text-green-500" />
-                            Estruturação do fluxo de dados
-                          </li>
-                        </ul>
-                      </div>
-                      
-                      <div className="p-3 border rounded-lg bg-muted/20">
-                        <h3 className="font-medium flex items-center gap-2">
-                          <div className="bg-primary text-primary-foreground rounded-md px-2 py-0.5 text-xs">Horas 6-8</div>
-                          Implementação do core de IA
-                        </h3>
-                        <ul className="mt-2 space-y-1 text-sm">
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-3 w-3 text-green-500" />
-                            Configuração do processamento de dados
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-3 w-3 text-green-500" />
-                            Implementação dos modelos de análise
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-3 w-3 text-green-500" />
-                            Testes iniciais do motor de recomendações
-                          </li>
-                        </ul>
-                      </div>
-                      
-                      <div className="p-3 border rounded-lg bg-muted/20">
-                        <h3 className="font-medium flex items-center gap-2">
-                          <div className="bg-primary text-primary-foreground rounded-md px-2 py-0.5 text-xs">Horas 9-12</div>
-                          Finalização e testes
-                        </h3>
-                        <ul className="mt-2 space-y-1 text-sm">
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-3 w-3 text-green-500" />
-                            Desenvolvimento da interface de usuário
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-3 w-3 text-green-500" />
-                            Testes unitários e integrados
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-3 w-3 text-green-500" />
-                            Preparação para demonstração
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Layers className="h-5 w-5 text-primary" />
-                    Arquitetura básica
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="w-full overflow-auto">
-                    <div className="min-w-[600px]">
-                      <div className="bg-muted p-8 rounded-lg">
-                        <div className="flex flex-col gap-6">
-                          <div className="border-2 border-primary/50 rounded-lg p-4 bg-background">
-                            <h3 className="font-medium mb-4 flex items-center">
-                              <Monitor className="mr-2 h-5 w-5" /> Interface de Usuário (React + TypeScript)
-                            </h3>
-                            <div className="grid grid-cols-3 gap-2">
-                              <div className="border rounded p-2 text-center text-sm">Dashboard</div>
-                              <div className="border rounded p-2 text-center text-sm">Análises</div>
-                              <div className="border rounded p-2 text-center text-sm">Recomendações</div>
-                            </div>
-                          </div>
-                          
-                          <div className="flex justify-center">
-                            <ArrowRight className="rotate-90 h-8 w-8 text-primary/60" />
-                          </div>
-                          
-                          <div className="border-2 border-primary/50 rounded-lg p-4 bg-background">
-                            <h3 className="font-medium mb-4 flex items-center">
-                              <Server className="mr-2 h-5 w-5" /> Camada de Processamento (Node.js)
-                            </h3>
-                            <div className="grid grid-cols-3 gap-2">
-                              <div className="border rounded p-2 text-center text-sm">API Gateway</div>
-                              <div className="border rounded p-2 text-center text-sm">Middleware</div>
-                              <div className="border rounded p-2 text-center text-sm">Serviços</div>
-                            </div>
-                          </div>
-                          
-                          <div className="flex justify-center">
-                            <div className="flex items-center justify-center w-full">
-                              <div className="w-1/3 h-0.5 bg-primary/30"></div>
-                              <ArrowRight className="h-6 w-6 mx-4 text-primary/60" />
-                              <div className="w-1/3 h-0.5 bg-primary/30"></div>
-                            </div>
-                          </div>
-                          
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="border-2 border-primary/50 rounded-lg p-4 bg-background">
-                              <h3 className="font-medium mb-4 flex items-center">
-                                <BrainCircuit className="mr-2 h-5 w-5" /> Modelos de IA
+                    <div className="w-full overflow-auto">
+                      <div className="min-w-[500px]">
+                        <div className="bg-muted p-4 rounded-lg">
+                          <div className="flex flex-col gap-4">
+                            <div className="border rounded-lg p-2 bg-background">
+                              <h3 className="text-xs font-medium mb-1 flex items-center">
+                                <Monitor className="mr-1 h-3 w-3" /> UI (React + TS)
                               </h3>
-                              <div className="grid grid-cols-2 gap-2">
-                                <div className="border rounded p-2 text-center text-sm">OpenAI</div>
-                                <div className="border rounded p-2 text-center text-sm">TensorFlow</div>
+                              <div className="grid grid-cols-3 gap-1">
+                                <div className="border rounded p-1 text-center text-[10px]">Dashboard</div>
+                                <div className="border rounded p-1 text-center text-[10px]">Análises</div>
+                                <div className="border rounded p-1 text-center text-[10px]">Config</div>
                               </div>
                             </div>
                             
-                            <div className="border-2 border-primary/50 rounded-lg p-4 bg-background">
-                              <h3 className="font-medium mb-4 flex items-center">
-                                <Layers className="mr-2 h-5 w-5" /> Sistema de Automação
+                            <div className="flex justify-center">
+                              <ArrowRight className="rotate-90 h-4 w-4 text-primary/60" />
+                            </div>
+                            
+                            <div className="border rounded-lg p-2 bg-background">
+                              <h3 className="text-xs font-medium mb-1 flex items-center">
+                                <Server className="mr-1 h-3 w-3" /> Processamento (Node.js)
                               </h3>
-                              <div className="grid grid-cols-2 gap-2">
-                                <div className="border rounded p-2 text-center text-sm">Airflow</div>
-                                <div className="border rounded p-2 text-center text-sm">Agendadores</div>
+                              <div className="grid grid-cols-3 gap-1">
+                                <div className="border rounded p-1 text-center text-[10px]">API</div>
+                                <div className="border rounded p-1 text-center text-[10px]">Middleware</div>
+                                <div className="border rounded p-1 text-center text-[10px]">Serviços</div>
                               </div>
                             </div>
-                          </div>
-                          
-                          <div className="flex justify-center">
-                            <ArrowRight className="rotate-90 h-8 w-8 text-primary/60 rotate-180" />
-                          </div>
-                          
-                          <div className="border-2 border-primary/50 rounded-lg p-4 bg-background">
-                            <h3 className="font-medium mb-4 flex items-center">
-                              <Database className="mr-2 h-5 w-5" /> Base de Dados
-                            </h3>
-                            <div className="grid grid-cols-3 gap-2">
-                              <div className="border rounded p-2 text-center text-sm">PostgreSQL</div>
-                              <div className="border rounded p-2 text-center text-sm">Redis Cache</div>
-                              <div className="border rounded p-2 text-center text-sm">S3 (arquivos)</div>
+                            
+                            <div className="flex justify-center">
+                              <div className="flex items-center justify-center w-full">
+                                <div className="w-1/3 h-0.5 bg-primary/30"></div>
+                                <ArrowRight className="h-3 w-3 mx-2 text-primary/60" />
+                                <div className="w-1/3 h-0.5 bg-primary/30"></div>
+                              </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className="border rounded-lg p-2 bg-background">
+                                <h3 className="text-xs font-medium mb-1 flex items-center">
+                                  <BrainCircuit className="mr-1 h-3 w-3" /> Modelos IA
+                                </h3>
+                                <div className="flex gap-1">
+                                  <div className="border rounded p-1 text-center text-[10px] flex-1">GPT</div>
+                                  <div className="border rounded p-1 text-center text-[10px] flex-1">TF</div>
+                                </div>
+                              </div>
+                              
+                              <div className="border rounded-lg p-2 bg-background">
+                                <h3 className="text-xs font-medium mb-1 flex items-center">
+                                  <Cpu className="mr-1 h-3 w-3" /> Automação
+                                </h3>
+                                <div className="flex gap-1">
+                                  <div className="border rounded p-1 text-center text-[10px] flex-1">Airflow</div>
+                                  <div className="border rounded p-1 text-center text-[10px] flex-1">Jobs</div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="flex justify-center">
+                              <ArrowRight className="rotate-90 h-4 w-4 text-primary/60 rotate-180" />
+                            </div>
+                            
+                            <div className="border rounded-lg p-2 bg-background">
+                              <h3 className="text-xs font-medium mb-1 flex items-center">
+                                <Database className="mr-1 h-3 w-3" /> Base de Dados
+                              </h3>
+                              <div className="grid grid-cols-3 gap-1">
+                                <div className="border rounded p-1 text-center text-[10px]">PostgreSQL</div>
+                                <div className="border rounded p-1 text-center text-[10px]">Redis</div>
+                                <div className="border rounded p-1 text-center text-[10px]">S3</div>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </section>
-            
-            {/* Mantido o stack tecnológico (movido para o final) */}
-            <section id="tech-stack" className="space-y-6">
-              <h2 className="text-2xl font-semibold tracking-tight">Stack Tecnológico</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Frontend</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      <li className="flex items-center gap-2 text-sm">
-                        <div className="w-2 h-2 rounded-full bg-primary"></div>
-                        React + TypeScript
-                      </li>
-                      <li className="flex items-center gap-2 text-sm">
-                        <div className="w-2 h-2 rounded-full bg-primary"></div>
-                        Tailwind CSS
-                      </li>
-                      <li className="flex items-center gap-2 text-sm">
-                        <div className="w-2 h-2 rounded-full bg-primary"></div>
-                        Shadcn UI
-                      </li>
-                      <li className="flex items-center gap-2 text-sm">
-                        <div className="w-2 h-2 rounded-full bg-primary"></div>
-                        React Query
-                      </li>
-                      <li className="flex items-center gap-2 text-sm">
-                        <div className="w-2 h-2 rounded-full bg-primary"></div>
-                        Recharts
-                      </li>
-                    </ul>
                   </CardContent>
                 </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Backend</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      <li className="flex items-center gap-2 text-sm">
-                        <div className="w-2 h-2 rounded-full bg-primary"></div>
-                        Node.js + TypeScript
-                      </li>
-                      <li className="flex items-center gap-2 text-sm">
-                        <div className="w-2 h-2 rounded-full bg-primary"></div>
-                        Express.js
-                      </li>
-                      <li className="flex items-center gap-2 text-sm">
-                        <div className="w-2 h-2 rounded-full bg-primary"></div>
-                        Supabase
-                      </li>
-                      <li className="flex items-center gap-2 text-sm">
-                        <div className="w-2 h-2 rounded-full bg-primary"></div>
-                        Prisma ORM
-                      </li>
-                      <li className="flex items-center gap-2 text-sm">
-                        <div className="w-2 h-2 rounded-full bg-primary"></div>
-                        JWT Auth
-                      </li>
-                    </ul>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Infraestrutura</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      <li className="flex items-center gap-2 text-sm">
-                        <div className="w-2 h-2 rounded-full bg-primary"></div>
-                        PostgreSQL
-                      </li>
-                      <li className="flex items-center gap-2 text-sm">
-                        <div className="w-2 h-2 rounded-full bg-primary"></div>
-                        Redis
-                      </li>
-                      <li className="flex items-center gap-2 text-sm">
-                        <div className="w-2 h-2 rounded-full bg-primary"></div>
-                        Docker
-                      </li>
-                      <li className="flex items-center gap-2 text-sm">
-                        <div className="w-2 h-2 rounded-full bg-primary"></div>
-                        AWS/Vercel
-                      </li>
-                      <li className="flex items-center gap-2 text-sm">
-                        <div className="w-2 h-2 rounded-full bg-primary"></div>
-                        CI/CD Pipeline
-                      </li>
-                    </ul>
-                  </CardContent>
-                </Card>
-              </div>
-            </section>
+              </TabsContent>
+            </Tabs>
           </div>
         </main>
         
