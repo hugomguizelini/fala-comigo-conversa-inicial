@@ -135,7 +135,11 @@ export default function DashboardContent() {
           </div>
         )}
 
-        <StatisticsCard isLoading={isLoading} />
+        <StatisticsCard 
+          isLoading={isLoading} 
+          metrics={metrics} 
+          onAnalyzeClick={() => runAiAnalysis()}
+        />
       </div>
 
       <CampaignsTable campaigns={campaigns} />
