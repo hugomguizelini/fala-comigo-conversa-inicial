@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { User, Bell, LogOut, Menu, Settings } from "lucide-react";
@@ -7,21 +6,20 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import SidebarNav from "./SidebarNav";
-
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
-
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
+export default function DashboardLayout({
+  children
+}: DashboardLayoutProps) {
   const navigate = useNavigate();
-  const { theme } = useTheme();
-
+  const {
+    theme
+  } = useTheme();
   const handleLogout = () => {
     navigate("/");
   };
-
-  return (
-    <div className="flex h-screen w-full overflow-hidden bg-background">
+  return <div className="flex h-screen w-full overflow-hidden bg-background">
       {/* Sidebar - visible on larger screens */}
       <aside className="hidden md:flex w-64 flex-col bg-sidebar border-r border-sidebar-border">
         <div className="p-4">
@@ -62,7 +60,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
 
           <div className="flex-1 md:flex-none flex items-center ml-2">
-            <h2 className="text-lg font-medium hidden md:block">Relatório</h2>
+            <h2 className="text-lg font-medium hidden md:block">Dashboard</h2>
           </div>
 
           <div className="flex items-center gap-3">
@@ -84,6 +82,5 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           {children}
         </main>
       </div>
-    </div>
-  );
+    </div>;
 }
