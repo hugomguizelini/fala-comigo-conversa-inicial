@@ -1,10 +1,9 @@
-
-import React from "react";
+import React, { useState, useRef } from "react";
 import { InsighorLogo } from "@/components/auth/InsighorLogo";
 import { 
   Layers, Database, Users, ArrowRight, Server, 
   LayoutDashboard, Settings, FileText, Monitor,
-  CircleUser, BarChart3, LineChart, BrainCircuit
+  CircleUser, BarChart3, LineChart, BrainCircuit, Download
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -12,9 +11,75 @@ import { Separator } from "@/components/ui/separator";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const Architecture = () => {
   const navigate = useNavigate();
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+
+  const generatePDF = async () => {
+    if (!contentRef.current) return;
+
+    try {
+      setIsGeneratingPDF(true);
+      toast("Gerando PDF, por favor aguarde...");
+
+      // Hide download button during PDF generation
+      const downloadButton = document.getElementById("download-button");
+      const backButton = document.getElementById("back-button");
+      
+      if (downloadButton) downloadButton.style.display = "none";
+      if (backButton) backButton.style.display = "none";
+      
+      const content = contentRef.current;
+      const canvas = await html2canvas(content, {
+        scale: 1,
+        useCORS: true,
+        logging: false
+      });
+      
+      // Show buttons again
+      if (downloadButton) downloadButton.style.display = "flex";
+      if (backButton) backButton.style.display = "block";
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4"
+      });
+      
+      const imgWidth = 210; // A4 width in mm
+      const imgHeight = canvas.height * imgWidth / canvas.width;
+      
+      let heightLeft = imgHeight;
+      let position = 0;
+      let pageHeight = 295; // A4 height in mm
+      
+      // First page
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      
+      // Additional pages if needed
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+      
+      pdf.save("insightor-arquitetura.pdf");
+      toast.success("PDF gerado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao gerar PDF:", error);
+      toast.error("Erro ao gerar o PDF. Tente novamente.");
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
 
   return (
     <ThemeProvider>
@@ -23,14 +88,33 @@ const Architecture = () => {
           <div className="container flex h-16 items-center justify-between">
             <div className="flex items-center gap-2">
               <InsighorLogo className="h-8 w-auto" />
+              <span className="font-bold text-xl">INSIGHTOR.AI</span>
             </div>
-            <Button variant="outline" size="sm" onClick={() => navigate("/")}>
-              Voltar ao Dashboard
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="default" 
+                size="sm" 
+                className="gap-2" 
+                onClick={generatePDF}
+                disabled={isGeneratingPDF}
+                id="download-button"
+              >
+                <Download className="h-4 w-4" />
+                {isGeneratingPDF ? "Gerando..." : "Baixar PDF"}
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => navigate("/")}
+                id="back-button"
+              >
+                Voltar ao Dashboard
+              </Button>
+            </div>
           </div>
         </header>
         
-        <main className="container py-8">
+        <main className="container py-8" ref={contentRef}>
           <div className="mx-auto max-w-5xl space-y-12 pb-16">
             <section className="space-y-6">
               <div className="space-y-2">
@@ -93,7 +177,6 @@ const Architecture = () => {
                   <div className="w-full min-w-[800px]">
                     <div className="bg-muted p-8 rounded-lg">
                       <div className="flex flex-col gap-6">
-                        {/* Frontend layer */}
                         <div className="border-2 border-primary/50 rounded-lg p-4 bg-background">
                           <h3 className="font-medium mb-4 flex items-center">
                             <Monitor className="mr-2 h-5 w-5" /> Frontend (React + TypeScript)
@@ -105,7 +188,6 @@ const Architecture = () => {
                           </div>
                         </div>
                         
-                        {/* API layer */}
                         <div className="flex justify-center">
                           <ArrowRight className="rotate-90 h-8 w-8 text-primary/60" />
                         </div>
@@ -121,7 +203,6 @@ const Architecture = () => {
                           </div>
                         </div>
                         
-                        {/* Database layer */}
                         <div className="flex justify-center">
                           <ArrowRight className="rotate-90 h-8 w-8 text-primary/60" />
                         </div>
@@ -137,7 +218,6 @@ const Architecture = () => {
                           </div>
                         </div>
                         
-                        {/* External connections */}
                         <div className="flex justify-center">
                           <ArrowRight className="rotate-90 h-8 w-8 text-primary/60" />
                         </div>
