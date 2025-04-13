@@ -5,6 +5,7 @@ import { useAuthStatus } from "./dashboard/useAuthStatus";
 import { useCampaignData } from "./dashboard/useCampaignData";
 import { useMetricsData } from "./dashboard/useMetricsData";
 import { useAnalyticsData } from "./dashboard/useAnalyticsData";
+import { toast } from "sonner";
 
 export type MetricsType = {
   impressions: { value: string; variation: string };
@@ -16,7 +17,6 @@ export type MetricsType = {
 };
 
 export const useDashboardData = () => {
-  const { toast } = useToast();
   const { isAuthenticated } = useAuthStatus();
   const { campaigns, monthlyData, isLoading, setIsLoading, loadCampaignData } = useCampaignData();
   const { metrics, updateMetrics } = useMetricsData(campaigns);
@@ -28,10 +28,7 @@ export const useDashboardData = () => {
     
     setIsLoading(true);
     try {
-      toast({
-        title: "Carregando dados",
-        description: "Aguarde enquanto buscamos os dados mais recentes."
-      });
+      toast.loading("Carregando dados...");
       
       const campaignResult = await loadCampaignData();
       
@@ -41,18 +38,11 @@ export const useDashboardData = () => {
         
         setLastLoadTime(new Date());
         
-        toast({
-          title: "Dados atualizados",
-          description: "Os dados do dashboard foram atualizados com sucesso."
-        });
+        toast.success("Dados atualizados com sucesso!");
       }
     } catch (error) {
       console.error("Error loading dashboard data:", error);
-      toast({
-        title: "Erro ao carregar dados",
-        description: "Não foi possível atualizar os dados. Tente novamente mais tarde.",
-        variant: "destructive"
-      });
+      toast.error("Erro ao carregar dados. Tente novamente mais tarde.");
     } finally {
       setIsLoading(false);
     }

@@ -3,7 +3,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff, Lock, Mail, User, Facebook } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface RegisterFormProps {
   onLoginClick: () => void;
@@ -16,7 +17,7 @@ const RegisterForm = ({ onLoginClick }: RegisterFormProps) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   const passwordStrength = (password: string): number => {
     if (!password) return 0;
@@ -56,49 +57,71 @@ const RegisterForm = ({ onLoginClick }: RegisterFormProps) => {
     }
   };
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!name || !email || !password || !confirmPassword) {
-      toast({
-        title: "Campos obrigatórios",
-        description: "Por favor, preencha todos os campos",
-        variant: "destructive",
-      });
+      toast.error("Por favor, preencha todos os campos");
       return;
     }
     
     if (password !== confirmPassword) {
-      toast({
-        title: "Senhas não correspondem",
-        description: "Por favor, verifique se as senhas digitadas são iguais",
-        variant: "destructive",
-      });
+      toast.error("As senhas não correspondem");
       return;
     }
     
     if (passwordStrength(password) < 2) {
-      toast({
-        title: "Senha fraca",
-        description: "Por favor, use uma senha mais forte",
-        variant: "destructive",
-      });
+      toast.error("Por favor, use uma senha mais forte");
       return;
     }
     
-    // Aqui seria implementada a lógica de registro
-    toast({
-      title: "Conta criada",
-      description: "Sua conta foi criada com sucesso!",
-    });
+    setIsLoading(true);
+    
+    try {
+      const { data, error } = await supabase.auth.signUp({ 
+        email, 
+        password,
+        options: {
+          data: {
+            name: name,
+          }
+        }
+      });
+      
+      if (error) {
+        throw error;
+      }
+      
+      toast.success("Conta criada com sucesso! Verifique seu email para confirmar.");
+      
+      // Automaticamente volta para a tela de login após 3 segundos
+      setTimeout(() => {
+        onLoginClick();
+      }, 3000);
+      
+    } catch (error: any) {
+      console.error("Registro error:", error);
+      toast.error(error.message || "Erro ao criar conta");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleSocialRegister = (provider: string) => {
-    toast({
-      title: `Cadastro com ${provider}`,
-      description: `Iniciando cadastro com ${provider}...`,
-    });
-    // Aqui seria implementada a lógica de cadastro social
+  const handleSocialRegister = async (provider: "google" | "facebook") => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider,
+      });
+      
+      if (error) {
+        throw error;
+      }
+      
+      // O redirecionamento é tratado pelo Supabase OAuth
+    } catch (error: any) {
+      console.error(`${provider} login error:`, error);
+      toast.error(`Erro ao cadastrar com ${provider}`);
+    }
   };
 
   const strength = passwordStrength(password);
@@ -119,7 +142,7 @@ const RegisterForm = ({ onLoginClick }: RegisterFormProps) => {
           type="button"
           variant="outline"
           className="bg-white/5 border-white/10 text-white hover:bg-white/10"
-          onClick={() => handleSocialRegister('Google')}
+          onClick={() => handleSocialRegister('google')}
         >
           <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
             <path
@@ -145,7 +168,7 @@ const RegisterForm = ({ onLoginClick }: RegisterFormProps) => {
           type="button"
           variant="outline"
           className="bg-white/5 border-white/10 text-white hover:bg-white/10"
-          onClick={() => handleSocialRegister('Facebook')}
+          onClick={() => handleSocialRegister('facebook')}
         >
           <Facebook className="h-4 w-4 mr-2 text-[#1877F2]" />
           Facebook
@@ -269,8 +292,16 @@ const RegisterForm = ({ onLoginClick }: RegisterFormProps) => {
         <Button 
           type="submit" 
           className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#7C3AED] hover:from-[#9d78f8] hover:to-[#8B5CF6] text-white font-medium shadow-lg shadow-[#8B5CF6]/20"
+          disabled={isLoading}
         >
-          Criar conta
+          {isLoading ? (
+            <>
+              <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></span>
+              Criando...
+            </>
+          ) : (
+            "Criar conta"
+          )}
         </Button>
 
         <div className="text-center">

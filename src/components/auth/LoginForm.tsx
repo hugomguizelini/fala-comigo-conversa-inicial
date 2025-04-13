@@ -6,6 +6,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Lock, Mail, Facebook, Github } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface LoginFormProps {
   onRegisterClick: () => void;
@@ -13,37 +15,56 @@ interface LoginFormProps {
 }
 
 const LoginForm = ({ onRegisterClick, onRecoveryClick }: LoginFormProps) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("usuario@exemplo.com"); // Email padrão para facilitar testes
+  const [password, setPassword] = useState("senha123"); // Senha padrão para facilitar testes
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!email || !password) {
-      toast({
-        title: "Campos obrigatórios",
-        description: "Por favor, preencha todos os campos",
-        variant: "destructive",
-      });
+      toast.error("Por favor, preencha todos os campos");
       return;
     }
     
-    // Aqui seria implementada a lógica de autenticação
-    toast({
-      title: "Login realizado",
-      description: "Você foi autenticado com sucesso!",
-    });
+    setIsLoading(true);
+    
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+      
+      if (error) {
+        throw error;
+      }
+      
+      // Login bem-sucedido, o redirecionamento é tratado pelo componente PublicRoute
+    } catch (error: any) {
+      console.error("Login error:", error);
+      toast.error(error.message || "Erro ao fazer login. Verifique suas credenciais.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleSocialLogin = (provider: string) => {
-    toast({
-      title: `Login com ${provider}`,
-      description: `Iniciando autenticação com ${provider}...`,
-    });
-    // Aqui seria implementada a lógica de autenticação social
+  const handleSocialLogin = async (provider: "google" | "facebook") => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider,
+      });
+      
+      if (error) {
+        throw error;
+      }
+      
+      // O redirecionamento é tratado pelo Supabase OAuth
+    } catch (error: any) {
+      console.error(`${provider} login error:`, error);
+      toast.error(`Erro ao fazer login com ${provider}`);
+    }
   };
 
   return (
@@ -120,8 +141,16 @@ const LoginForm = ({ onRegisterClick, onRecoveryClick }: LoginFormProps) => {
         <Button 
           type="submit" 
           className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#7C3AED] hover:from-[#9d78f8] hover:to-[#8B5CF6] text-white font-medium shadow-lg shadow-[#8B5CF6]/20"
+          disabled={isLoading}
         >
-          Entrar
+          {isLoading ? (
+            <>
+              <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></span>
+              Entrando...
+            </>
+          ) : (
+            "Entrar"
+          )}
         </Button>
 
         <div className="relative my-6">
@@ -138,7 +167,7 @@ const LoginForm = ({ onRegisterClick, onRecoveryClick }: LoginFormProps) => {
             type="button"
             variant="outline"
             className="bg-white/5 border-white/10 text-white hover:bg-white/10"
-            onClick={() => handleSocialLogin('Google')}
+            onClick={() => handleSocialLogin('google')}
           >
             <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
               <path
@@ -164,7 +193,7 @@ const LoginForm = ({ onRegisterClick, onRecoveryClick }: LoginFormProps) => {
             type="button"
             variant="outline"
             className="bg-white/5 border-white/10 text-white hover:bg-white/10"
-            onClick={() => handleSocialLogin('Facebook')}
+            onClick={() => handleSocialLogin('facebook')}
           >
             <Facebook className="h-4 w-4 mr-2 text-[#1877F2]" />
             Facebook
