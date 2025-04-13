@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { ArrowUp, Search, Filter, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,11 +13,16 @@ import FeatureCards from "./FeatureCards";
 import GptAnalysisPanel from "./GptAnalysisPanel";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { resetAllData } from "@/services/dataResetService";
+import { GptAnalysisResult } from "@/hooks/dashboard/useGptAnalysis";
 
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-export default function DashboardContent() {
+type DashboardContentProps = {
+  onOpenAiChat?: (analysis: GptAnalysisResult | null) => void;
+};
+
+export default function DashboardContent({ onOpenAiChat }: DashboardContentProps) {
   const [timeRange, setTimeRange] = useState<string>("month");
   const [activeMetric, setActiveMetric] = useState<string>("impressions");
   
@@ -75,6 +81,18 @@ export default function DashboardContent() {
     }
   };
 
+  // Função para analisar e abrir chat
+  const handleAnalyzeAndOpenChat = async () => {
+    if (!gptAnalysis) {
+      const analysis = await runAiAnalysis();
+      if (analysis && onOpenAiChat) {
+        onOpenAiChat(analysis);
+      }
+    } else if (onOpenAiChat) {
+      onOpenAiChat(gptAnalysis);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
@@ -122,6 +140,7 @@ export default function DashboardContent() {
         isLoading={isAiLoading}
         analysis={gptAnalysis}
         onAnalyze={runAiAnalysis}
+        onChat={onOpenAiChat}
       />
       
       <ProblemsSuggestionsPanel 
@@ -153,7 +172,7 @@ export default function DashboardContent() {
         <StatisticsCard 
           isLoading={isLoading} 
           metrics={metrics} 
-          onAnalyzeClick={() => runAiAnalysis()}
+          onAnalyzeClick={handleAnalyzeAndOpenChat}
         />
       </div>
 

@@ -3,7 +3,7 @@ import React from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, Lightbulb, AlertTriangle, LineChart, ArrowRight } from "lucide-react";
+import { Sparkles, Lightbulb, AlertTriangle, LineChart, ArrowRight, MessageSquare } from "lucide-react";
 import { GptAnalysisResult } from "@/hooks/dashboard/useGptAnalysis";
 import ReactMarkdown from 'react-markdown';
 
@@ -11,12 +11,14 @@ type GptAnalysisPanelProps = {
   isLoading: boolean;
   analysis: GptAnalysisResult | null;
   onAnalyze: () => void;
+  onChat?: (analysis: GptAnalysisResult | null) => void;
 };
 
 const GptAnalysisPanel: React.FC<GptAnalysisPanelProps> = ({ 
   isLoading, 
   analysis, 
-  onAnalyze 
+  onAnalyze,
+  onChat
 }) => {
   return (
     <Card className="w-full">
@@ -131,7 +133,16 @@ const GptAnalysisPanel: React.FC<GptAnalysisPanelProps> = ({
               </TabsContent>
             </Tabs>
             
-            <div className="flex justify-end">
+            <div className="flex justify-between">
+              <Button 
+                onClick={() => onChat && onChat(analysis)}
+                variant="outline"
+                className="flex items-center gap-2 border-purple-200 hover:bg-purple-50 dark:border-purple-900 dark:hover:bg-purple-900/20"
+              >
+                <MessageSquare className="h-4 w-4 text-purple-500" />
+                Conversar com IA
+              </Button>
+              
               <Button 
                 onClick={onAnalyze} 
                 variant="outline"
