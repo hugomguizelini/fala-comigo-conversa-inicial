@@ -3,7 +3,7 @@ import React from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, Lightbulb, AlertTriangle, LineChart, ArrowRight, MessageSquare } from "lucide-react";
+import { Sparkles, Lightbulb, AlertTriangle, LineChart, MessageSquare } from "lucide-react";
 import { GptAnalysisResult } from "@/hooks/dashboard/useGptAnalysis";
 import ReactMarkdown from 'react-markdown';
 
@@ -106,7 +106,7 @@ const GptAnalysisPanel: React.FC<GptAnalysisPanelProps> = ({
               
               <TabsContent value="acoes" className="space-y-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <ArrowRight className="h-5 w-5 text-green-500" />
+                  <LineChart className="h-5 w-5 text-green-500" />
                   <h3 className="text-lg font-medium">Ações Recomendadas</h3>
                 </div>
                 <div className="prose dark:prose-invert max-w-none">

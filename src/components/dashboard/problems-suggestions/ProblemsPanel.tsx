@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { AlertTriangle } from "lucide-react";
 import { Issue, Suggestion } from "@/types/dataTypes";
 import { ProblemsList } from "./ProblemsList";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 
 type ProblemsPanelProps = {
   issues: Issue[];
@@ -43,7 +44,11 @@ export const ProblemsPanel = ({ issues, suggestions }: ProblemsPanelProps) => {
             </p>
           </div>
         ) : (
-          <ProblemsList issues={issues} suggestions={suggestions} />
+          <Tabs defaultValue="issues">
+            <TabsContent value="issues">
+              <ProblemsList issues={issues} suggestions={suggestions} />
+            </TabsContent>
+          </Tabs>
         )}
       </CardContent>
     </Card>

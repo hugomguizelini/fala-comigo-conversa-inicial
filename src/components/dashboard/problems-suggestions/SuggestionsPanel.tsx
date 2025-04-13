@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-import { Lightbulb, Filter, TrendingUp, Target, ArrowRight, ChevronDown } from "lucide-react";
+import { Lightbulb, Filter, TrendingUp, Target, ChevronDown } from "lucide-react";
 import { Suggestion } from "@/types/dataTypes";
 import { SuggestionsList } from "./SuggestionsList";
 import { SuggestionItem } from "./SuggestionItem";
@@ -119,57 +119,55 @@ export const SuggestionsPanel = ({ suggestions }: SuggestionsPanelProps) => {
             </p>
           </div>
         ) : (
-          <>
-            <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList>
-                <TabsTrigger value="all">
-                  Todas ({filteredCampaignSuggestions.length + filteredFunnelSuggestions.length})
-                </TabsTrigger>
-                <TabsTrigger value="campaign">
-                  Campanhas ({filteredCampaignSuggestions.length})
-                </TabsTrigger>
-                <TabsTrigger value="funnel">
-                  Funil ({filteredFunnelSuggestions.length})
-                </TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="all" className="mt-6">
-                <SuggestionsList
-                  campaignSuggestions={filteredCampaignSuggestions}
-                  funnelSuggestions={filteredFunnelSuggestions}
-                  showHeaders={true}
-                />
-              </TabsContent>
-              
-              <TabsContent value="campaign" className="mt-6">
-                <div>
-                  <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                    <TrendingUp className="h-4 w-4 text-purple-500" />
-                    Otimizações para Campanha
-                  </h3>
-                  <div className="grid gap-4 md:grid-cols-1">
-                    {filteredCampaignSuggestions.map((suggestion, index) => (
-                      <SuggestionItem key={index} suggestion={suggestion} />
-                    ))}
-                  </div>
+          <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList>
+              <TabsTrigger value="all">
+                Todas ({filteredCampaignSuggestions.length + filteredFunnelSuggestions.length})
+              </TabsTrigger>
+              <TabsTrigger value="campaign">
+                Campanhas ({filteredCampaignSuggestions.length})
+              </TabsTrigger>
+              <TabsTrigger value="funnel">
+                Funil ({filteredFunnelSuggestions.length})
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="all" className="mt-6">
+              <SuggestionsList
+                campaignSuggestions={filteredCampaignSuggestions}
+                funnelSuggestions={filteredFunnelSuggestions}
+                showHeaders={true}
+              />
+            </TabsContent>
+            
+            <TabsContent value="campaign" className="mt-6">
+              <div>
+                <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-purple-500" />
+                  Otimizações para Campanha
+                </h3>
+                <div className="grid gap-4 md:grid-cols-1">
+                  {filteredCampaignSuggestions.map((suggestion, index) => (
+                    <SuggestionItem key={index} suggestion={suggestion} />
+                  ))}
                 </div>
-              </TabsContent>
-              
-              <TabsContent value="funnel" className="mt-6">
-                <div>
-                  <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                    <Target className="h-4 w-4 text-blue-500" />
-                    Otimizações para Funil
-                  </h3>
-                  <div className="grid gap-4 md:grid-cols-1">
-                    {filteredFunnelSuggestions.map((suggestion, index) => (
-                      <SuggestionItem key={index} suggestion={suggestion} />
-                    ))}
-                  </div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="funnel" className="mt-6">
+              <div>
+                <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                  <Target className="h-4 w-4 text-blue-500" />
+                  Otimizações para Funil
+                </h3>
+                <div className="grid gap-4 md:grid-cols-1">
+                  {filteredFunnelSuggestions.map((suggestion, index) => (
+                    <SuggestionItem key={index} suggestion={suggestion} />
+                  ))}
                 </div>
-              </TabsContent>
-            </Tabs>
-          </>
+              </div>
+            </TabsContent>
+          </Tabs>
         )}
       </CardContent>
       {totalFilteredSuggestions === 0 && totalSuggestions > 0 && (
