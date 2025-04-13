@@ -24,6 +24,14 @@ export type MetricsType = {
   totalCost: { value: string; variation: string };
 };
 
+// Helper function to validate impact values
+const validateImpact = (impact: string): "alto" | "médio" | "baixo" => {
+  if (impact === "alto" || impact === "médio" || impact === "baixo") {
+    return impact as "alto" | "médio" | "baixo";
+  }
+  return "médio";
+};
+
 export const useDashboardData = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -152,7 +160,7 @@ export const useDashboardData = () => {
         title: suggestion.title,
         description: suggestion.description,
         type: 'campaign',
-        impact: suggestion.impact as 'alto' | 'médio' | 'baixo',
+        impact: validateImpact(suggestion.impact),
         target_campaigns: suggestion.targetCampaigns
       }));
       
@@ -160,7 +168,7 @@ export const useDashboardData = () => {
         title: suggestion.title,
         description: suggestion.description,
         type: 'funnel',
-        impact: suggestion.impact as 'alto' | 'médio' | 'baixo',
+        impact: validateImpact(suggestion.impact),
         target_pages: suggestion.targetPages,
         target_audience: suggestion.targetAudience
       }));
