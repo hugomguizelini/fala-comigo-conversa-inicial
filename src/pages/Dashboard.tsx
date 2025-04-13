@@ -13,6 +13,7 @@ const Dashboard = () => {
   const [isLoadingChat, setIsLoadingChat] = useState(false);
   const [chatMessages, setChatMessages] = useState<{role: 'user'|'assistant'|'system', content: string}[]>([]);
   const [chatContext, setChatContext] = useState<any>(null);
+  const [fallbackMode, setFallbackMode] = useState(false);
   
   // Abrir o chat com análise inicial
   const handleOpenChat = (analysis: GptAnalysisResult | null) => {
@@ -25,6 +26,9 @@ const Dashboard = () => {
       // Será preenchido na primeira mensagem
       setChatContext({});
     }
+
+    // Resetar o fallback mode quando abrimos um novo chat
+    setFallbackMode(false);
   };
 
   // Função para enviar mensagem para a Edge Function
@@ -53,6 +57,18 @@ const Dashboard = () => {
       if (!data.success) {
         throw new Error(data.error || "Erro desconhecido no processamento da mensagem");
       }
+
+      // Verificar se estamos em modo fallback
+      if (data.fromFallback && !fallbackMode) {
+        setFallbackMode(true);
+        toast.warning(
+          "Modo de contingência ativado", 
+          { 
+            description: "A API da OpenAI está temporariamente indisponível. Estamos usando respostas locais enquanto tentamos restabelecer a conexão.",
+            duration: 6000
+          }
+        );
+      }
       
       // Adicionar a nova mensagem ao histórico
       const newUserMessage = { role: 'user' as const, content: message };
@@ -63,7 +79,21 @@ const Dashboard = () => {
     } catch (error) {
       console.error("Erro no chat:", error);
       toast.error("Ocorreu um erro ao processar sua mensagem. Tente novamente.");
-      return "Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente mais tarde.";
+      
+      // Ativar modo fallback em caso de erro
+      if (!fallbackMode) {
+        setFallbackMode(true);
+      }
+      
+      // Fornecer uma resposta de fallback mesmo em caso de erro
+      const fallbackReply = "Desculpe, ocorreu um erro ao processar sua mensagem. Estamos enfrentando limitações temporárias no serviço. Por favor, tente perguntas simples ou retorne mais tarde quando nossos serviços estiverem totalmente operacionais.";
+      
+      // Adicionar a mensagem de fallback ao histórico
+      const newUserMessage = { role: 'user' as const, content: message };
+      const newAssistantMessage = { role: 'assistant' as const, content: fallbackReply };
+      setChatMessages(prev => [...prev, newUserMessage, newAssistantMessage]);
+      
+      return fallbackReply;
     } finally {
       setIsLoadingChat(false);
     }
@@ -114,6 +144,7 @@ const Dashboard = () => {
         initialAnalysis={initialAnalysis}
         onSendMessage={handleSendMessage}
         isLoading={isLoadingChat}
+        fallbackMode={fallbackMode}
       />
     </DashboardLayout>
   );

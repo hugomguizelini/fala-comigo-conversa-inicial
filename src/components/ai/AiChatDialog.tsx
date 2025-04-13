@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Bot, User, X, Sparkles } from "lucide-react";
+import { Send, Bot, User, X, Sparkles, AlertTriangle } from "lucide-react";
 import { GptAnalysisResult } from "@/hooks/dashboard/useGptAnalysis";
 import ReactMarkdown from 'react-markdown';
 
@@ -20,6 +20,7 @@ type AiChatDialogProps = {
   initialAnalysis: GptAnalysisResult | null;
   onSendMessage: (message: string) => Promise<string>;
   isLoading: boolean;
+  fallbackMode?: boolean;
 };
 
 const AiChatDialog: React.FC<AiChatDialogProps> = ({
@@ -27,7 +28,8 @@ const AiChatDialog: React.FC<AiChatDialogProps> = ({
   onOpenChange,
   initialAnalysis,
   onSendMessage,
-  isLoading
+  isLoading,
+  fallbackMode = false
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -69,9 +71,18 @@ const AiChatDialog: React.FC<AiChatDialogProps> = ({
         });
       }
 
+      // Adicionar alerta de modo fallback se necessário
+      if (fallbackMode) {
+        initialMessages.push({
+          role: 'system',
+          content: '⚠️ **Nota**: Estamos operando em modo de contingência devido a limitações temporárias da API. As respostas serão mais genéricas até que o serviço seja restaurado.',
+          timestamp: new Date()
+        });
+      }
+
       setMessages(initialMessages);
     }
-  }, [open, initialAnalysis]);
+  }, [open, initialAnalysis, fallbackMode]);
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -150,10 +161,16 @@ const AiChatDialog: React.FC<AiChatDialogProps> = ({
         <DialogHeader className="p-4 border-b">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                <Sparkles className="h-5 w-5 text-purple-600" />
+              <div className={`w-8 h-8 rounded-full ${fallbackMode ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-purple-100 dark:bg-purple-900/30'} flex items-center justify-center`}>
+                {fallbackMode ? (
+                  <AlertTriangle className="h-5 w-5 text-amber-600" />
+                ) : (
+                  <Sparkles className="h-5 w-5 text-purple-600" />
+                )}
               </div>
-              <DialogTitle>Assistente de Marketing IA</DialogTitle>
+              <DialogTitle>
+                {fallbackMode ? 'Assistente de Marketing (Modo Contingência)' : 'Assistente de Marketing IA'}
+              </DialogTitle>
             </div>
             <Button 
               variant="ghost" 
@@ -184,13 +201,13 @@ const AiChatDialog: React.FC<AiChatDialogProps> = ({
                     message.role === 'user' 
                       ? 'bg-blue-100 dark:bg-blue-900/30' 
                       : message.role === 'system' 
-                        ? 'bg-gray-100 dark:bg-gray-800' 
-                        : 'bg-purple-100 dark:bg-purple-900/30'
+                        ? (fallbackMode ? 'bg-amber-100 dark:bg-amber-800/30' : 'bg-gray-100 dark:bg-gray-800') 
+                        : (fallbackMode ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-purple-100 dark:bg-purple-900/30')
                   }`}>
                     {message.role === 'user' ? (
                       <User className="h-5 w-5 text-blue-600" />
                     ) : (
-                      <Bot className="h-5 w-5 text-purple-600" />
+                      <Bot className={`h-5 w-5 ${fallbackMode ? 'text-amber-600' : 'text-purple-600'}`} />
                     )}
                   </Avatar>
                   
@@ -198,8 +215,8 @@ const AiChatDialog: React.FC<AiChatDialogProps> = ({
                     message.role === 'user' 
                       ? 'bg-blue-500 text-white' 
                       : message.role === 'system' 
-                        ? 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200' 
-                        : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
+                        ? (fallbackMode ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200' : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200')
+                        : (fallbackMode ? 'bg-white dark:bg-gray-800 border border-amber-200 dark:border-amber-700' : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700')
                   }`}>
                     {message.role === 'assistant' || message.role === 'system' ? (
                       <div className="prose dark:prose-invert prose-sm max-w-none">
@@ -250,15 +267,20 @@ const AiChatDialog: React.FC<AiChatDialogProps> = ({
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Digite sua pergunta sobre campanhas, métricas ou otimizações..."
-                className="resize-none min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                placeholder={fallbackMode 
+                  ? "Modo de contingência ativado. Perguntas simples funcionam melhor..."
+                  : "Digite sua pergunta sobre campanhas, métricas ou otimizações..."
+                }
+                className={`resize-none min-h-[60px] w-full rounded-md border ${
+                  fallbackMode ? 'border-amber-300 dark:border-amber-700' : 'border-input'
+                } bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring`}
                 rows={2}
               />
             </div>
             <Button 
               onClick={handleSend} 
               disabled={sending || !input.trim() || isLoading} 
-              className="bg-purple-600 hover:bg-purple-700"
+              className={fallbackMode ? "bg-amber-600 hover:bg-amber-700" : "bg-purple-600 hover:bg-purple-700"}
             >
               {sending || isLoading ? (
                 <span className="animate-spin">⏳</span>
@@ -270,6 +292,11 @@ const AiChatDialog: React.FC<AiChatDialogProps> = ({
           {isLoading && (
             <p className="text-xs text-center mt-2 text-muted-foreground">
               Processando sua mensagem...
+            </p>
+          )}
+          {fallbackMode && (
+            <p className="text-xs text-center mt-2 text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 p-1 rounded">
+              ⚠️ Modo de contingência ativado devido a limitações da API. Respostas simplificadas.
             </p>
           )}
         </div>
