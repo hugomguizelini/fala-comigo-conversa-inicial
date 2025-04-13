@@ -10,7 +10,7 @@ interface SocialLoginButtonsProps {
 const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({ onSocialLogin }) => {
   return (
     <>
-      <div className="relative my-6">
+      <div className="relative my-4 sm:my-6">
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-white/10"></div>
         </div>
@@ -19,14 +19,14 @@ const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({ onSocialLogin }
         </div>
       </div>
       
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2 sm:gap-3">
         <Button
           type="button"
           variant="outline"
-          className="bg-white/5 border-white/10 text-white hover:bg-white/10"
+          className="text-xs sm:text-sm bg-white/5 border-white/10 text-white hover:bg-white/10"
           onClick={() => onSocialLogin('google')}
         >
-          <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
+          <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" viewBox="0 0 24 24">
             <path
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
               fill="#4285F4"
@@ -49,10 +49,10 @@ const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({ onSocialLogin }
         <Button
           type="button"
           variant="outline"
-          className="bg-white/5 border-white/10 text-white hover:bg-white/10"
+          className="text-xs sm:text-sm bg-white/5 border-white/10 text-white hover:bg-white/10"
           onClick={() => onSocialLogin('facebook')}
         >
-          <Facebook className="h-4 w-4 mr-2 text-[#1877F2]" />
+          <Facebook className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 text-[#1877F2]" />
           Facebook
         </Button>
       </div>

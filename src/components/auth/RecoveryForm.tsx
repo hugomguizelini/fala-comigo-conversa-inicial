@@ -37,18 +37,18 @@ const RecoveryForm = ({ onLoginClick }: RecoveryFormProps) => {
   if (submitted) {
     return (
       <div className="space-y-6 flex flex-col items-center justify-center py-4">
-        <CheckCircle2 className="h-16 w-16 text-[#8B5CF6]" />
-        <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-bold tracking-tight text-white">
+        <CheckCircle2 className="h-12 w-12 sm:h-16 sm:w-16 text-[#8B5CF6]" />
+        <div className="space-y-1 sm:space-y-2 text-center">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
             E-mail enviado
           </h1>
-          <p className="text-sm text-white/70 max-w-xs">
+          <p className="text-xs sm:text-sm text-white/70 max-w-xs">
             Enviamos instruções de recuperação para {email}. Por favor, verifique sua caixa de entrada.
           </p>
         </div>
         <Button 
           onClick={onLoginClick}
-          className="mt-4 bg-gradient-to-r from-[#8B5CF6] to-[#7C3AED] hover:from-[#9d78f8] hover:to-[#8B5CF6] text-white font-medium shadow-lg shadow-[#8B5CF6]/20"
+          className="mt-3 sm:mt-4 bg-gradient-to-r from-[#8B5CF6] to-[#7C3AED] hover:from-[#9d78f8] hover:to-[#8B5CF6] text-white font-medium shadow-lg shadow-[#8B5CF6]/20"
         >
           Voltar ao login
         </Button>
@@ -57,12 +57,12 @@ const RecoveryForm = ({ onLoginClick }: RecoveryFormProps) => {
   }
 
   return (
-    <div className="space-y-6 w-full">
-      <div className="space-y-2 text-center">
-        <h1 className="text-2xl font-bold tracking-tight text-white">
+    <div className="space-y-4 sm:space-y-6 w-full">
+      <div className="space-y-1 sm:space-y-2 text-center">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
           Recupere sua senha
         </h1>
-        <p className="text-sm text-white/70">
+        <p className="text-xs sm:text-sm text-white/70">
           Enviaremos um link para redefinição
         </p>
       </div>
@@ -93,7 +93,7 @@ const RecoveryForm = ({ onLoginClick }: RecoveryFormProps) => {
           <button
             type="button"
             onClick={onLoginClick}
-            className="text-sm text-white/70 hover:text-white inline-flex items-center gap-1 transition-colors"
+            className="text-xs sm:text-sm text-white/70 hover:text-white inline-flex items-center gap-1 transition-colors"
           >
             <ArrowLeft className="h-3 w-3" />
             <span>Lembrou sua senha? Voltar ao login</span>

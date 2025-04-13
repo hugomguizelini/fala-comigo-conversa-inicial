@@ -5,6 +5,7 @@ import RegisterForm from '@/components/auth/RegisterForm';
 import RecoveryForm from '@/components/auth/RecoveryForm';
 import { InsighorLogo } from '@/components/auth/InsighorLogo';
 import AuthHeadline from '@/components/auth/AuthHeadline';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 // Definir os tipos de props aceitos pelo componente Auth
 interface AuthProps {
@@ -14,6 +15,7 @@ interface AuthProps {
 const Auth: React.FC<AuthProps> = ({ type: initialType }) => {
   // Estado para controlar qual formulário mostrar
   const [currentType, setCurrentType] = useState<'login' | 'register' | 'recovery'>(initialType);
+  const isMobile = useIsMobile();
   
   // Funções de navegação entre formulários
   const handleNavigateToLogin = () => setCurrentType('login');
@@ -28,16 +30,16 @@ const Auth: React.FC<AuthProps> = ({ type: initialType }) => {
       </div>
 
       {/* Seção de formulário - centralizada */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12">
-        <div className="w-full max-w-md space-y-8">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 lg:p-12">
+        <div className="w-full max-w-md space-y-6">
           <div className="text-center">
-            <InsighorLogo className="h-12 w-auto mx-auto mb-6" />
-            <h2 className="text-2xl font-bold tracking-tight text-white">
+            <InsighorLogo className="h-10 w-auto mx-auto mb-4 sm:h-12 sm:mb-6" />
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
               {currentType === 'login' && 'Bem-vindo de volta'}
               {currentType === 'register' && 'Crie sua conta'}
               {currentType === 'recovery' && 'Recupere sua senha'}
             </h2>
-            <p className="mt-2 text-sm text-white/70">
+            <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-white/70">
               {currentType === 'login' && 'Acesse sua conta para continuar'}
               {currentType === 'register' && 'Preencha os dados para começar'}
               {currentType === 'recovery' && 'Enviaremos instruções para seu email'}

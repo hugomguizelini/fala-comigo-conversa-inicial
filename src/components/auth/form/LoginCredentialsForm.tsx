@@ -64,7 +64,7 @@ const LoginCredentialsForm: React.FC<LoginCredentialsFormProps> = ({
         />
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
         <div className="flex items-center space-x-2">
           <Checkbox 
             id="remember" 

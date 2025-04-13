@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import LoginCredentialsForm from "./form/LoginCredentialsForm";
 import SocialLoginButtons from "./social/SocialLoginButtons";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface LoginFormProps {
   onRegisterClick: () => void;
@@ -16,6 +17,7 @@ const LoginForm = ({ onRegisterClick, onRecoveryClick }: LoginFormProps) => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const isMobile = useIsMobile();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,12 +85,12 @@ const LoginForm = ({ onRegisterClick, onRecoveryClick }: LoginFormProps) => {
   };
 
   return (
-    <div className="space-y-6 w-full">
-      <div className="space-y-2 text-center">
-        <h1 className="text-2xl font-bold tracking-tight text-white">
+    <div className="space-y-4 sm:space-y-6 w-full">
+      <div className="space-y-1 sm:space-y-2 text-center">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
           Bem-vindo ao Insighor.AI
         </h1>
-        <p className="text-sm text-white/70">
+        <p className="text-xs sm:text-sm text-white/70">
           A inteligência artificial a serviço do seu marketing
         </p>
       </div>
