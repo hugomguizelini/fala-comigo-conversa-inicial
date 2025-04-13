@@ -13,13 +13,18 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Verificamos se realmente não está autenticado após o carregamento
     if (!isLoading && !isAuthenticated) {
+      console.log("Usuário não autenticado, redirecionando para login");
       toast.error("Você precisa fazer login para acessar esta página");
-      navigate('/login');
+      // Adicionamos um pequeno delay para garantir que todos os estados foram atualizados
+      setTimeout(() => {
+        navigate('/login');
+      }, 100);
     }
   }, [isAuthenticated, isLoading, navigate]);
 
-  // Se estiver carregando, não renderiza nada ainda
+  // Se estiver carregando, mostra um loader
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">

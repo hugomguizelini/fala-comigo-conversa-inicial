@@ -13,9 +13,29 @@ export const useAuthStatus = () => {
   useEffect(() => {
     setIsLoading(true);
     
+    // Verificar sessão atual primeiro
+    const checkCurrentSession = async () => {
+      try {
+        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Error checking auth session:", error);
+          throw error;
+        }
+        console.log("Current session:", currentSession);
+        setSession(currentSession);
+        setUser(currentSession?.user ?? null);
+        setIsAuthenticated(!!currentSession);
+      } catch (error) {
+        console.error("Error in checkCurrentSession:", error);
+        setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
     // Configurar listener de eventos de autenticação
     const { data: authListener } = supabase.auth.onAuthStateChange((event, currentSession) => {
-      console.log("Auth state changed:", event);
+      console.log("Auth state changed:", event, currentSession);
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       setIsAuthenticated(!!currentSession);
@@ -25,20 +45,14 @@ export const useAuthStatus = () => {
         toast.success("Login realizado com sucesso!");
       } else if (event === 'SIGNED_OUT') {
         toast.info("Você foi desconectado");
+      } else if (event === 'USER_UPDATED') {
+        toast.success("Perfil atualizado com sucesso");
+      } else if (event === 'PASSWORD_RECOVERY') {
+        toast.info("Recuperação de senha solicitada");
       }
     });
     
-    // Verificar sessão atual
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      setSession(currentSession);
-      setUser(currentSession?.user ?? null);
-      setIsAuthenticated(!!currentSession);
-      setIsLoading(false);
-    }).catch((error) => {
-      console.error("Error checking auth session:", error);
-      setIsAuthenticated(false);
-      setIsLoading(false);
-    });
+    checkCurrentSession();
     
     return () => {
       authListener.subscription.unsubscribe();
@@ -47,7 +61,8 @@ export const useAuthStatus = () => {
   
   const signOut = async () => {
     try {
-      await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
     } catch (error) {
       console.error("Error signing out:", error);
       toast.error("Erro ao fazer logout");
