@@ -35,7 +35,7 @@ const ReportsSummaryCards = () => {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {summaryData.map((item, index) => (
-        <Card key={index}>
+        <Card key={index} className="shadow-sm">
           <CardContent className="p-4">
             <p className="text-sm font-medium text-muted-foreground">{item.title}</p>
             <div className="flex items-center justify-between mt-1">
