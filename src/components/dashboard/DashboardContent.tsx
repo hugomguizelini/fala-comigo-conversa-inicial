@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { ArrowUp, Search, Filter, Download } from "lucide-react";
+import { ArrowUp, Search, Filter, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import { MetricsTable } from "./MetricsTable";
@@ -15,6 +15,8 @@ import { Issue, Suggestion } from "@/types/dataTypes";
 
 // Importando dados do dashboard para uso temporário
 import dashboardData from "@/data/dashboard-data.json";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 export default function DashboardContent() {
   const [timeRange, setTimeRange] = useState<string>("month");
@@ -29,7 +31,8 @@ export default function DashboardContent() {
     issues,
     suggestions,
     loadData,
-    isAuthenticated
+    isAuthenticated,
+    lastLoadTime
   } = useDashboardData();
 
   // Define the chart data type
@@ -58,12 +61,17 @@ export default function DashboardContent() {
         cost: item.cost
       }));
 
+  // Formatação da data da última atualização
+  const formattedLastUpdate = lastLoadTime 
+    ? format(lastLoadTime, "'Última atualização em' dd 'de' MMMM', às' HH:mm", {locale: ptBR})
+    : "Dados não carregados";
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <h1 className="text-3xl font-bold">Bem-vindo{isAuthenticated ? "" : " (Modo Demonstração)"}</h1>
         
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <div className="relative flex items-center">
             <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
             <input 
@@ -78,11 +86,25 @@ export default function DashboardContent() {
             <span>Filtrar</span>
           </Button>
           
-          <Button variant="outline" size="sm" className="flex items-center gap-1" onClick={loadData}>
-            <Download className="h-4 w-4" />
-            <span>Atualizar</span>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex items-center gap-1" 
+            onClick={() => loadData()}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="h-4 w-4" />
+            )}
+            <span>{isLoading ? "Carregando..." : "Atualizar"}</span>
           </Button>
         </div>
+      </div>
+      
+      <div className="text-sm text-muted-foreground">
+        {formattedLastUpdate}
       </div>
       
       <MetricsTable metrics={metrics} />
