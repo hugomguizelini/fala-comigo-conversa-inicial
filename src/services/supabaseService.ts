@@ -2,7 +2,7 @@
 // Este arquivo agora serve apenas como ponto de exportação para manter compatibilidade
 
 // Reexporta interfaces de tipos
-export { CampaignData, MonthlyPerformance } from "@/types/dataTypes";
+export type { CampaignData, MonthlyPerformance } from "@/types/dataTypes";
 
 // Reexporta funções de gerenciamento de campanhas
 export { 
