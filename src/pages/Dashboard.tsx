@@ -9,17 +9,28 @@ import { GptAnalysisResult } from "@/hooks/dashboard/useGptAnalysis";
 const Dashboard = () => {
   const [chatOpen, setChatOpen] = useState(false);
   const [initialAnalysis, setInitialAnalysis] = useState<GptAnalysisResult | null>(null);
+  const [isLoadingChat, setIsLoadingChat] = useState(false);
   
-  // Abrir o chat com análise inicial (simplificado, sem requisições)
+  // Abrir o chat com análise inicial
   const handleOpenChat = (analysis: GptAnalysisResult | null) => {
+    console.log("Abrindo chat com análise:", analysis ? "disponível" : "não disponível");
     setInitialAnalysis(analysis);
     setChatOpen(true);
   };
 
   // Função simulada para o envio de mensagem (sem fazer chamadas reais à API)
   const handleSendMessage = async (message: string): Promise<string> => {
-    // Simulando uma resposta sem fazer requisição real à API
-    return "Esta é uma resposta simulada para demonstrar a interface do chat. Em uma implementação completa, esta mensagem viria da API.";
+    setIsLoadingChat(true);
+    
+    try {
+      // Simulando uma pequena demora para parecer mais realista
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Resposta simulada
+      return "Esta é uma resposta simulada para demonstrar a interface do chat. Em uma implementação completa, esta mensagem viria da API.";
+    } finally {
+      setIsLoadingChat(false);
+    }
   };
 
   useEffect(() => {
@@ -52,7 +63,7 @@ const Dashboard = () => {
         onOpenChange={setChatOpen}
         initialAnalysis={initialAnalysis}
         onSendMessage={handleSendMessage}
-        isLoading={false}
+        isLoading={isLoadingChat}
       />
     </DashboardLayout>
   );

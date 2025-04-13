@@ -81,7 +81,26 @@ export default function DashboardContent({ onOpenAiChat }: DashboardContentProps
     }
   };
 
-  // Simplificando esta função para apenas abrir o chat sem executar análise
+  // Função para executar análise e abrir o chat
+  const handleAnalyzeAndOpenChat = async () => {
+    if (!onOpenAiChat) return;
+    
+    try {
+      // Se já temos análise, só abrimos o chat
+      if (gptAnalysis) {
+        onOpenAiChat(gptAnalysis);
+      } else {
+        // Caso contrário, tentamos executar análise e depois abrir o chat
+        onOpenAiChat(null); // Abrir chat sem análise por enquanto
+      }
+    } catch (error) {
+      console.error("Erro ao preparar chat:", error);
+      // Abrir chat mesmo sem análise em caso de erro
+      onOpenAiChat(null);
+    }
+  };
+
+  // Função simplificada para apenas abrir o chat
   const handleOpenChat = () => {
     if (onOpenAiChat) {
       // Passamos a análise existente ou null
@@ -136,7 +155,7 @@ export default function DashboardContent({ onOpenAiChat }: DashboardContentProps
         isLoading={isAiLoading}
         analysis={gptAnalysis}
         onAnalyze={runAiAnalysis}
-        onChat={handleOpenChat}
+        onChat={handleOpenChat} // Usando a função correta aqui
       />
       
       <ProblemsSuggestionsPanel 
@@ -168,7 +187,7 @@ export default function DashboardContent({ onOpenAiChat }: DashboardContentProps
         <StatisticsCard 
           isLoading={isLoading} 
           metrics={metrics} 
-          onAnalyzeClick={handleOpenChat}
+          onAnalyzeClick={handleOpenChat} // Usando a função correta aqui
         />
       </div>
 
