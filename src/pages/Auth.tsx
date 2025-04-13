@@ -1,57 +1,60 @@
 
-import { useState } from "react";
-import LoginForm from "@/components/auth/LoginForm";
-import RegisterForm from "@/components/auth/RegisterForm";
-import RecoveryForm from "@/components/auth/RecoveryForm";
-import { InsighorLogo } from "@/components/auth/InsighorLogo";
-import AuthHeadline from "@/components/auth/AuthHeadline";
+import React, { useState } from 'react';
+import LoginForm from '@/components/auth/LoginForm';
+import RegisterForm from '@/components/auth/RegisterForm';
+import RecoveryForm from '@/components/auth/RecoveryForm';
+import { InsighorLogo } from '@/components/auth/InsighorLogo';
+import AuthHeadline from '@/components/auth/AuthHeadline';
 
-const Auth = () => {
-  const [authView, setAuthView] = useState<"login" | "register" | "recovery">("login");
+// Definir os tipos de props aceitos pelo componente Auth
+interface AuthProps {
+  type: 'login' | 'register' | 'recovery';
+}
+
+const Auth: React.FC<AuthProps> = ({ type: initialType }) => {
+  // Estado para controlar qual formulário mostrar
+  const [currentType, setCurrentType] = useState<'login' | 'register' | 'recovery'>(initialType);
+  
+  // Funções de navegação entre formulários
+  const handleNavigateToLogin = () => setCurrentType('login');
+  const handleNavigateToRegister = () => setCurrentType('register');
+  const handleNavigateToRecovery = () => setCurrentType('recovery');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1A1F2C] to-[#111827] flex items-stretch">
-      {/* Lado esquerdo - Formulários */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
-        <div className="w-full max-w-md relative z-10">
-          <div className="flex justify-center mb-8">
-            <InsighorLogo className="h-16 w-auto" />
-          </div>
-
-          <div className="backdrop-blur-xl bg-black/30 p-8 rounded-2xl border border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.3)]">
-            {authView === "login" && (
-              <LoginForm 
-                onRegisterClick={() => setAuthView("register")}
-                onRecoveryClick={() => setAuthView("recovery")} 
-              />
-            )}
-            {authView === "register" && (
-              <RegisterForm 
-                onLoginClick={() => setAuthView("login")} 
-              />
-            )}
-            {authView === "recovery" && (
-              <RecoveryForm 
-                onLoginClick={() => setAuthView("login")} 
-              />
-            )}
-          </div>
+    <div className="flex flex-col lg:flex-row min-h-screen">
+      {/* Seção de formulário - menor em telas grandes */}
+      <div className="w-full lg:w-1/2 p-6 lg:p-12 flex flex-col justify-center">
+        <div className="mx-auto w-full max-w-md">
+          <InsighorLogo className="mb-8 h-12 w-auto" />
+          <AuthHeadline type={currentType} />
           
-          <div className="text-center text-white/50 text-xs mt-8">
-            © 2025 Insighor.AI. Todos os direitos reservados.
-          </div>
+          {currentType === 'login' && (
+            <LoginForm 
+              onRegisterClick={handleNavigateToRegister} 
+              onRecoveryClick={handleNavigateToRecovery} 
+            />
+          )}
+          {currentType === 'register' && (
+            <RegisterForm 
+              onLoginClick={handleNavigateToLogin} 
+            />
+          )}
+          {currentType === 'recovery' && (
+            <RecoveryForm 
+              onLoginClick={handleNavigateToLogin} 
+            />
+          )}
         </div>
       </div>
 
-      {/* Lado direito - Headline */}
-      <div className="hidden lg:block lg:w-1/2">
-        <AuthHeadline />
-      </div>
-      
-      {/* Elementos de fundo (visíveis apenas na versão mobile) */}
-      <div className="absolute top-0 left-0 w-full h-full lg:hidden">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-[#8B5CF6]/10 rounded-full filter blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/3 w-80 h-80 bg-[#1EAEDB]/10 rounded-full filter blur-3xl animate-pulse" />
+      {/* Seção de background/branding - oculta em telas pequenas */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#8B5CF6] to-[#EC4899] items-center justify-center">
+        <div className="max-w-md text-white p-12">
+          <h2 className="text-3xl font-bold mb-4">Transforme dados em decisões</h2>
+          <p className="text-lg opacity-90">
+            Com o Insighor, analise seus dados de marketing e descubra insights valiosos para melhorar suas campanhas.
+          </p>
+        </div>
       </div>
     </div>
   );

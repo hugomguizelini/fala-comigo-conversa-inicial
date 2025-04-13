@@ -14,67 +14,77 @@ import { ArrowUp, ArrowDown, TrendingUp, Target, ArrowRight, Eye, MousePointer, 
 
 type MetricsProps = {
   metrics: {
-    impressions: { value: string; variation: string };
-    clicks: { value: string; variation: string };
-    ctr: { value: string; variation: string };
-    conversions: { value: string; variation: string };
-    cpc: { value: string; variation: string };
-    totalCost: { value: string; variation: string };
+    impressions?: { value: string; variation: string };
+    clicks?: { value: string; variation: string };
+    ctr?: { value: string; variation: string };
+    conversions?: { value: string; variation: string };
+    cpc?: { value: string; variation: string };
+    totalCost?: { value: string; variation: string };
   };
 };
 
-export const MetricsTable = ({ metrics }: MetricsProps) => {
+export const MetricsTable = ({ metrics = {} }: MetricsProps) => {
   // Helper para determinar se uma variação é positiva ou negativa
-  const getVariationStatus = (variation: string) => {
+  const getVariationStatus = (variation: string = "0%") => {
     return variation.startsWith('+') ? "increase" : variation.startsWith('-') ? "decrease" : "neutral";
+  };
+
+  // Garantir valores padrão para métricas indefinidas
+  const safeMetrics = {
+    impressions: metrics.impressions || { value: "0", variation: "0%" },
+    clicks: metrics.clicks || { value: "0", variation: "0%" },
+    ctr: metrics.ctr || { value: "0%", variation: "0%" },
+    conversions: metrics.conversions || { value: "0", variation: "0%" },
+    cpc: metrics.cpc || { value: "R$ 0,00", variation: "0%" },
+    totalCost: metrics.totalCost || { value: "R$ 0,00", variation: "0%" }
   };
 
   const metricsData = [
     {
       name: "Impressões",
-      value: metrics.impressions.value,
-      change: metrics.impressions.variation,
-      status: getVariationStatus(metrics.impressions.variation),
+      value: safeMetrics.impressions.value,
+      change: safeMetrics.impressions.variation,
+      status: getVariationStatus(safeMetrics.impressions.variation),
       icon: <Eye className="h-4 w-4 text-green-500" />,
       description: "Total de vezes que seus anúncios foram exibidos"
     },
     {
       name: "Cliques",
-      value: metrics.clicks.value,
-      change: metrics.clicks.variation,
-      status: getVariationStatus(metrics.clicks.variation),
+      value: safeMetrics.clicks.value,
+      change: safeMetrics.clicks.variation,
+      status: getVariationStatus(safeMetrics.clicks.variation),
       icon: <MousePointer className="h-4 w-4 text-blue-500" />,
       description: "Total de cliques em seus anúncios"
     },
     {
       name: "CTR",
-      value: metrics.ctr.value,
-      change: metrics.ctr.variation,
-      status: getVariationStatus(metrics.ctr.variation),
+      value: safeMetrics.ctr.value,
+      change: safeMetrics.ctr.variation,
+      status: getVariationStatus(safeMetrics.ctr.variation),
       icon: <TrendingUp className="h-4 w-4 text-amber-500" />,
       description: "Taxa de cliques (Cliques / Impressões)"
     },
     {
       name: "Conversões",
-      value: metrics.conversions.value,
-      change: metrics.conversions.variation,
-      status: getVariationStatus(metrics.conversions.variation),
+      value: safeMetrics.conversions.value,
+      change: safeMetrics.conversions.variation,
+      status: getVariationStatus(safeMetrics.conversions.variation),
       icon: <Target className="h-4 w-4 text-purple-500" />,
       description: "Total de ações completadas após cliques"
     },
     {
       name: "CPC",
-      value: metrics.cpc.value,
-      change: metrics.cpc.variation,
-      status: getVariationStatus(metrics.cpc.variation),
+      value: safeMetrics.cpc.value,
+      change: safeMetrics.cpc.variation,
+      status: getVariationStatus(safeMetrics.cpc.variation),
       icon: <CreditCard className="h-4 w-4 text-emerald-500" />,
       description: "Custo por clique médio"
     },
     {
       name: "Custo Total",
-      value: metrics.totalCost.value,
-      change: metrics.totalCost.variation,
-      status: getVariationStatus(metrics.totalCost.variation),
+      value: safeMetrics.totalCost.value,
+      change: safeMetrics.totalCost.variation,
+      status: getVariationStatus(safeMetrics.totalCost.variation),
       icon: <CreditCard className="h-4 w-4 text-red-500" />,
       description: "Total gasto na campanha"
     }
