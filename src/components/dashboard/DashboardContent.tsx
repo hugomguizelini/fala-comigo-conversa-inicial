@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from "react";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -12,11 +13,12 @@ import { CampaignsTable } from "./CampaignsTable";
 import { 
   getCampaigns, 
   getMonthlyPerformance, 
-  processAndInsertCampaignData, 
+  processAndInsertCampaignData,
   processAndInsertMonthlyData,
   CampaignData,
   MonthlyPerformance
 } from "@/services/supabaseService";
+import { processCsvFile } from "@/services/csvProcessingService";
 
 // Importando dados do dashboard para uso temporário
 import dashboardData from "@/data/dashboard-data.json";
@@ -92,12 +94,21 @@ export default function DashboardContent() {
     setIsLoading(true);
     try {
       for (const file of acceptedFiles) {
+        // First process the CSV file to get the data
+        const parseResult = await processCsvFile(file);
+        
+        if (parseResult.errors && parseResult.errors.length > 0) {
+          console.error("Error parsing CSV:", parseResult.errors);
+          throw new Error(`Error parsing CSV: ${parseResult.errors[0].message}`);
+        }
+
+        // Then pass the parsed data to the insertion functions
         if (file.name.includes("campaign") || file.name.includes("campanha")) {
-          await processAndInsertCampaignData(file);
+          await processAndInsertCampaignData(parseResult.data);
         } else if (file.name.includes("monthly") || file.name.includes("mensal")) {
-          await processAndInsertMonthlyData(file);
+          await processAndInsertMonthlyData(parseResult.data);
         } else {
-          await processAndInsertCampaignData(file);
+          await processAndInsertCampaignData(parseResult.data);
         }
       }
       
