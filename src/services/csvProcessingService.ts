@@ -109,18 +109,18 @@ export const processCsvFile = (file: File): Promise<Papa.ParseResult<any>> => {
 const normalizeCampaignData = (row: any): CampaignData => {
   console.log("Processando linha do CSV:", row);
   
-  // Mapear campos comuns com seus possíveis nomes alternativos
-  const nameField = row.nome || row.name || row.campanha || row.campaign || "Campanha sem nome";
-  const statusField = row.status || "active";
+  // Mapear campos comuns com seus possíveis nomes alternativos de colunas no Meta Ads
+  const nameField = row.nome || row.name || row.campanha || row.campaign || row["Nome da campanha"] || "Campanha sem nome";
+  const statusField = row.status || row.veiculacao || row["Veiculação da campanha"] || "active";
   const budgetField = row.budget || row.orçamento || row.orcamento || row.budget || "R$ 0";
-  const impressionsField = row.impressions || row.impressões || row.impressoes || row.impressoes || row["impressões"] || "0";
-  const clicksField = row.clicks || row.cliques || row.cliques || "0";
-  const ctrField = row.ctr || row["taxa de cliques"] || row["taxa_de_cliques"] || "0%";
-  const conversionsField = row.conversions || row.conversões || row.conversoes || row.conversoes || row["conversões"] || "0";
-  const conversionTypeField = row.conversion_type || row.tipo_conversão || row.tipo_conversao || "";
-  const cpcField = row.cpc || row.custo_por_clique || row["custo por clique"] || "R$ 0,00";
-  const totalCostField = row.total_cost || row.custo_total || row.custo || row["custo total"] || "R$ 0,00";
-  const roasField = row.roas || row.retorno || row["retorno sobre investimento"] || "0%";
+  const impressionsField = row.impressions || row.impressões || row.impressoes || row.impressoes || row["impressões"] || row["Impressões"] || "0";
+  const clicksField = row.clicks || row.cliques || row["Cliques no link"] || row["Cliques (todos)"] || "0";
+  const ctrField = row.ctr || row["taxa de cliques"] || row["CTR (taxa de cliques no link)"] || row["CTR (todos)"] || row["Connect Rate"] || "0%";
+  const conversionsField = row.conversions || row.conversões || row.conversoes || row.conversoes || row["conversões"] || row["Resultados"] || "0";
+  const conversionTypeField = row.conversion_type || row.tipo_conversão || row.tipo_conversao || row["Indicador de resultados"] || "";
+  const cpcField = row.cpc || row.custo_por_clique || row["custo por clique"] || row["CPC (custo por clique no link) (BRL)"] || row["CPC (todos) (BRL)"] || "R$ 0,00";
+  const totalCostField = row.total_cost || row.custo_total || row.custo || row["custo total"] || row["Valor usado (BRL)"] || "R$ 0,00";
+  const roasField = row.roas || row.retorno || row["retorno sobre investimento"] || row["Retorno sobre o investimento em publicidade (ROAS) das compras"] || "0%";
   
   console.log("Campos extraídos brutos:", {
     nome: nameField,

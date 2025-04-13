@@ -18,12 +18,19 @@ const Dashboard = () => {
       );
     }, 5500);
     
-    // Third toast message about numeric format (new)
+    // Third toast message about numeric format
     setTimeout(() => {
       toast.info(
         "Os valores numéricos podem ser formatados como '1000', '1.000' ou '1,000'. Valores monetários podem incluir 'R$'."
       );
     }, 11000);
+    
+    // Fourth toast message about Meta Ads format (new)
+    setTimeout(() => {
+      toast.info(
+        "Para arquivos de relatório do Meta Ads, os dados serão mapeados automaticamente usando as colunas padrão do Meta."
+      );
+    }, 16500);
   }, []);
 
   return (
