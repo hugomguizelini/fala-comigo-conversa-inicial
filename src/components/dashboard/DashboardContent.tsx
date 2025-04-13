@@ -28,22 +28,25 @@ export default function DashboardContent() {
     loadData,
   } = useDashboardData();
 
-  // Transform monthlyData to the format expected by PerformanceChart
-  // Explicitly type the result as the expected chart data type
-  const chartData: { 
+  // Define the chart data type
+  type ChartDataType = { 
     name: string; 
     impressions: number; 
     clicks: number; 
     conversions: number; 
     cost: number 
-  }[] = monthlyData.length > 0 
-    ? monthlyData.map(item => ({
+  }[];
+  
+  // Transform monthlyData to the format expected by PerformanceChart
+  // Use a more explicit transformation to ensure type safety
+  const chartData: ChartDataType = monthlyData.length > 0 
+    ? monthlyData.map((item) => ({
         name: item.month, // Map 'month' to 'name' for chart labels
         impressions: item.impressions,
         clicks: item.clicks,
         conversions: item.conversions,
         cost: item.cost
-      })) 
+      }))
     : dashboardData.monthlyPerformance.data;
 
   return (
