@@ -47,7 +47,7 @@ export default function DashboardContent() {
         conversions: item.conversions,
         cost: item.cost
       }))
-    : dashboardData.monthlyPerformance.data;
+    : (dashboardData.monthlyPerformance.data as ChartDataType); // Add explicit type assertion
 
   return (
     <div className="space-y-6">
