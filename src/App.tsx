@@ -9,7 +9,10 @@ import RedirectToDashboard from './pages/RedirectToDashboard';
 import ImportData from './pages/ImportData';
 import Architecture from './pages/Architecture';
 import NotFound from './pages/NotFound';
-import Dashboard from './pages/Dashboard';  // Atualizado o import
+import Dashboard from './pages/Dashboard';
+import Reports from './pages/Reports';
+import Profile from './pages/Profile';
+import Settings from './pages/Settings';
 import './App.css';
 
 // Inicializar o cliente de consulta para React Query
@@ -31,7 +34,10 @@ function App() {
             <Route path="/auth" element={<Auth type="login" />} />
             
             {/* Rotas do dashboard - sem proteção para o MVP */}
-            <Route path="/" element={<Dashboard />} />  {/* Atualizado o componente */}
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/settings" element={<Settings />} />
             <Route path="/import" element={<ImportData />} />
             <Route path="/architecture" element={<Architecture />} />
             
@@ -46,4 +52,3 @@ function App() {
 }
 
 export default App;
-
