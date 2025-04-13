@@ -12,23 +12,10 @@ import {
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ChartBar, ArrowRight } from "lucide-react";
-
-type Campaign = {
-  name: string;
-  status: string;
-  budget: string;
-  impressions: number;
-  clicks: number;
-  ctr: string;
-  conversions: number;
-  conversionType: string;
-  cpc: string;
-  totalCost: string;
-  roas: string;
-};
+import { CampaignData } from "@/services/supabaseService";
 
 type CampaignsTableProps = {
-  campaigns: Campaign[];
+  campaigns: CampaignData[];
 };
 
 export const CampaignsTable = ({ campaigns }: CampaignsTableProps) => {
@@ -61,31 +48,39 @@ export const CampaignsTable = ({ campaigns }: CampaignsTableProps) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {campaigns.map((campaign) => (
-                <TableRow key={campaign.name}>
-                  <TableCell className="font-medium max-w-[200px] truncate">
-                    {campaign.name}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={campaign.status === "active" ? "default" : "secondary"}>
-                      {campaign.status === "active" ? "Ativo" : "Inativo"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">{campaign.impressions.toLocaleString()}</TableCell>
-                  <TableCell className="text-right">{campaign.clicks.toLocaleString()}</TableCell>
-                  <TableCell className="text-right">{campaign.ctr}</TableCell>
-                  <TableCell className="text-right">{campaign.conversions}</TableCell>
-                  <TableCell className="text-right">{campaign.cpc}</TableCell>
-                  <TableCell className="text-right">{campaign.totalCost}</TableCell>
-                  <TableCell className="text-right">{campaign.roas}</TableCell>
-                  <TableCell className="text-right">
-                    <button className="inline-flex items-center text-xs text-purple-600 hover:underline">
-                      <span>Detalhes</span>
-                      <ArrowRight className="ml-1 h-3 w-3" />
-                    </button>
+              {campaigns.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={10} className="text-center py-6 text-muted-foreground">
+                    Nenhuma campanha encontrada. Faça upload de dados para começar.
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                campaigns.map((campaign) => (
+                  <TableRow key={campaign.id}>
+                    <TableCell className="font-medium max-w-[200px] truncate">
+                      {campaign.name}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={campaign.status === "active" ? "default" : "secondary"}>
+                        {campaign.status === "active" ? "Ativo" : "Inativo"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">{campaign.impressions.toLocaleString()}</TableCell>
+                    <TableCell className="text-right">{campaign.clicks.toLocaleString()}</TableCell>
+                    <TableCell className="text-right">{campaign.ctr}</TableCell>
+                    <TableCell className="text-right">{campaign.conversions}</TableCell>
+                    <TableCell className="text-right">{campaign.cpc}</TableCell>
+                    <TableCell className="text-right">{campaign.total_cost}</TableCell>
+                    <TableCell className="text-right">{campaign.roas}</TableCell>
+                    <TableCell className="text-right">
+                      <button className="inline-flex items-center text-xs text-purple-600 hover:underline">
+                        <span>Detalhes</span>
+                        <ArrowRight className="ml-1 h-3 w-3" />
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>

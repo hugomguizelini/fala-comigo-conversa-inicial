@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,29 +10,115 @@ import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 import { MetricsTable } from "./MetricsTable";
 import { ProblemsSuggestionsPanel } from "./ProblemsSuggestionsPanel";
 import { CampaignsTable } from "./CampaignsTable";
-import dashboardData from "@/data/dashboard-data.json";
-
-// Preparando os dados para o gráfico mensal com todas as métricas disponíveis
-const monthlyData = dashboardData.monthlyPerformance.data.map((item) => ({
-  name: item.month,
-  impressions: item.impressions,
-  clicks: item.clicks,
-  conversions: item.conversions,
-  cost: item.cost
-}));
+import { 
+  getCampaigns, 
+  getMonthlyPerformance, 
+  processAndInsertCampaignData, 
+  processAndInsertMonthlyData,
+  CampaignData,
+  MonthlyPerformance
+} from "@/services/supabaseService";
 
 export default function DashboardContent() {
   const { toast } = useToast();
   const [files, setFiles] = useState<File[]>([]);
   const [timeRange, setTimeRange] = useState<string>("month");
   const [activeMetric, setActiveMetric] = useState<string>("impressions");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [campaigns, setCampaigns] = useState<CampaignData[]>([]);
+  const [monthlyData, setMonthlyData] = useState<MonthlyPerformance[]>([]);
+  const [metrics, setMetrics] = useState({
+    impressions: { value: "0", variation: "0%" },
+    clicks: { value: "0", variation: "0%" },
+    ctr: { value: "0%", variation: "0%" },
+    conversions: { value: "0", variation: "0%" },
+    cpc: { value: "R$ 0,00", variation: "0%" },
+    totalCost: { value: "R$ 0,00", variation: "0%" }
+  });
   
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    setFiles(prev => [...prev, ...acceptedFiles]);
-    toast({
-      title: "Arquivo carregado com sucesso",
-      description: `${acceptedFiles.length} arquivo(s) adicionado(s).`,
-    });
+  useEffect(() => {
+    loadData();
+  }, []);
+  
+  const loadData = async () => {
+    setIsLoading(true);
+    try {
+      const campaignData = await getCampaigns();
+      const monthlyPerformanceData = await getMonthlyPerformance();
+      
+      setCampaigns(campaignData);
+      setMonthlyData(monthlyPerformanceData);
+      
+      // Calculate metrics based on campaign data
+      if (campaignData.length > 0) {
+        const totalImpressions = campaignData.reduce((sum, campaign) => sum + campaign.impressions, 0);
+        const totalClicks = campaignData.reduce((sum, campaign) => sum + campaign.clicks, 0);
+        const totalConversions = campaignData.reduce((sum, campaign) => sum + campaign.conversions, 0);
+        
+        // Convert string costs to numbers if possible and sum
+        const totalCost = campaignData.reduce((sum, campaign) => {
+          const costValue = parseFloat(campaign.total_cost.replace(/[^0-9.,]/g, '').replace(',', '.')) || 0;
+          return sum + costValue;
+        }, 0);
+        
+        // Calculate derived metrics
+        const ctr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
+        const cpc = totalClicks > 0 ? totalCost / totalClicks : 0;
+        
+        setMetrics({
+          impressions: { value: totalImpressions.toLocaleString(), variation: "+12%" },
+          clicks: { value: totalClicks.toLocaleString(), variation: "+8%" },
+          ctr: { value: `${ctr.toFixed(2)}%`, variation: "+5%" },
+          conversions: { value: totalConversions.toLocaleString(), variation: "+15%" },
+          cpc: { value: `R$ ${cpc.toFixed(2)}`, variation: "-3%" },
+          totalCost: { value: `R$ ${totalCost.toFixed(2)}`, variation: "+7%" }
+        });
+      }
+    } catch (error) {
+      console.error("Error loading data:", error);
+      toast({
+        title: "Erro ao carregar dados",
+        description: "Não foi possível carregar os dados do dashboard.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    setIsLoading(true);
+    try {
+      for (const file of acceptedFiles) {
+        // Detectar tipo de arquivo com base no nome para processamento adequado
+        if (file.name.includes("campaign") || file.name.includes("campanha")) {
+          await processAndInsertCampaignData(file);
+        } else if (file.name.includes("monthly") || file.name.includes("mensal")) {
+          await processAndInsertMonthlyData(file);
+        } else {
+          // Por padrão, tratar como dados de campanha
+          await processAndInsertCampaignData(file);
+        }
+      }
+      
+      // Recarregar dados após o upload
+      await loadData();
+      
+      setFiles(prev => [...prev, ...acceptedFiles]);
+      toast({
+        title: "Arquivo processado com sucesso",
+        description: `${acceptedFiles.length} arquivo(s) carregado(s) e processado(s).`,
+      });
+    } catch (error) {
+      console.error("Error processing files:", error);
+      toast({
+        title: "Erro ao processar arquivos",
+        description: "Verifique o formato dos seus arquivos CSV.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }, [toast]);
   
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -67,6 +153,15 @@ export default function DashboardContent() {
     return null;
   };
 
+  // Transformar dados mensais para o formato do gráfico
+  const chartData = monthlyData.map(item => ({
+    name: item.month,
+    impressions: item.impressions,
+    clicks: item.clicks,
+    conversions: item.conversions,
+    cost: item.cost
+  }));
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -87,20 +182,38 @@ export default function DashboardContent() {
             <span>Filtrar</span>
           </Button>
           
-          <Button variant="outline" size="sm" className="flex items-center gap-1">
+          <Button variant="outline" size="sm" className="flex items-center gap-1" onClick={loadData}>
             <Download className="h-4 w-4" />
-            <span>Exportar</span>
+            <span>Atualizar</span>
           </Button>
         </div>
       </div>
       
       {/* Métricas */}
-      <MetricsTable metrics={dashboardData.metrics} />
+      <MetricsTable metrics={metrics} />
       
       {/* Painel de Problemas e Sugestões */}
       <ProblemsSuggestionsPanel 
-        issues={dashboardData.identifiedIssues} 
-        suggestions={dashboardData.optimizationSuggestions} 
+        issues={[
+          {
+            title: "Otimize sua taxa de conversão",
+            description: "Suas campanhas têm um CTR alto, mas a taxa de conversão está abaixo do esperado."
+          },
+          {
+            title: "Revise seus gastos com anúncios",
+            description: "O CPC está acima da média do setor para algumas campanhas."
+          }
+        ]} 
+        suggestions={[
+          {
+            title: "Teste novas variações de imagens",
+            description: "Imagens com pessoas reais têm maior engajamento."
+          },
+          {
+            title: "Implemente segmentação avançada",
+            description: "Segmentar por comportamento de usuários recentes."
+          }
+        ]} 
       />
       
       <div className="grid gap-6 md:grid-cols-2">
@@ -148,7 +261,7 @@ export default function DashboardContent() {
           </CardHeader>
           <CardContent className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={monthlyData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+              <BarChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
                 <XAxis dataKey="name" />
                 <YAxis />
@@ -232,25 +345,25 @@ export default function DashboardContent() {
               <div className="relative w-32 h-32">
                 <div className="w-full h-full rounded-full border-8 border-purple-500/30"></div>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-3xl font-bold">{dashboardData.spaceUsage.used}</div>
+                  <div className="text-3xl font-bold">{isLoading ? "..." : "87%"}</div>
                 </div>
               </div>
               
               <div className="text-center space-y-1">
                 <h4 className="font-medium">Você está quase no limite!</h4>
-                <p className="text-sm text-muted-foreground">Você já usou cerca de {dashboardData.spaceUsage.used} do seu espaço livre.</p>
+                <p className="text-sm text-muted-foreground">Você já usou cerca de 87% do seu espaço livre.</p>
               </div>
               
               <div className="flex gap-4 text-sm">
                 <div className="flex items-center">
                   <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
                   <ArrowUp className="h-3 w-3 text-green-500 mr-1" />
-                  <span className="text-green-500">{dashboardData.spaceUsage.growth.positive}</span>
+                  <span className="text-green-500">+23%</span>
                 </div>
                 <div className="flex items-center">
                   <span className="w-2 h-2 bg-red-500 rounded-full mr-1"></span>
                   <ArrowUp className="h-3 w-3 text-red-500 mr-1 rotate-180" />
-                  <span className="text-red-500">{dashboardData.spaceUsage.growth.negative}</span>
+                  <span className="text-red-500">-5%</span>
                 </div>
               </div>
             </div>
@@ -264,14 +377,14 @@ export default function DashboardContent() {
       </div>
 
       {/* Tabela de Campanhas */}
-      <CampaignsTable campaigns={dashboardData.campaignDetails} />
+      <CampaignsTable campaigns={campaigns} />
 
       {/* Área de Upload de Arquivos */}
       <Card>
         <CardHeader>
           <CardTitle>Carregar Documentos da Campanha</CardTitle>
           <CardDescription>
-            Arraste e solte seus documentos da campanha aqui para análise com IA
+            Arraste e solte arquivos CSV com dados de campanhas para análise
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -279,7 +392,7 @@ export default function DashboardContent() {
             {...getRootProps()}
             className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
               isDragActive ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
-            }`}
+            } ${isLoading ? "opacity-50 pointer-events-none" : ""}`}
           >
             <input {...getInputProps()} />
             <div className="flex flex-col items-center justify-center gap-4">
@@ -288,10 +401,14 @@ export default function DashboardContent() {
               </div>
               <div className="space-y-1 text-center">
                 <p className="text-sm font-medium">
-                  {isDragActive ? "Solte os arquivos aqui" : "Arraste e solte arquivos da campanha aqui"}
+                  {isLoading ? "Processando..." : isDragActive ? "Solte os arquivos aqui" : "Arraste e solte arquivos CSV com dados da campanha"}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  ou clique para navegar pelos arquivos
+                  {isLoading ? "Aguarde, estamos processando seus dados..." : "ou clique para navegar pelos arquivos"}
+                </p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Para dados de campanha, use arquivos com "campaign" ou "campanha" no nome.<br/>
+                  Para dados mensais, use arquivos com "monthly" ou "mensal" no nome.
                 </p>
               </div>
             </div>

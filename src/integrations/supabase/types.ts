@@ -9,7 +9,93 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      campaign_data: {
+        Row: {
+          budget: string | null
+          clicks: number
+          conversion_type: string | null
+          conversions: number
+          cpc: string | null
+          created_at: string
+          ctr: string | null
+          id: string
+          impressions: number
+          name: string
+          roas: string | null
+          status: string
+          total_cost: string | null
+          updated_at: string
+        }
+        Insert: {
+          budget?: string | null
+          clicks?: number
+          conversion_type?: string | null
+          conversions?: number
+          cpc?: string | null
+          created_at?: string
+          ctr?: string | null
+          id?: string
+          impressions?: number
+          name: string
+          roas?: string | null
+          status?: string
+          total_cost?: string | null
+          updated_at?: string
+        }
+        Update: {
+          budget?: string | null
+          clicks?: number
+          conversion_type?: string | null
+          conversions?: number
+          cpc?: string | null
+          created_at?: string
+          ctr?: string | null
+          id?: string
+          impressions?: number
+          name?: string
+          roas?: string | null
+          status?: string
+          total_cost?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      monthly_performance: {
+        Row: {
+          clicks: number
+          conversions: number
+          cost: number
+          created_at: string
+          id: string
+          impressions: number
+          month: string
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          clicks?: number
+          conversions?: number
+          cost?: number
+          created_at?: string
+          id?: string
+          impressions?: number
+          month: string
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          clicks?: number
+          conversions?: number
+          cost?: number
+          created_at?: string
+          id?: string
+          impressions?: number
+          month?: string
+          updated_at?: string
+          year?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

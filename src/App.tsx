@@ -12,7 +12,14 @@ import Auth from "./pages/Auth";
 import Architecture from "./pages/Architecture";
 
 // Create a client
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false
+    },
+  }
+});
 
 const App = () => {
   return (
@@ -24,12 +31,13 @@ const App = () => {
             <Sonner />
             <BrowserRouter>
               <Routes>
-                <Route path="/" element={<Auth />} />
+                <Route path="/" element={<Index />} />
                 <Route path="/dashboard" element={<Index />} />
                 <Route path="/dashboard/profile" element={<Index />} />
                 <Route path="/dashboard/settings" element={<Index />} />
                 <Route path="/dashboard/reports" element={<Index />} />
                 <Route path="/architecture" element={<Architecture />} />
+                <Route path="/login" element={<Auth />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
