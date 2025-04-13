@@ -1,16 +1,16 @@
 
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { 
   getCampaigns, 
   getMonthlyPerformance,
   CampaignData,
   MonthlyPerformance
 } from "@/services/supabaseService";
-import { supabase } from "@/integrations/supabase/client";
 
 export const useCampaignData = () => {
-  const { toast } = useToast();
+  const { toast: toastLegacy } = useToast();
   const [campaigns, setCampaigns] = useState<CampaignData[]>([]);
   const [monthlyData, setMonthlyData] = useState<MonthlyPerformance[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -18,20 +18,14 @@ export const useCampaignData = () => {
   const loadCampaignData = async () => {
     setIsLoading(true);
     try {
-      // Check authentication
-      const { data: authData } = await supabase.auth.getSession();
-      if (!authData.session) {
-        toast({
-          title: "Usuário não autenticado",
-          description: "Faça login para carregar seus dados.",
-          variant: "destructive"
-        });
-        setIsLoading(false);
-        return { success: false };
-      }
-      
+      // No MVP, não verificamos autenticação para facilitar o acesso
+      console.log("Carregando dados de campanhas...");
       const campaignData = await getCampaigns();
+      console.log(`${campaignData.length} campanhas carregadas`);
+      
+      console.log("Carregando dados mensais...");
       const monthlyPerformanceData = await getMonthlyPerformance();
+      console.log(`${monthlyPerformanceData.length} registros mensais carregados`);
       
       setCampaigns(campaignData);
       setMonthlyData(monthlyPerformanceData);
@@ -43,12 +37,8 @@ export const useCampaignData = () => {
       };
     } catch (error) {
       console.error("Error loading campaign data:", error);
-      toast({
-        title: "Erro ao carregar dados",
-        description: "Não foi possível carregar os dados de campanhas.",
-        variant: "destructive"
-      });
-      return { success: false };
+      toast.error("Não foi possível carregar os dados de campanhas.");
+      return { success: false, campaigns: [], monthlyData: [] };
     } finally {
       setIsLoading(false);
     }

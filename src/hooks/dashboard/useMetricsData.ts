@@ -1,6 +1,5 @@
 
 import { useState } from "react";
-import dashboardData from "@/data/dashboard-data.json";
 import { MetricsType } from "../useDashboardData";
 import { formatMetrics } from "./utils";
 
@@ -19,8 +18,6 @@ export const useMetricsData = (campaigns: any[]) => {
     
     if (formattedMetrics) {
       setMetrics(formattedMetrics);
-    } else {
-      setMetrics(dashboardData.metrics);
     }
   };
 

@@ -3,6 +3,7 @@ import Papa from "papaparse";
 import { CampaignData, MonthlyPerformance } from "@/types/dataTypes";
 import { insertCampaign } from "./campaignService";
 import { insertMonthlyPerformance } from "./performanceService";
+import { toast } from "sonner";
 
 // Função para extrair valor numérico de uma string formatada
 export const extractNumericValue = (valueStr: string): number => {
@@ -58,11 +59,18 @@ export const processAndInsertCampaignData = async (data: any[]): Promise<Campaig
         roas: extractPercentage(row.roas || "0%")
       };
       
-      // Inserir no banco de dados
-      const insertedData = await insertCampaign(campaignData);
-      processedData.push(insertedData);
+      try {
+        // Inserir no banco de dados
+        const insertedData = await insertCampaign(campaignData);
+        processedData.push(insertedData);
+        console.log("Campanha inserida:", insertedData);
+      } catch (error) {
+        console.error("Erro ao inserir campanha específica:", error);
+        toast.error(`Erro ao processar campanha: ${campaignData.name}`);
+      }
     }
     
+    toast.success(`${processedData.length} campanhas importadas com sucesso!`);
     return processedData;
   } catch (error) {
     console.error("Erro ao processar e inserir dados de campanha:", error);
@@ -85,11 +93,18 @@ export const processAndInsertMonthlyData = async (data: any[]): Promise<MonthlyP
         cost: extractNumericValue(row.cost || row.custo || "0")
       };
       
-      // Inserir no banco de dados
-      const insertedData = await insertMonthlyPerformance(monthlyData);
-      processedData.push(insertedData);
+      try {
+        // Inserir no banco de dados
+        const insertedData = await insertMonthlyPerformance(monthlyData);
+        processedData.push(insertedData);
+        console.log("Dados mensais inseridos:", insertedData);
+      } catch (error) {
+        console.error("Erro ao inserir dados mensais específicos:", error);
+        toast.error(`Erro ao processar dados do mês: ${monthlyData.month}`);
+      }
     }
     
+    toast.success(`${processedData.length} registros mensais importados com sucesso!`);
     return processedData;
   } catch (error) {
     console.error("Erro ao processar e inserir dados mensais:", error);

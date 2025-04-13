@@ -1,30 +1,16 @@
 
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { 
   getAnalytics,
   Issue,
-  Suggestion,
-  FallbackIssue,
-  FallbackSuggestion
+  Suggestion
 } from "@/services/supabaseService";
 import { CampaignData, MonthlyPerformance } from "@/types/dataTypes";
-import dashboardData from "@/data/dashboard-data.json";
-import { formatFallbackSuggestions } from "./utils";
-
-// Helper function to validate issue severity
-const validateIssues = (fallbackIssues: FallbackIssue[]): Issue[] => {
-  return fallbackIssues.map(issue => ({
-    issue: issue.issue,
-    description: issue.description,
-    related_to: issue.relatedTo,
-    affected_campaigns: issue.affectedCampaigns,
-    severity: 'medium' // Default value for compatibility
-  }));
-};
 
 export const useAnalyticsData = () => {
-  const { toast } = useToast();
+  const { toast: toastLegacy } = useToast();
   const [issues, setIssues] = useState<Issue[]>([]);
   const [suggestions, setSuggestions] = useState<{
     campaign: Suggestion[];
@@ -36,30 +22,29 @@ export const useAnalyticsData = () => {
 
   const loadAnalyticsData = async (campaigns: CampaignData[], monthlyData: MonthlyPerformance[]) => {
     try {
+      // Verificar se temos dados antes de prosseguir com a análise
+      if (campaigns.length === 0) {
+        console.log("Sem campanhas para analisar");
+        return { success: false };
+      }
+
+      console.log("Analisando dados...");
       // Load analytics data
       const analyticsData = await getAnalytics(campaigns, monthlyData);
+      console.log("Análise concluída:", analyticsData);
+      
       setIssues(analyticsData.issues);
       setSuggestions(analyticsData.suggestions);
       
       return { success: true };
     } catch (error) {
       console.error("Error loading analytics data:", error);
+      toast.error("Erro ao analisar dados. Algumas funcionalidades podem estar limitadas.");
       
-      // Convert example data to correct format
-      const fallbackIssues = validateIssues(dashboardData.identifiedIssues as FallbackIssue[]);
-      const fallbackSuggestions = formatFallbackSuggestions(
-        dashboardData.optimizationSuggestions.campaign as FallbackSuggestion[],
-        dashboardData.optimizationSuggestions.funnel as FallbackSuggestion[]
-      );
+      // Não usar fallback de dados no MVP para incentivar a inserção de dados reais
+      setIssues([]);
+      setSuggestions({ campaign: [], funnel: [] });
       
-      setIssues(fallbackIssues);
-      setSuggestions(fallbackSuggestions);
-      
-      toast({
-        title: "Erro ao carregar análises",
-        description: "Não foi possível carregar as análises de campanha.",
-        variant: "destructive"
-      });
       return { success: false };
     }
   };

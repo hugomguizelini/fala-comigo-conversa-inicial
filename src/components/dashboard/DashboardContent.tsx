@@ -13,8 +13,6 @@ import FeatureCards from "./FeatureCards";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { Issue, Suggestion } from "@/types/dataTypes";
 
-// Importando dados do dashboard para uso temporário
-import dashboardData from "@/data/dashboard-data.json";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -44,22 +42,14 @@ export default function DashboardContent() {
     cost: number 
   }[];
   
-  // Transform both monthlyData and fallback data to ensure they match ChartDataType
-  const chartData: ChartDataType = monthlyData.length > 0 
-    ? monthlyData.map((item) => ({
-        name: item.month, // Map 'month' to 'name' for chart labels
-        impressions: item.impressions,
-        clicks: item.clicks,
-        conversions: item.conversions,
-        cost: item.cost
-      }))
-    : (dashboardData.monthlyPerformance.data as any[]).map(item => ({
-        name: item.month, // Também transformamos os dados de fallback
-        impressions: item.impressions,
-        clicks: item.clicks,
-        conversions: item.conversions,
-        cost: item.cost
-      }));
+  // Transform data for the chart
+  const chartData: ChartDataType = monthlyData.map((item) => ({
+    name: item.month, // Map 'month' to 'name' for chart labels
+    impressions: item.impressions,
+    clicks: item.clicks,
+    conversions: item.conversions,
+    cost: item.cost
+  }));
 
   // Formatação da data da última atualização
   const formattedLastUpdate = lastLoadTime 
@@ -69,7 +59,7 @@ export default function DashboardContent() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
-        <h1 className="text-3xl font-bold">Bem-vindo{isAuthenticated ? "" : " (Modo Demonstração)"}</h1>
+        <h1 className="text-3xl font-bold">Dashboard de Campanhas</h1>
         
         <div className="flex items-center gap-3 flex-wrap">
           <div className="relative flex items-center">
@@ -115,14 +105,25 @@ export default function DashboardContent() {
       />
       
       <div className="grid gap-6 md:grid-cols-2">
-        <PerformanceChart
-          chartData={chartData}
-          timeRange={timeRange}
-          setTimeRange={setTimeRange}
-          activeMetric={activeMetric}
-          setActiveMetric={setActiveMetric}
-          isLoading={isLoading}
-        />
+        {chartData.length > 0 ? (
+          <PerformanceChart
+            chartData={chartData}
+            timeRange={timeRange}
+            setTimeRange={setTimeRange}
+            activeMetric={activeMetric}
+            setActiveMetric={setActiveMetric}
+            isLoading={isLoading}
+          />
+        ) : (
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border shadow-sm flex flex-col items-center justify-center min-h-[300px]">
+            <p className="text-center text-muted-foreground mb-4">
+              Nenhum dado de desempenho mensal disponível.
+            </p>
+            <p className="text-sm text-center text-muted-foreground">
+              Faça upload de um arquivo CSV com dados mensais para visualizar o gráfico.
+            </p>
+          </div>
+        )}
 
         <StatisticsCard isLoading={isLoading} />
       </div>

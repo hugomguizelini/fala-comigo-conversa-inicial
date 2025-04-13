@@ -18,20 +18,45 @@ export const formatMetrics = (campaigns: any[]) => {
   const totalConversions = campaigns.reduce((sum, campaign) => sum + campaign.conversions, 0);
   
   const totalCost = campaigns.reduce((sum, campaign) => {
-    const costValue = parseFloat(campaign.total_cost?.replace(/[^0-9.,]/g, '').replace(',', '.')) || 0;
+    const costValue = parseFloat(
+      campaign.total_cost?.replace(/[^0-9.,]/g, '')
+        .replace(',', '.') || '0'
+    );
     return sum + costValue;
   }, 0);
   
   const ctr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
   const cpc = totalClicks > 0 ? totalCost / totalClicks : 0;
   
+  // Em um cenário real, calcularíamos as variações
+  // comparando com dados anteriores, mas para o MVP, usamos valores fixos
+  // que podem ser atualizados posteriormente com lógica real
+  
   return {
-    impressions: { value: totalImpressions.toLocaleString(), variation: "+12%" },
-    clicks: { value: totalClicks.toLocaleString(), variation: "+8%" },
-    ctr: { value: `${ctr.toFixed(2)}%`, variation: "+5%" },
-    conversions: { value: totalConversions.toLocaleString(), variation: "+15%" },
-    cpc: { value: `R$ ${cpc.toFixed(2)}`, variation: "-3%" },
-    totalCost: { value: `R$ ${totalCost.toFixed(2)}`, variation: "+7%" }
+    impressions: { 
+      value: totalImpressions.toLocaleString(), 
+      variation: "+0%" // No futuro, calcular variação real
+    },
+    clicks: { 
+      value: totalClicks.toLocaleString(), 
+      variation: "+0%" 
+    },
+    ctr: { 
+      value: `${ctr.toFixed(2)}%`, 
+      variation: "+0%" 
+    },
+    conversions: { 
+      value: totalConversions.toLocaleString(), 
+      variation: "+0%" 
+    },
+    cpc: { 
+      value: `R$ ${cpc.toFixed(2)}`, 
+      variation: "+0%" 
+    },
+    totalCost: { 
+      value: `R$ ${totalCost.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 
+      variation: "+0%" 
+    }
   };
 };
 

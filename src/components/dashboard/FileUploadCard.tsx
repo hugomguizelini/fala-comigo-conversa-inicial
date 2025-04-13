@@ -4,11 +4,12 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { useDropzone } from "react-dropzone";
 import { Upload, FileText, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { 
+  processCsvFile, 
   processAndInsertCampaignData, 
-  processAndInsertMonthlyData,
-} from "@/services/supabaseService";
-import { processCsvFile } from "@/services/csvProcessingService";
+  processAndInsertMonthlyData 
+} from "@/services/csvProcessingService";
 import { Progress } from "@/components/ui/progress";
 
 type FileUploadCardProps = {
@@ -18,7 +19,7 @@ type FileUploadCardProps = {
 };
 
 const FileUploadCard = ({ onFilesProcessed, isLoading, setIsLoading }: FileUploadCardProps) => {
-  const { toast } = useToast();
+  const { toast: toastLegacy } = useToast();
   const [files, setFiles] = useState<File[]>([]);
   const [processingProgress, setProcessingProgress] = useState<number>(0);
   const [processingFile, setProcessingFile] = useState<string | null>(null);
@@ -38,6 +39,7 @@ const FileUploadCard = ({ onFilesProcessed, isLoading, setIsLoading }: FileUploa
         setProcessingProgress(Math.round((i / acceptedFiles.length) * 50));
         
         // First process the CSV file to get the data
+        console.log(`Processando arquivo: ${file.name}`);
         const parseResult = await processCsvFile(file);
         
         if (parseResult.errors && parseResult.errors.length > 0) {
@@ -49,24 +51,18 @@ const FileUploadCard = ({ onFilesProcessed, isLoading, setIsLoading }: FileUploa
         setProcessingProgress(Math.round(50 + (i / acceptedFiles.length) * 25));
         
         // Then pass the parsed data to the insertion functions
-        if (file.name.includes("campaign") || file.name.includes("campanha")) {
+        if (file.name.toLowerCase().includes("campaign") || file.name.toLowerCase().includes("campanha")) {
+          console.log("Identificado como arquivo de campanhas");
           await processAndInsertCampaignData(parseResult.data);
-          toast({
-            title: "Arquivo de campanha processado",
-            description: `${file.name} foi processado como dados de campanha.`
-          });
-        } else if (file.name.includes("monthly") || file.name.includes("mensal")) {
+          toast.success(`Arquivo de campanha processado: ${file.name}`);
+        } else if (file.name.toLowerCase().includes("monthly") || file.name.toLowerCase().includes("mensal")) {
+          console.log("Identificado como arquivo de dados mensais");
           await processAndInsertMonthlyData(parseResult.data);
-          toast({
-            title: "Arquivo de dados mensais processado",
-            description: `${file.name} foi processado como dados mensais.`
-          });
+          toast.success(`Arquivo de dados mensais processado: ${file.name}`);
         } else {
+          console.log("Tipo de arquivo não identificado, tratando como campanhas por padrão");
           await processAndInsertCampaignData(parseResult.data);
-          toast({
-            title: "Arquivo processado",
-            description: `${file.name} foi processado como dados de campanha (padrão).`
-          });
+          toast.info(`${file.name} foi processado como dados de campanha (padrão)`);
         }
         
         // Update progress after insertion
@@ -76,20 +72,14 @@ const FileUploadCard = ({ onFilesProcessed, isLoading, setIsLoading }: FileUploa
       // All files processed, update progress to 100%
       setProcessingProgress(100);
       
+      // Recarregar dados no dashboard
       await onFilesProcessed();
       
       setFiles(prev => [...prev, ...acceptedFiles]);
-      toast({
-        title: "Processamento concluído",
-        description: `${acceptedFiles.length} arquivo(s) carregado(s) e processado(s) com sucesso.`,
-      });
+      toast.success(`${acceptedFiles.length} arquivo(s) carregado(s) e processado(s) com sucesso.`);
     } catch (error) {
       console.error("Error processing files:", error);
-      toast({
-        title: "Erro ao processar arquivos",
-        description: error instanceof Error ? error.message : "Verifique o formato dos seus arquivos CSV.",
-        variant: "destructive"
-      });
+      toast.error(error instanceof Error ? error.message : "Verifique o formato dos seus arquivos CSV.");
     } finally {
       setProcessingFile(null);
       setProcessingProgress(0);
