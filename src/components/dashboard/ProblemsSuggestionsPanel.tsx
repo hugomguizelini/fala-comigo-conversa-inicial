@@ -3,37 +3,20 @@ import React from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { AlertTriangle, Lightbulb, ArrowRight, TrendingDown, TrendingUp, Target } from "lucide-react";
-
-type Issue = {
-  issue: string;
-  description: string;
-  relatedTo: string;
-  affectedCampaigns: string[];
-};
-
-type Suggestion = {
-  title: string;
-  description: string;
-  impact: string;
-  targetCampaigns?: string[];
-  targetPages?: string[];
-  targetAudience?: string;
-};
-
-type OptimizationSuggestions = {
-  campaign: Suggestion[];
-  funnel: Suggestion[];
-};
+import { Issue, Suggestion } from "@/types/dataTypes";
 
 type ProblemsSuggestionsPanelProps = {
   issues: Issue[];
-  suggestions: OptimizationSuggestions;
+  suggestions: {
+    campaign: Suggestion[];
+    funnel: Suggestion[];
+  };
 };
 
 export const ProblemsSuggestionsPanel = ({ issues, suggestions }: ProblemsSuggestionsPanelProps) => {
   const getSeverity = (issue: Issue) => {
-    if (issue.relatedTo === "Conversões") return "high";
-    if (issue.relatedTo === "CPC") return "high";
+    if (issue.related_to === "Conversões") return "high";
+    if (issue.related_to === "CPC") return "high";
     return "medium";
   };
   
@@ -78,7 +61,7 @@ export const ProblemsSuggestionsPanel = ({ issues, suggestions }: ProblemsSugges
                         <span className="h-2 w-2 rounded-full bg-blue-500" />
                       )}
                       <span>{issue.issue}</span>
-                      <span className="text-xs text-muted-foreground ml-3">Relacionado a: {issue.relatedTo}</span>
+                      <span className="text-xs text-muted-foreground ml-3">Relacionado a: {issue.related_to}</span>
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
@@ -89,7 +72,7 @@ export const ProblemsSuggestionsPanel = ({ issues, suggestions }: ProblemsSugges
                       <div className="mt-2">
                         <h4 className="text-sm font-medium mb-2">Campanhas afetadas:</h4>
                         <div className="flex flex-wrap gap-2">
-                          {issue.affectedCampaigns.map((campaign, idx) => (
+                          {issue.affected_campaigns.map((campaign, idx) => (
                             <span key={idx} className="text-xs bg-muted px-2 py-1 rounded-full">
                               {campaign}
                             </span>
@@ -102,13 +85,13 @@ export const ProblemsSuggestionsPanel = ({ issues, suggestions }: ProblemsSugges
                         <h4 className="text-sm font-medium mb-2">Sugestões relacionadas</h4>
                         {[...campaignSuggestions, ...funnelSuggestions]
                           .filter(suggestion => 
-                            (suggestion.targetCampaigns && 
-                             suggestion.targetCampaigns.some(campaign => 
-                               issue.affectedCampaigns.includes(campaign)
+                            (suggestion.target_campaigns && 
+                             suggestion.target_campaigns.some(campaign => 
+                               issue.affected_campaigns.includes(campaign)
                              )) ||
-                            (suggestion.targetPages && 
-                             issue.affectedCampaigns.some(campaign => 
-                               suggestion.targetPages?.some(targetPage => 
+                            (suggestion.target_pages && 
+                             issue.affected_campaigns.some(campaign => 
+                               suggestion.target_pages?.some(targetPage => 
                                  campaign.includes(targetPage)
                                )
                              ))
@@ -123,14 +106,14 @@ export const ProblemsSuggestionsPanel = ({ issues, suggestions }: ProblemsSugges
                                 <p className="text-xs text-muted-foreground">{suggestion.description}</p>
                                 <div className="flex items-center gap-2 mt-1">
                                   <span className={`text-xs ${
-                                    suggestion.targetCampaigns 
+                                    suggestion.target_campaigns 
                                       ? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300" 
-                                      : suggestion.targetPages 
+                                      : suggestion.target_pages 
                                         ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
                                         : "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
                                   } px-2 py-0.5 rounded-full`}>
-                                    {suggestion.targetCampaigns ? "Campanha" : 
-                                     suggestion.targetPages ? "Funil" : "Ambos"}
+                                    {suggestion.target_campaigns ? "Campanha" : 
+                                     suggestion.target_pages ? "Funil" : "Ambos"}
                                   </span>
                                   <span className={`text-xs ${getImpactClass(suggestion.impact)}`}>
                                     Impacto {suggestion.impact}
@@ -179,11 +162,11 @@ export const ProblemsSuggestionsPanel = ({ issues, suggestions }: ProblemsSugges
                         Implementar <ArrowRight className="h-3 w-3 ml-1" />
                       </button>
                     </div>
-                    {suggestion.targetCampaigns && (
+                    {suggestion.target_campaigns && (
                       <div className="mt-2">
                         <p className="text-xs text-muted-foreground">Campanhas alvo:</p>
                         <div className="flex flex-wrap gap-1 mt-1">
-                          {suggestion.targetCampaigns.map((campaign, idx) => (
+                          {suggestion.target_campaigns.map((campaign, idx) => (
                             <span key={idx} className="text-xs bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 px-2 py-0.5 rounded-full">
                               {campaign.split('-').pop()}
                             </span>
@@ -214,11 +197,11 @@ export const ProblemsSuggestionsPanel = ({ issues, suggestions }: ProblemsSugges
                         Implementar <ArrowRight className="h-3 w-3 ml-1" />
                       </button>
                     </div>
-                    {suggestion.targetPages && (
+                    {suggestion.target_pages && (
                       <div className="mt-2">
                         <p className="text-xs text-muted-foreground">Páginas alvo:</p>
                         <div className="flex flex-wrap gap-1 mt-1">
-                          {suggestion.targetPages.map((page, idx) => (
+                          {suggestion.target_pages.map((page, idx) => (
                             <span key={idx} className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-0.5 rounded-full">
                               {page}
                             </span>
@@ -226,11 +209,11 @@ export const ProblemsSuggestionsPanel = ({ issues, suggestions }: ProblemsSugges
                         </div>
                       </div>
                     )}
-                    {suggestion.targetAudience && (
+                    {suggestion.target_audience && (
                       <div className="mt-2">
                         <p className="text-xs text-muted-foreground">Público-alvo:</p>
                         <span className="text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 px-2 py-0.5 rounded-full">
-                          {suggestion.targetAudience}
+                          {suggestion.target_audience}
                         </span>
                       </div>
                     )}

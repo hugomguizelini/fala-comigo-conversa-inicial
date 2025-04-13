@@ -1,19 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-
-export type Suggestion = {
-  id?: string;
-  user_id?: string;
-  title: string;
-  description: string;
-  type: 'campaign' | 'funnel';
-  impact: 'alto' | 'médio' | 'baixo';
-  target_campaigns?: string[] | null;
-  target_pages?: string[] | null;
-  target_audience?: string | null;
-  created_at?: string;
-  updated_at?: string;
-};
+import { Suggestion } from "@/types/dataTypes";
 
 export const getSuggestions = async (): Promise<Suggestion[]> => {
   const { data, error } = await supabase
@@ -26,7 +13,13 @@ export const getSuggestions = async (): Promise<Suggestion[]> => {
     throw error;
   }
   
-  return data || [];
+  // Garantir que o tipo 'type' esteja correto
+  const typedData = data?.map(item => ({
+    ...item,
+    type: item.type as 'campaign' | 'funnel'
+  })) || [];
+  
+  return typedData;
 };
 
 export const insertSuggestion = async (suggestion: Suggestion): Promise<Suggestion> => {
@@ -44,7 +37,10 @@ export const insertSuggestion = async (suggestion: Suggestion): Promise<Suggesti
     throw error;
   }
   
-  return data;
+  return {
+    ...data,
+    type: data.type as 'campaign' | 'funnel'
+  };
 };
 
 export const updateSuggestion = async (id: string, suggestion: Partial<Suggestion>): Promise<Suggestion> => {
@@ -60,7 +56,10 @@ export const updateSuggestion = async (id: string, suggestion: Partial<Suggestio
     throw error;
   }
   
-  return data;
+  return {
+    ...data,
+    type: data.type as 'campaign' | 'funnel'
+  };
 };
 
 export const deleteSuggestion = async (id: string): Promise<void> => {

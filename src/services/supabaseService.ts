@@ -2,7 +2,7 @@
 // Este arquivo agora serve apenas como ponto de exportação para manter compatibilidade
 
 // Reexporta interfaces de tipos
-export type { CampaignData, MonthlyPerformance } from "@/types/dataTypes";
+export type { CampaignData, MonthlyPerformance, Issue, Suggestion } from "@/types/dataTypes";
 
 // Reexporta funções de gerenciamento de campanhas
 export { 
@@ -21,7 +21,6 @@ export {
 } from "./performanceService";
 
 // Reexporta funções de gerenciamento de problemas identificados
-export type { Issue } from "./issuesService";
 export {
   getIssues,
   insertIssue,
@@ -30,7 +29,6 @@ export {
 } from "./issuesService";
 
 // Reexporta funções de gerenciamento de sugestões de otimização
-export type { Suggestion } from "./suggestionsService";
 export {
   getSuggestions,
   insertSuggestion,

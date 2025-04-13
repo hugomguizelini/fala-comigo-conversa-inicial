@@ -136,10 +136,37 @@ export const useDashboardData = () => {
     } catch (error) {
       console.error("Error loading data:", error);
       setMetrics(dashboardData.metrics);
-      setIssues(dashboardData.identifiedIssues);
+      
+      // Converter os dados de exemplo para o formato correto das interfaces
+      const fallbackIssues: Issue[] = dashboardData.identifiedIssues.map(issue => ({
+        issue: issue.issue,
+        description: issue.description,
+        related_to: issue.relatedTo,
+        affected_campaigns: issue.affectedCampaigns,
+        severity: 'medium' // Valor padrão para compatibilidade
+      }));
+      
+      const fallbackCampaignSuggestions: Suggestion[] = dashboardData.optimizationSuggestions.campaign.map(suggestion => ({
+        title: suggestion.title,
+        description: suggestion.description,
+        type: 'campaign',
+        impact: suggestion.impact as 'alto' | 'médio' | 'baixo',
+        target_campaigns: suggestion.targetCampaigns
+      }));
+      
+      const fallbackFunnelSuggestions: Suggestion[] = dashboardData.optimizationSuggestions.funnel.map(suggestion => ({
+        title: suggestion.title,
+        description: suggestion.description,
+        type: 'funnel',
+        impact: suggestion.impact as 'alto' | 'médio' | 'baixo',
+        target_pages: suggestion.targetPages,
+        target_audience: suggestion.targetAudience
+      }));
+      
+      setIssues(fallbackIssues);
       setSuggestions({
-        campaign: dashboardData.optimizationSuggestions.campaign,
-        funnel: dashboardData.optimizationSuggestions.funnel
+        campaign: fallbackCampaignSuggestions,
+        funnel: fallbackFunnelSuggestions
       });
       
       toast({

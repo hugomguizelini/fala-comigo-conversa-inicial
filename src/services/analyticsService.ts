@@ -1,11 +1,7 @@
 
-import { CampaignData, MonthlyPerformance } from "@/types/dataTypes";
-import { Issue } from "./issuesService";
-import { Suggestion } from "./suggestionsService";
+import { CampaignData, MonthlyPerformance, Issue, Suggestion } from "@/types/dataTypes";
 import { insertIssue, getIssues } from "./issuesService";
 import { insertSuggestion, getSuggestions } from "./suggestionsService";
-
-// Funções para análise de dados
 
 // Função para detectar campanhas com baixo CTR
 export const detectLowCTRCampaigns = async (campaigns: CampaignData[]): Promise<Issue[]> => {
@@ -81,6 +77,7 @@ export const detectNegativeTrends = async (performanceData: MonthlyPerformance[]
   const last3Months = sortedData.slice(-3);
   
   if (
+    last3Months.length === 3 &&
     last3Months[2].conversions < last3Months[1].conversions && 
     last3Months[1].conversions < last3Months[0].conversions
   ) {

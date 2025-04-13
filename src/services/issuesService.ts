@@ -1,17 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-
-export type Issue = {
-  id?: string;
-  user_id?: string;
-  issue: string;
-  description: string;
-  related_to: string;
-  affected_campaigns: string[];
-  severity: string;
-  created_at?: string;
-  updated_at?: string;
-};
+import { Issue } from "@/types/dataTypes";
 
 export const getIssues = async (): Promise<Issue[]> => {
   const { data, error } = await supabase
