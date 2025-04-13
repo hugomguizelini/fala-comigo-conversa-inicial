@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect } from "react";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -49,19 +48,16 @@ export default function DashboardContent() {
       setCampaigns(campaignData);
       setMonthlyData(monthlyPerformanceData);
       
-      // Calculate metrics based on campaign data
       if (campaignData.length > 0) {
         const totalImpressions = campaignData.reduce((sum, campaign) => sum + campaign.impressions, 0);
         const totalClicks = campaignData.reduce((sum, campaign) => sum + campaign.clicks, 0);
         const totalConversions = campaignData.reduce((sum, campaign) => sum + campaign.conversions, 0);
         
-        // Convert string costs to numbers if possible and sum
         const totalCost = campaignData.reduce((sum, campaign) => {
           const costValue = parseFloat(campaign.total_cost.replace(/[^0-9.,]/g, '').replace(',', '.')) || 0;
           return sum + costValue;
         }, 0);
         
-        // Calculate derived metrics
         const ctr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
         const cpc = totalClicks > 0 ? totalCost / totalClicks : 0;
         
@@ -90,18 +86,15 @@ export default function DashboardContent() {
     setIsLoading(true);
     try {
       for (const file of acceptedFiles) {
-        // Detectar tipo de arquivo com base no nome para processamento adequado
         if (file.name.includes("campaign") || file.name.includes("campanha")) {
           await processAndInsertCampaignData(file);
         } else if (file.name.includes("monthly") || file.name.includes("mensal")) {
           await processAndInsertMonthlyData(file);
         } else {
-          // Por padrão, tratar como dados de campanha
           await processAndInsertCampaignData(file);
         }
       }
       
-      // Recarregar dados após o upload
       await loadData();
       
       setFiles(prev => [...prev, ...acceptedFiles]);
@@ -123,7 +116,6 @@ export default function DashboardContent() {
   
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  // Configurando cores do gráfico por métrica
   const metricColors = {
     impressions: "#9b87f5",
     clicks: "#4287f5",
@@ -131,7 +123,6 @@ export default function DashboardContent() {
     cost: "#f54242"
   };
 
-  // Função para formatar o tooltip do gráfico
   const renderCustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
@@ -153,7 +144,6 @@ export default function DashboardContent() {
     return null;
   };
 
-  // Transformar dados mensais para o formato do gráfico
   const chartData = monthlyData.map(item => ({
     name: item.month,
     impressions: item.impressions,
@@ -189,35 +179,40 @@ export default function DashboardContent() {
         </div>
       </div>
       
-      {/* Métricas */}
       <MetricsTable metrics={metrics} />
       
-      {/* Painel de Problemas e Sugestões */}
       <ProblemsSuggestionsPanel 
         issues={[
           {
-            title: "Otimize sua taxa de conversão",
+            name: "Otimize sua taxa de conversão",
             description: "Suas campanhas têm um CTR alto, mas a taxa de conversão está abaixo do esperado."
           },
           {
-            title: "Revise seus gastos com anúncios",
+            name: "Revise seus gastos com anúncios",
             description: "O CPC está acima da média do setor para algumas campanhas."
           }
         ]} 
         suggestions={[
           {
-            title: "Teste novas variações de imagens",
+            name: "Teste novas variações de imagens",
             description: "Imagens com pessoas reais têm maior engajamento."
           },
           {
-            title: "Implemente segmentação avançada",
+            name: "Implemente segmentação avançada",
             description: "Segmentar por comportamento de usuários recentes."
           }
-        ]} 
+        ]}
+        campaign={{
+          name: "Campanha Principal",
+          performance: "Média"
+        }}
+        funnel={{
+          stages: ["Visualização", "Clique", "Conversão"],
+          dropoffs: [20, 65]
+        }}
       />
       
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Detalhamento da Campanha */}
         <Card>
           <CardHeader className="flex flex-row items-start justify-between">
             <div>
@@ -329,7 +324,6 @@ export default function DashboardContent() {
           </CardFooter>
         </Card>
 
-        {/* Estatísticas da Campanha */}
         <Card>
           <CardHeader className="flex flex-row items-start justify-between">
             <div>
@@ -376,10 +370,8 @@ export default function DashboardContent() {
         </Card>
       </div>
 
-      {/* Tabela de Campanhas */}
       <CampaignsTable campaigns={campaigns} />
 
-      {/* Área de Upload de Arquivos */}
       <Card>
         <CardHeader>
           <CardTitle>Carregar Documentos da Campanha</CardTitle>
@@ -433,7 +425,6 @@ export default function DashboardContent() {
         </CardContent>
       </Card>
 
-      {/* Cartões de Insights IA */}
       <div className="grid gap-6 md:grid-cols-3">
         <Card className="bg-purple-900 text-white">
           <CardHeader>
