@@ -113,7 +113,7 @@ export default function DashboardContent({
   };
   return <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
-        <h1 className="text-3xl font-bold mx-0 px-0 my-[30px]">          Analíse com IA</h1>
+        <h1 className="text-3xl font-bold mx-0 px-0 my-[30px] text-purple-600">          Insights com IA</h1>
         
         <div className="flex items-center gap-3 flex-wrap">
           <div className="relative flex items-center">
