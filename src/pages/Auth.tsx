@@ -21,12 +21,28 @@ const Auth: React.FC<AuthProps> = ({ type: initialType }) => {
   const handleNavigateToRecovery = () => setCurrentType('recovery');
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen">
-      {/* Seção de formulário - menor em telas grandes */}
-      <div className="w-full lg:w-1/2 p-6 lg:p-12 flex flex-col justify-center">
-        <div className="mx-auto w-full max-w-md">
-          <InsighorLogo className="mb-8 h-12 w-auto" />
-          <AuthHeadline type={currentType} />
+    <div className="flex min-h-screen w-full bg-[#111827]">
+      {/* Seção de branding - exibida apenas em telas grandes */}
+      <div className="hidden lg:block lg:w-1/2 bg-gradient-to-br from-[#8B5CF6] to-[#EC4899]">
+        <AuthHeadline type={currentType} />
+      </div>
+
+      {/* Seção de formulário - centralizada */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center">
+            <InsighorLogo className="h-12 w-auto mx-auto mb-6" />
+            <h2 className="text-2xl font-bold tracking-tight text-white">
+              {currentType === 'login' && 'Bem-vindo de volta'}
+              {currentType === 'register' && 'Crie sua conta'}
+              {currentType === 'recovery' && 'Recupere sua senha'}
+            </h2>
+            <p className="mt-2 text-sm text-white/70">
+              {currentType === 'login' && 'Acesse sua conta para continuar'}
+              {currentType === 'register' && 'Preencha os dados para começar'}
+              {currentType === 'recovery' && 'Enviaremos instruções para seu email'}
+            </p>
+          </div>
           
           {currentType === 'login' && (
             <LoginForm 
@@ -44,16 +60,6 @@ const Auth: React.FC<AuthProps> = ({ type: initialType }) => {
               onLoginClick={handleNavigateToLogin} 
             />
           )}
-        </div>
-      </div>
-
-      {/* Seção de background/branding - oculta em telas pequenas */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#8B5CF6] to-[#EC4899] items-center justify-center">
-        <div className="max-w-md text-white p-12">
-          <h2 className="text-3xl font-bold mb-4">Transforme dados em decisões</h2>
-          <p className="text-lg opacity-90">
-            Com o Insighor, analise seus dados de marketing e descubra insights valiosos para melhorar suas campanhas.
-          </p>
         </div>
       </div>
     </div>

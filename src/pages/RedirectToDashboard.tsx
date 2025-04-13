@@ -11,12 +11,12 @@ const RedirectToDashboard = () => {
     if (!isLoading) {
       // Se estiver autenticado, redireciona para o dashboard
       // Se não estiver, redireciona para a página de login
-      navigate(isAuthenticated ? '/dashboard' : '/login');
+      navigate(isAuthenticated ? '/dashboard' : '/login', { replace: true });
     }
   }, [navigate, isAuthenticated, isLoading]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center min-h-screen bg-[#111827]">
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8B5CF6]"></div>
     </div>
   );

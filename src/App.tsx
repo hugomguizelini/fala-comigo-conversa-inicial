@@ -14,6 +14,7 @@ import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import PublicRoute from './components/auth/PublicRoute';
+import RedirectToDashboard from './pages/RedirectToDashboard';
 import './App.css';
 
 // Inicializar o cliente de consulta para React Query
@@ -32,8 +33,10 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <Router>
           <Routes>
+            {/* Rota inicial que determina para onde redirecionar */}
+            <Route path="/" element={<RedirectToDashboard />} />
+
             {/* Rotas públicas - acessíveis sem autenticação */}
-            <Route path="/" element={<Navigate to="/login" replace />} />
             <Route 
               path="/login" 
               element={
