@@ -23,8 +23,8 @@ const fallbackSuggestions = {
       id: "1",
       title: "Otimizar segmentação de público",
       description: "Refinar a segmentação para alcançar audiências mais relevantes e aumentar a taxa de conversão.",
-      type: "campaign",
-      impact: "alto",
+      type: "campaign" as const,
+      impact: "alto" as const,
       target_campaigns: ["Campanha de Produto"]
     }
   ],
@@ -33,8 +33,8 @@ const fallbackSuggestions = {
       id: "2",
       title: "Melhorar páginas de destino",
       description: "As páginas de destino atuais apresentam alta taxa de rejeição. Recomendamos otimizá-las.",
-      type: "funnel",
-      impact: "médio",
+      type: "funnel" as const,
+      impact: "médio" as const,
       target_pages: ["Página de produto", "Página de checkout"]
     }
   ]
@@ -65,7 +65,10 @@ export const useAnalyticsData = () => {
       console.log("Análise concluída:", analyticsData);
       
       setIssues(analyticsData.issues);
-      setSuggestions(analyticsData.suggestions);
+      setSuggestions({
+        campaign: analyticsData.suggestions.campaign as Suggestion[],
+        funnel: analyticsData.suggestions.funnel as Suggestion[]
+      });
       
       return { success: true };
     } catch (error) {

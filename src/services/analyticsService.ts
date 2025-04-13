@@ -6,7 +6,7 @@ export const detectLowCTRCampaigns = async (campaigns: CampaignData[]): Promise<
   const issues: Issue[] = [];
   
   const lowCTRCampaigns = campaigns.filter(campaign => {
-    const ctrValue = parseFloat(campaign.ctr.replace(/[^0-9.,]/g, '').replace(',', '.'));
+    const ctrValue = parseFloat(campaign.ctr?.replace(/[^0-9.,]/g, '')?.replace(',', '.') || '0');
     return ctrValue < 1.0; // CTR abaixo de 1%
   });
   
@@ -15,12 +15,11 @@ export const detectLowCTRCampaigns = async (campaigns: CampaignData[]): Promise<
       issue: "CTR abaixo da média do setor",
       description: "Estas campanhas estão com taxa de cliques abaixo do recomendado para o setor (1%). Considere revisar os criativos e segmentação.",
       related_to: "CTR",
-      affected_campaigns: lowCTRCampaigns.map(c => c.name),
+      affected_campaigns: lowCTRCampaigns.map(c => c.name || ''),
       severity: "medium"
     };
     
     issues.push(issue);
-    // Removemos a tentativa de inserir no banco para evitar erros de RLS
   }
   
   return issues;
@@ -32,13 +31,13 @@ export const detectBudgetDistributionIssues = async (campaigns: CampaignData[]):
   
   // Campanhas com alto ROAS
   const highROASCampaigns = campaigns.filter(campaign => {
-    const roasValue = parseFloat(campaign.roas.replace(/[^0-9.,]/g, '').replace(',', '.'));
+    const roasValue = parseFloat(campaign.roas?.replace(/[^0-9.,]/g, '')?.replace(',', '.') || '0');
     return roasValue > 5.0; // ROAS acima de 5
   });
   
   // Campanhas com baixo orçamento entre as de alto ROAS
   const highROASWithLowBudget = highROASCampaigns.filter(campaign => {
-    const budgetValue = parseFloat(campaign.budget.replace(/[^0-9.,]/g, '').replace(',', '.'));
+    const budgetValue = parseFloat(campaign.budget?.replace(/[^0-9.,]/g, '')?.replace(',', '.') || '0');
     return budgetValue < 1000; // Orçamento menor que R$ 1.000
   });
   
@@ -47,12 +46,11 @@ export const detectBudgetDistributionIssues = async (campaigns: CampaignData[]):
       issue: "Campanhas de alto retorno com baixo orçamento",
       description: "Estas campanhas têm um ROAS elevado mas orçamento baixo. Considere aumentar o investimento nestas campanhas para maximizar os resultados.",
       related_to: "Orçamento",
-      affected_campaigns: highROASWithLowBudget.map(c => c.name),
+      affected_campaigns: highROASWithLowBudget.map(c => c.name || ''),
       severity: "high"
     };
     
     issues.push(issue);
-    // Removemos a tentativa de inserir no banco para evitar erros de RLS
   }
   
   return issues;
@@ -67,8 +65,8 @@ export const detectNegativeTrends = async (performanceData: MonthlyPerformance[]
   // Ordenar por data
   const sortedData = [...performanceData].sort((a, b) => {
     if (a.year !== b.year) return a.year - b.year;
-    const monthOrder = { jan: 1, fev: 2, mar: 3, abr: 4, mai: 5, jun: 6, jul: 7, ago: 8, set: 9, out: 10, nov: 11, dez: 12 };
-    return monthOrder[a.month.toLowerCase() as keyof typeof monthOrder] - monthOrder[b.month.toLowerCase() as keyof typeof monthOrder];
+    const monthOrder: Record<string, number> = { jan: 1, fev: 2, mar: 3, abr: 4, mai: 5, jun: 6, jul: 7, ago: 8, set: 9, out: 10, nov: 11, dez: 12 };
+    return (monthOrder[a.month.toLowerCase()] || 0) - (monthOrder[b.month.toLowerCase()] || 0);
   });
   
   // Verificar tendência de conversões dos últimos 3 meses
@@ -88,7 +86,6 @@ export const detectNegativeTrends = async (performanceData: MonthlyPerformance[]
     };
     
     issues.push(issue);
-    // Removemos a tentativa de inserir no banco para evitar erros de RLS
   }
   
   return issues;
@@ -100,7 +97,7 @@ export const generateCampaignSuggestions = async (campaigns: CampaignData[]): Pr
   
   // Identificar campanhas com alto custo e baixa conversão
   const highCostLowConversion = campaigns.filter(campaign => {
-    const costValue = parseFloat(campaign.total_cost.replace(/[^0-9.,]/g, '').replace(',', '.'));
+    const costValue = parseFloat(campaign.total_cost?.replace(/[^0-9.,]/g, '')?.replace(',', '.') || '0');
     return costValue > 1000 && campaign.conversions < 5;
   });
   
@@ -114,12 +111,11 @@ export const generateCampaignSuggestions = async (campaigns: CampaignData[]): Pr
     };
     
     suggestions.push(suggestion);
-    // Removemos a tentativa de inserir no banco para evitar erros de RLS
   }
   
   // Sugestões de teste A/B para campanhas de médio desempenho
   const mediumPerformanceCampaigns = campaigns.filter(campaign => {
-    const ctrValue = parseFloat(campaign.ctr.replace(/[^0-9.,]/g, '').replace(',', '.'));
+    const ctrValue = parseFloat(campaign.ctr?.replace(/[^0-9.,]/g, '')?.replace(',', '.') || '0');
     return ctrValue >= 1.0 && ctrValue < 2.0;
   });
   
@@ -133,7 +129,6 @@ export const generateCampaignSuggestions = async (campaigns: CampaignData[]): Pr
     };
     
     suggestions.push(suggestion);
-    // Removemos a tentativa de inserir no banco para evitar erros de RLS
   }
   
   return suggestions;
@@ -162,7 +157,6 @@ export const generateFunnelSuggestions = async (performanceData: MonthlyPerforma
     };
     
     suggestions.push(suggestion);
-    // Removemos a tentativa de inserir no banco para evitar erros de RLS
     
     // Sugestão adicional para páginas de captura
     const capturePageSuggestion: Suggestion = {
@@ -174,7 +168,6 @@ export const generateFunnelSuggestions = async (performanceData: MonthlyPerforma
     };
     
     suggestions.push(capturePageSuggestion);
-    // Removemos a tentativa de inserir no banco para evitar erros de RLS
   }
   
   return suggestions;
@@ -188,24 +181,36 @@ export const analyzeAllData = async (campaigns: CampaignData[], performanceData:
     funnel: Suggestion[];
   };
 }> => {
-  // Detectar problemas
-  const ctrIssues = await detectLowCTRCampaigns(campaigns);
-  const budgetIssues = await detectBudgetDistributionIssues(campaigns);
-  const trendIssues = await detectNegativeTrends(performanceData);
-  
-  const allIssues = [...ctrIssues, ...budgetIssues, ...trendIssues];
-  
-  // Gerar sugestões
-  const campaignSuggestions = await generateCampaignSuggestions(campaigns);
-  const funnelSuggestions = await generateFunnelSuggestions(performanceData);
-  
-  return {
-    issues: allIssues,
-    suggestions: {
-      campaign: campaignSuggestions,
-      funnel: funnelSuggestions
-    }
-  };
+  try {
+    // Detectar problemas
+    const ctrIssues = await detectLowCTRCampaigns(campaigns);
+    const budgetIssues = await detectBudgetDistributionIssues(campaigns);
+    const trendIssues = await detectNegativeTrends(performanceData);
+    
+    const allIssues = [...ctrIssues, ...budgetIssues, ...trendIssues];
+    
+    // Gerar sugestões
+    const campaignSuggestions = await generateCampaignSuggestions(campaigns);
+    const funnelSuggestions = await generateFunnelSuggestions(performanceData);
+    
+    return {
+      issues: allIssues,
+      suggestions: {
+        campaign: campaignSuggestions,
+        funnel: funnelSuggestions
+      }
+    };
+  } catch (error) {
+    console.error("Erro na análise de dados:", error);
+    // Em caso de erro, retornar dados vazios
+    return {
+      issues: [],
+      suggestions: {
+        campaign: [],
+        funnel: []
+      }
+    };
+  }
 };
 
 // Função para carregar problemas e sugestões já existentes ou analisar dados novamente

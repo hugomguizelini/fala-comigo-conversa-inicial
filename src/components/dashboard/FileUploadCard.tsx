@@ -51,18 +51,24 @@ const FileUploadCard = ({ onFilesProcessed, isLoading, setIsLoading }: FileUploa
         setProcessingProgress(Math.round(50 + (i / acceptedFiles.length) * 25));
         
         // Then pass the parsed data to the insertion functions
-        if (file.name.toLowerCase().includes("campaign") || file.name.toLowerCase().includes("campanha")) {
-          console.log("Identificado como arquivo de campanhas");
-          await processAndInsertCampaignData(parseResult.data);
-          toast.success(`Arquivo de campanha processado: ${file.name}`);
-        } else if (file.name.toLowerCase().includes("monthly") || file.name.toLowerCase().includes("mensal")) {
-          console.log("Identificado como arquivo de dados mensais");
-          await processAndInsertMonthlyData(parseResult.data);
-          toast.success(`Arquivo de dados mensais processado: ${file.name}`);
-        } else {
-          console.log("Tipo de arquivo não identificado, tratando como campanhas por padrão");
-          await processAndInsertCampaignData(parseResult.data);
-          toast.info(`${file.name} foi processado como dados de campanha (padrão)`);
+        try {
+          if (file.name.toLowerCase().includes("campaign") || file.name.toLowerCase().includes("campanha")) {
+            console.log("Identificado como arquivo de campanhas");
+            await processAndInsertCampaignData(parseResult.data);
+            toast.success(`Arquivo de campanha processado: ${file.name}`);
+          } else if (file.name.toLowerCase().includes("monthly") || file.name.toLowerCase().includes("mensal")) {
+            console.log("Identificado como arquivo de dados mensais");
+            await processAndInsertMonthlyData(parseResult.data);
+            toast.success(`Arquivo de dados mensais processado: ${file.name}`);
+          } else {
+            console.log("Tipo de arquivo não identificado, tratando como campanhas por padrão");
+            await processAndInsertCampaignData(parseResult.data);
+            toast.info(`${file.name} foi processado como dados de campanha (padrão)`);
+          }
+        } catch (error) {
+          console.error("Erro ao inserir dados, mas continuando processamento:", error);
+          // Não interrompa o processamento se um arquivo tiver erro
+          toast.warning(`Houve um erro ao salvar ${file.name}, mas o processamento continuou.`);
         }
         
         // Update progress after insertion

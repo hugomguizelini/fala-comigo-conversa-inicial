@@ -38,6 +38,8 @@ export const useDashboardData = () => {
       
       if (campaignResult.success) {
         updateMetrics();
+        
+        // Garantir que a análise é executada mesmo que falhe a inserção no banco
         await loadAnalyticsData(campaignResult.campaigns, campaignResult.monthlyData);
         
         setLastLoadTime(new Date());
@@ -70,6 +72,8 @@ export const useDashboardData = () => {
   useEffect(() => {
     if (campaigns && campaigns.length > 0) {
       updateMetrics();
+      // Adicionar análise automática quando campanhas forem carregadas
+      loadAnalyticsData(campaigns, monthlyData);
     }
   }, [campaigns]);
 
