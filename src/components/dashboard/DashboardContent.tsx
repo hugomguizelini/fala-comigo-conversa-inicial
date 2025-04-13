@@ -1,45 +1,43 @@
-
 import React, { useState, useEffect } from "react";
-import { ArrowUp, Search, Filter, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-import { MetricsTable } from "./MetricsTable";
-import { ProblemsSuggestionsPanel } from "./ProblemsSuggestionsPanel";
-import { CampaignsTable } from "./CampaignsTable";
-import PerformanceChart from "./PerformanceChart";
-import StatisticsCard from "./StatisticsCard";
-import FileUploadCard from "./FileUploadCard";
-import FeatureCards from "./FeatureCards";
-import GptAnalysisPanel from "./GptAnalysisPanel";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Sparkles, Upload, AlertTriangle, BarChart3 } from "lucide-react";
 import { useDashboardData } from "@/hooks/useDashboardData";
-import { resetAllData } from "@/services/dataResetService";
-import { GptAnalysisResult } from "@/hooks/dashboard/useGptAnalysis";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import MetricsCards from "./MetricsCards";
+import { CampaignsTable } from "./CampaignsTable";
+import MonthlyPerformanceChart from "./MonthlyPerformanceChart";
+import IssuesPanel from "./IssuesPanel";
+import SuggestionsPanel from "./SuggestionsPanel";
+import GptAnalysisPanel from "./GptAnalysisPanel";
+import { GptAnalysisResult } from "@/hooks/dashboard/useGptAnalysis";
+import { deleteCampaignData } from "@/services/campaignService";
+import { deleteMonthlyData } from "@/services/performanceService";
 
 type DashboardContentProps = {
-  onOpenAiChat?: (analysis: GptAnalysisResult | null) => void;
+  onOpenAiChat: (analysis: GptAnalysisResult | null) => void;
   onUpdateChatContext?: (campaigns: any[], monthlyData: any[], metrics: any, issues: any[], suggestions: any) => void;
 };
 
-export default function DashboardContent({ onOpenAiChat, onUpdateChatContext }: DashboardContentProps) {
-  const [timeRange, setTimeRange] = useState<string>("month");
-  const [activeMetric, setActiveMetric] = useState<string>("impressions");
-  
-  const {
-    isLoading,
+const DashboardContent: React.FC<DashboardContentProps> = ({ 
+  onOpenAiChat,
+  onUpdateChatContext
+}) => {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("overview");
+  const { 
+    isLoading, 
     isAiLoading,
-    setIsLoading,
-    campaigns,
-    monthlyData,
-    metrics,
-    issues,
-    suggestions,
+    campaigns, 
+    monthlyData, 
+    metrics, 
+    issues, 
+    suggestions, 
     gptAnalysis,
     loadData,
     runAiAnalysis,
-    isAuthenticated,
     lastLoadTime
   } = useDashboardData();
 
@@ -50,167 +48,153 @@ export default function DashboardContent({ onOpenAiChat, onUpdateChatContext }: 
     }
   }, [campaigns, monthlyData, metrics, issues, suggestions, onUpdateChatContext]);
 
-  // Define the chart data type
-  type ChartDataType = { 
-    name: string; 
-    impressions: number; 
-    clicks: number; 
-    conversions: number; 
-    cost: number 
-  }[];
-  
-  // Transform data for the chart
-  const chartData: ChartDataType = monthlyData.map((item) => ({
-    name: item.month, // Map 'month' to 'name' for chart labels
-    impressions: item.impressions,
-    clicks: item.clicks,
-    conversions: item.conversions,
-    cost: item.cost
-  }));
+  const handleImportClick = () => {
+    navigate("/import");
+  };
 
-  // Formatação da data da última atualização
-  const formattedLastUpdate = lastLoadTime 
-    ? format(lastLoadTime, "'Última atualização em' dd 'de' MMMM', às' HH:mm", {locale: ptBR})
-    : "Dados não carregados";
-
-  // Função para resetar todos os dados
   const handleResetData = async () => {
-    if (isLoading) return;
-    
-    setIsLoading(true);
     try {
-      await resetAllData();
-      // Recarregar a página após limpar os dados para redefini-los
+      await deleteCampaignData();
+      await deleteMonthlyData();
       await loadData();
+      return true;
     } catch (error) {
       console.error("Error resetting data:", error);
-    } finally {
-      setIsLoading(false);
+      return false;
     }
   };
 
-  // Função para executar análise e abrir o chat
-  const handleAnalyzeAndOpenChat = async () => {
-    if (!onOpenAiChat) return;
+  const handleAnalyzeWithAI = async () => {
+    if (campaigns.length === 0) {
+      toast.error("Não há dados para analisar. Importe dados primeiro.");
+      return;
+    }
     
-    try {
-      // Se já temos análise, só abrimos o chat
-      if (gptAnalysis) {
-        onOpenAiChat(gptAnalysis);
-      } else {
-        // Caso contrário, tentamos executar análise e depois abrir o chat
-        onOpenAiChat(null); // Abrir chat sem análise por enquanto
-      }
-    } catch (error) {
-      console.error("Erro ao preparar chat:", error);
-      // Abrir chat mesmo sem análise em caso de erro
-      onOpenAiChat(null);
-    }
+    const result = await runAiAnalysis();
+    // Não abrimos o chat automaticamente, apenas quando o usuário clicar no botão
   };
 
-  // Função simplificada para apenas abrir o chat
   const handleOpenChat = () => {
-    if (onOpenAiChat) {
-      // Passamos a análise existente ou null
-      onOpenAiChat(gptAnalysis);
-    }
+    onOpenAiChat(gptAnalysis);
   };
+
+  const hasData = campaigns.length > 0;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <h1 className="text-3xl font-bold">Dashboard de Campanhas</h1>
-        
-        <div className="flex items-center gap-3 flex-wrap">
-          <div className="relative flex items-center">
-            <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
-            <input 
-              type="search"
-              placeholder="Pesquisar..."
-              className="h-10 w-[250px] rounded-md border border-input bg-background pl-8 pr-4 text-sm"
-            />
-          </div>
-          
-          <Button variant="outline" size="sm" className="flex items-center gap-1">
-            <Filter className="h-4 w-4" />
-            <span>Filtrar</span>
-          </Button>
-          
+    <div className="space-y-6 p-6 pb-16">
+      <div className="flex flex-col space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+        <p className="text-muted-foreground">
+          Visão geral do desempenho das suas campanhas de marketing digital
+        </p>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList>
+            <TabsTrigger value="overview">Visão Geral</TabsTrigger>
+            <TabsTrigger value="campaigns">Campanhas</TabsTrigger>
+            <TabsTrigger value="analysis">Análise</TabsTrigger>
+          </TabsList>
+        </Tabs>
+
+        <div className="flex gap-2 ml-4">
           <Button 
             variant="outline" 
             size="sm" 
-            className="flex items-center gap-1" 
-            onClick={() => loadData()}
-            disabled={isLoading}
+            className="hidden md:flex" 
+            onClick={handleImportClick}
           >
-            {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Download className="h-4 w-4" />
-            )}
-            <span>{isLoading ? "Carregando..." : "Atualizar"}</span>
+            <Upload className="mr-2 h-4 w-4" />
+            Importar Dados
+          </Button>
+          
+          <Button 
+            onClick={handleOpenChat}
+            className="bg-purple-600 hover:bg-purple-700 hidden md:flex"
+            size="sm"
+          >
+            <Sparkles className="mr-2 h-4 w-4" />
+            Consultar IA
           </Button>
         </div>
       </div>
-      
-      <div className="text-sm text-muted-foreground">
-        {formattedLastUpdate}
-      </div>
-      
-      <MetricsTable metrics={metrics} />
-      
-      <GptAnalysisPanel 
-        isLoading={isAiLoading}
-        analysis={gptAnalysis}
-        onAnalyze={runAiAnalysis}
-        onChat={handleOpenChat} // Usando a função correta aqui
-      />
-      
-      <ProblemsSuggestionsPanel 
-        issues={issues || []}
-        suggestions={suggestions || {campaign: [], funnel: []}}
-      />
-      
-      <div className="grid gap-6 md:grid-cols-2">
-        {chartData.length > 0 ? (
-          <PerformanceChart
-            chartData={chartData}
-            timeRange={timeRange}
-            setTimeRange={setTimeRange}
-            activeMetric={activeMetric}
-            setActiveMetric={setActiveMetric}
-            isLoading={isLoading}
-          />
-        ) : (
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border shadow-sm flex flex-col items-center justify-center min-h-[300px]">
-            <p className="text-center text-muted-foreground mb-4">
-              Nenhum dado de desempenho mensal disponível.
+
+      {!hasData && !isLoading && (
+        <div className="rounded-lg border border-dashed p-8 text-center">
+          <div className="mx-auto flex max-w-[420px] flex-col items-center justify-center text-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 mb-4">
+              <BarChart3 className="h-6 w-6 text-primary" />
+            </div>
+            <h3 className="text-lg font-semibold">Nenhum dado encontrado</h3>
+            <p className="text-sm text-muted-foreground mb-4 mt-2">
+              Você ainda não importou nenhum dado de campanha. Importe dados para visualizar métricas e análises.
             </p>
-            <p className="text-sm text-center text-muted-foreground">
-              Faça upload de um arquivo CSV com dados mensais para visualizar o gráfico.
-            </p>
+            <Button onClick={handleImportClick}>
+              <Upload className="mr-2 h-4 w-4" />
+              Importar Dados
+            </Button>
           </div>
-        )}
+        </div>
+      )}
 
-        <StatisticsCard 
-          isLoading={isLoading} 
-          metrics={metrics} 
-          onAnalyzeClick={handleOpenChat} // Usando a função correta aqui
-        />
-      </div>
+      {hasData && (
+        <>
+          <TabsContent value="overview" className="space-y-6">
+            <MetricsCards metrics={metrics} isLoading={isLoading} />
+            
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <MonthlyPerformanceChart 
+                data={monthlyData} 
+                isLoading={isLoading} 
+                className="md:col-span-2"
+              />
+              <IssuesPanel issues={issues} isLoading={isLoading} />
+            </div>
+            
+            <div className="grid gap-6 md:grid-cols-2">
+              <SuggestionsPanel 
+                suggestions={suggestions} 
+                isLoading={isLoading} 
+              />
+              <GptAnalysisPanel 
+                isLoading={isAiLoading} 
+                analysis={gptAnalysis}
+                onAnalyze={handleAnalyzeWithAI}
+                onChat={handleOpenChat}
+              />
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="campaigns" className="space-y-6">
+            <CampaignsTable 
+              campaigns={campaigns} 
+              onDataReset={handleResetData}
+            />
+          </TabsContent>
+          
+          <TabsContent value="analysis" className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              <IssuesPanel issues={issues} isLoading={isLoading} />
+              <SuggestionsPanel suggestions={suggestions} isLoading={isLoading} />
+            </div>
+            <GptAnalysisPanel 
+              isLoading={isAiLoading} 
+              analysis={gptAnalysis}
+              onAnalyze={handleAnalyzeWithAI}
+              onChat={handleOpenChat}
+            />
+          </TabsContent>
+        </>
+      )}
 
-      <CampaignsTable 
-        campaigns={campaigns} 
-        onDataReset={handleResetData}
-      />
-
-      <FileUploadCard
-        onFilesProcessed={loadData}
-        isLoading={isLoading}
-        setIsLoading={setIsLoading}
-      />
-
-      <FeatureCards />
+      {lastLoadTime && (
+        <div className="text-xs text-muted-foreground text-right">
+          Última atualização: {lastLoadTime.toLocaleString()}
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default DashboardContent;

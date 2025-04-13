@@ -6,14 +6,34 @@ import { toast } from "sonner";
 import AiChatDialog from "@/components/ai/AiChatDialog";
 import { GptAnalysisResult } from "@/hooks/dashboard/useGptAnalysis";
 import { supabase } from "@/integrations/supabase/client";
+import { useDashboardData } from "@/hooks/useDashboardData";
 
 const Dashboard = () => {
   const [chatOpen, setChatOpen] = useState(false);
   const [initialAnalysis, setInitialAnalysis] = useState<GptAnalysisResult | null>(null);
   const [isLoadingChat, setIsLoadingChat] = useState(false);
   const [chatMessages, setChatMessages] = useState<{role: 'user'|'assistant'|'system', content: string}[]>([]);
-  const [chatContext, setChatContext] = useState<any>(null);
   const [fallbackMode, setFallbackMode] = useState(false);
+  const [chatContextSet, setChatContextSet] = useState(false);
+  
+  // Obter todos os dados do dashboard usando o hook
+  const {
+    campaigns,
+    monthlyData,
+    metrics,
+    issues,
+    suggestions,
+    gptAnalysis,
+  } = useDashboardData();
+  
+  // Estado para armazenar o contexto do chat
+  const [chatContext, setChatContext] = useState<{
+    campaignData: any[] | null;
+    monthlyData: any[] | null;
+    metrics: any | null;
+    issues: any[] | null;
+    suggestions: any | null;
+  } | null>(null);
   
   // Abrir o chat com análise inicial
   const handleOpenChat = (analysis: GptAnalysisResult | null) => {
@@ -21,28 +41,77 @@ const Dashboard = () => {
     setInitialAnalysis(analysis);
     setChatOpen(true);
     
-    // Armazenar o contexto atual para o chat
-    if (chatContext === null) {
-      // Será preenchido na primeira mensagem
-      setChatContext({});
-    }
-
     // Resetar o fallback mode quando abrimos um novo chat
     setFallbackMode(false);
+    
+    // Garantir que o contexto está atualizado ao abrir o chat
+    updateChatContextOnce();
   };
+
+  // Função para atualizar o contexto do chat apenas uma vez
+  const updateChatContextOnce = () => {
+    if (!chatContextSet && campaigns.length > 0) {
+      console.log("Atualizando contexto do chat com dados:", {
+        campaigns: campaigns.length,
+        monthlyData: monthlyData.length,
+        issues: issues.length,
+        suggestions: {
+          campaign: suggestions.campaign?.length || 0,
+          funnel: suggestions.funnel?.length || 0
+        }
+      });
+      
+      setChatContext({
+        campaignData: campaigns,
+        monthlyData: monthlyData,
+        metrics: metrics,
+        issues: issues,
+        suggestions: suggestions
+      });
+      
+      setChatContextSet(true);
+    }
+  };
+
+  // Atualizar contexto quando os dados mudarem e o chat estiver aberto
+  useEffect(() => {
+    if (chatOpen && campaigns.length > 0 && !chatContextSet) {
+      updateChatContextOnce();
+    }
+  }, [chatOpen, campaigns.length, chatContextSet]);
 
   // Função para enviar mensagem para a Edge Function
   const handleSendMessage = async (message: string): Promise<string> => {
     setIsLoadingChat(true);
     
     try {
+      // Garantir que temos o contexto mais atualizado
+      const currentContext = chatContext || {
+        campaignData: campaigns,
+        monthlyData: monthlyData,
+        metrics: metrics,
+        issues: issues,
+        suggestions: suggestions
+      };
+      
       // Preparar o payload com a mensagem e contexto
       const payload = {
         type: 'chat',
         message: message,
         previousMessages: chatMessages,
-        ...chatContext
+        ...currentContext
       };
+      
+      console.log("Enviando payload para IA:", {
+        message,
+        contextDataAvailable: {
+          hasCampaigns: Boolean(currentContext.campaignData?.length),
+          hasMonthlyData: Boolean(currentContext.monthlyData?.length),
+          hasMetrics: Boolean(currentContext.metrics),
+          hasIssues: Boolean(currentContext.issues?.length),
+          hasSuggestions: Boolean(currentContext.suggestions)
+        }
+      });
 
       // Chamar a função edge
       const { data, error } = await supabase.functions.invoke('gpt-analysis', {
@@ -99,17 +168,6 @@ const Dashboard = () => {
     }
   };
 
-  // Atualizar o contexto do chat quando necessário
-  const updateChatContext = (campaigns, monthlyData, metrics, issues, suggestions) => {
-    setChatContext({
-      campaignData: campaigns,
-      monthlyData: monthlyData,
-      metrics: metrics,
-      issues: issues,
-      suggestions: suggestions
-    });
-  };
-
   useEffect(() => {
     // Toast de boas-vindas com duração definida
     toast.info(
@@ -135,7 +193,7 @@ const Dashboard = () => {
     <DashboardLayout>
       <DashboardContent 
         onOpenAiChat={handleOpenChat} 
-        onUpdateChatContext={updateChatContext}
+        onUpdateChatContext={null} // Removemos para evitar o loop infinito
       />
       
       <AiChatDialog

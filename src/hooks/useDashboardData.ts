@@ -25,6 +25,7 @@ export const useDashboardData = () => {
   const { issues, suggestions, loadAnalyticsData } = useAnalyticsData();
   const { isLoading: isAiLoading, analysis: gptAnalysis, runGptAnalysis } = useGptAnalysis();
   const [lastLoadTime, setLastLoadTime] = useState<Date | null>(null);
+  const [initialLoadDone, setInitialLoadDone] = useState(false);
   
   const loadData = async () => {
     if (isLoading) return;
@@ -87,16 +88,18 @@ export const useDashboardData = () => {
     }
   };
   
+  // Inicialização única
   useEffect(() => {
-    // No MVP, carregamos os dados independentemente da autenticação
-    loadData();
-  }, []);
+    if (!initialLoadDone) {
+      loadData();
+      setInitialLoadDone(true);
+    }
+  }, [initialLoadDone]);
   
   useEffect(() => {
     if (campaigns && campaigns.length > 0) {
       updateMetrics();
-      // Adicionar análise automática quando campanhas forem carregadas
-      loadAnalyticsData(campaigns, monthlyData);
+      // Não chamamos loadAnalyticsData aqui para evitar loops infinitos
     }
   }, [campaigns]);
 
