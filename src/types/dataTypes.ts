@@ -51,3 +51,20 @@ export interface Suggestion {
   created_at?: string;
   updated_at?: string;
 }
+
+// Interface para os dados de exemplo do dashboard
+export interface FallbackIssue {
+  issue: string;
+  description: string;
+  relatedTo: string;
+  affectedCampaigns: string[];
+}
+
+export interface FallbackSuggestion {
+  title: string;
+  description: string;
+  impact: string;
+  targetCampaigns?: string[];
+  targetPages?: string[];
+  targetAudience?: string;
+}

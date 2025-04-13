@@ -8,7 +8,9 @@ import {
   MonthlyPerformance,
   getAnalytics,
   Issue,
-  Suggestion
+  Suggestion,
+  FallbackIssue,
+  FallbackSuggestion
 } from "@/services/supabaseService";
 import dashboardData from "@/data/dashboard-data.json";
 import { supabase } from "@/integrations/supabase/client";
@@ -138,7 +140,7 @@ export const useDashboardData = () => {
       setMetrics(dashboardData.metrics);
       
       // Converter os dados de exemplo para o formato correto das interfaces
-      const fallbackIssues: Issue[] = dashboardData.identifiedIssues.map(issue => ({
+      const fallbackIssues: Issue[] = (dashboardData.identifiedIssues as FallbackIssue[]).map(issue => ({
         issue: issue.issue,
         description: issue.description,
         related_to: issue.relatedTo,
@@ -146,7 +148,7 @@ export const useDashboardData = () => {
         severity: 'medium' // Valor padrão para compatibilidade
       }));
       
-      const fallbackCampaignSuggestions: Suggestion[] = dashboardData.optimizationSuggestions.campaign.map(suggestion => ({
+      const fallbackCampaignSuggestions: Suggestion[] = (dashboardData.optimizationSuggestions.campaign as FallbackSuggestion[]).map(suggestion => ({
         title: suggestion.title,
         description: suggestion.description,
         type: 'campaign',
@@ -154,7 +156,7 @@ export const useDashboardData = () => {
         target_campaigns: suggestion.targetCampaigns
       }));
       
-      const fallbackFunnelSuggestions: Suggestion[] = dashboardData.optimizationSuggestions.funnel.map(suggestion => ({
+      const fallbackFunnelSuggestions: Suggestion[] = (dashboardData.optimizationSuggestions.funnel as FallbackSuggestion[]).map(suggestion => ({
         title: suggestion.title,
         description: suggestion.description,
         type: 'funnel',

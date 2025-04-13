@@ -11,6 +11,7 @@ import StatisticsCard from "./StatisticsCard";
 import FileUploadCard from "./FileUploadCard";
 import FeatureCards from "./FeatureCards";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { Issue, Suggestion } from "@/types/dataTypes";
 
 // Importando dados do dashboard para uso temporário
 import dashboardData from "@/data/dashboard-data.json";
@@ -87,8 +88,8 @@ export default function DashboardContent() {
       <MetricsTable metrics={metrics} />
       
       <ProblemsSuggestionsPanel 
-        issues={issues || dashboardData.identifiedIssues}
-        suggestions={suggestions || dashboardData.optimizationSuggestions}
+        issues={issues || []}
+        suggestions={suggestions || {campaign: [], funnel: []}}
       />
       
       <div className="grid gap-6 md:grid-cols-2">
