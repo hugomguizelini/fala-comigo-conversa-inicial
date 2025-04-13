@@ -37,20 +37,33 @@ const AiChatDialog: React.FC<AiChatDialogProps> = ({
 
   // Initialize with system message and initial analysis if available
   useEffect(() => {
-    if (open && initialAnalysis) {
-      // Reset messages when opening the dialog
-      setMessages([
+    if (open) {
+      // Inicializar mensagens quando o chat é aberto
+      let initialMessages: Message[] = [
         {
           role: 'system',
-          content: 'Olá! Analisei seus dados e estou pronto para responder suas perguntas sobre as campanhas de marketing.',
+          content: 'Olá! Estou aqui para ajudar com suas campanhas de marketing.',
           timestamp: new Date()
-        },
-        {
+        }
+      ];
+
+      // Adicionar a análise se disponível
+      if (initialAnalysis && initialAnalysis.analysis) {
+        initialMessages.push({
           role: 'assistant',
           content: initialAnalysis.analysis,
           timestamp: new Date()
-        }
-      ]);
+        });
+      } else {
+        // Mensagem padrão se não houver análise
+        initialMessages.push({
+          role: 'assistant',
+          content: 'Como posso ajudar com suas campanhas de marketing hoje?',
+          timestamp: new Date()
+        });
+      }
+
+      setMessages(initialMessages);
     }
   }, [open, initialAnalysis]);
 
@@ -87,6 +100,9 @@ const AiChatDialog: React.FC<AiChatDialogProps> = ({
     }]);
 
     try {
+      // Simulando uma pequena demora para parecer mais realista
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       // Get response from API
       const response = await onSendMessage(userMessage);
 

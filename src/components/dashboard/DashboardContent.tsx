@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { ArrowUp, Search, Filter, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -81,14 +80,10 @@ export default function DashboardContent({ onOpenAiChat }: DashboardContentProps
     }
   };
 
-  // Função para analisar e abrir chat
-  const handleAnalyzeAndOpenChat = async () => {
-    if (!gptAnalysis) {
-      const analysis = await runAiAnalysis();
-      if (analysis && onOpenAiChat) {
-        onOpenAiChat(analysis);
-      }
-    } else if (onOpenAiChat) {
+  // Simplificando esta função para apenas abrir o chat sem executar análise
+  const handleOpenChat = () => {
+    if (onOpenAiChat) {
+      // Passamos a análise existente ou null
       onOpenAiChat(gptAnalysis);
     }
   };
@@ -140,7 +135,7 @@ export default function DashboardContent({ onOpenAiChat }: DashboardContentProps
         isLoading={isAiLoading}
         analysis={gptAnalysis}
         onAnalyze={runAiAnalysis}
-        onChat={onOpenAiChat}
+        onChat={handleOpenChat}
       />
       
       <ProblemsSuggestionsPanel 
