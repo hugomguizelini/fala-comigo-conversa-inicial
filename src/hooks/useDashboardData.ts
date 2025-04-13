@@ -5,9 +5,13 @@ import {
   getCampaigns, 
   getMonthlyPerformance,
   CampaignData,
-  MonthlyPerformance
+  MonthlyPerformance,
+  getAnalytics,
+  Issue,
+  Suggestion
 } from "@/services/supabaseService";
 import dashboardData from "@/data/dashboard-data.json";
+import { supabase } from "@/integrations/supabase/client";
 
 export type MetricsType = {
   impressions: { value: string; variation: string };
@@ -23,6 +27,14 @@ export const useDashboardData = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [campaigns, setCampaigns] = useState<CampaignData[]>([]);
   const [monthlyData, setMonthlyData] = useState<MonthlyPerformance[]>([]);
+  const [issues, setIssues] = useState<Issue[]>([]);
+  const [suggestions, setSuggestions] = useState<{
+    campaign: Suggestion[];
+    funnel: Suggestion[];
+  }>({
+    campaign: [],
+    funnel: []
+  });
   const [metrics, setMetrics] = useState<MetricsType>({
     impressions: { value: "0", variation: "0%" },
     clicks: { value: "0", variation: "0%" },
@@ -32,9 +44,59 @@ export const useDashboardData = () => {
     totalCost: { value: "R$ 0,00", variation: "0%" }
   });
   
+  // Verificar se o usuário está autenticado
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data } = await supabase.auth.getSession();
+      setIsAuthenticated(!!data.session);
+      
+      // Configurar listener de mudanças de autenticação
+      const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+        setIsAuthenticated(!!session);
+        if (event === 'SIGNED_IN') {
+          loadData(); // Recarregar dados quando o usuário fizer login
+        } else if (event === 'SIGNED_OUT') {
+          // Limpar dados ao fazer logout
+          setCampaigns([]);
+          setMonthlyData([]);
+          setIssues([]);
+          setSuggestions({ campaign: [], funnel: [] });
+          setMetrics({
+            impressions: { value: "0", variation: "0%" },
+            clicks: { value: "0", variation: "0%" },
+            ctr: { value: "0%", variation: "0%" },
+            conversions: { value: "0", variation: "0%" },
+            cpc: { value: "R$ 0,00", variation: "0%" },
+            totalCost: { value: "R$ 0,00", variation: "0%" }
+          });
+        }
+      });
+      
+      return () => {
+        authListener.subscription.unsubscribe();
+      };
+    };
+    
+    checkAuth();
+  }, []);
+  
   const loadData = async () => {
     setIsLoading(true);
     try {
+      // Verificar autenticação
+      const { data: authData } = await supabase.auth.getSession();
+      if (!authData.session) {
+        toast({
+          title: "Usuário não autenticado",
+          description: "Faça login para carregar seus dados.",
+          variant: "destructive"
+        });
+        setIsLoading(false);
+        return;
+      }
+      
       const campaignData = await getCampaigns();
       const monthlyPerformanceData = await getMonthlyPerformance();
       
@@ -47,7 +109,7 @@ export const useDashboardData = () => {
         const totalConversions = campaignData.reduce((sum, campaign) => sum + campaign.conversions, 0);
         
         const totalCost = campaignData.reduce((sum, campaign) => {
-          const costValue = parseFloat(campaign.total_cost.replace(/[^0-9.,]/g, '').replace(',', '.')) || 0;
+          const costValue = parseFloat(campaign.total_cost?.replace(/[^0-9.,]/g, '').replace(',', '.')) || 0;
           return sum + costValue;
         }, 0);
         
@@ -65,9 +127,21 @@ export const useDashboardData = () => {
       } else {
         setMetrics(dashboardData.metrics);
       }
+      
+      // Carregar problemas e sugestões
+      const analyticsData = await getAnalytics(campaignData, monthlyPerformanceData);
+      setIssues(analyticsData.issues);
+      setSuggestions(analyticsData.suggestions);
+      
     } catch (error) {
       console.error("Error loading data:", error);
       setMetrics(dashboardData.metrics);
+      setIssues(dashboardData.identifiedIssues);
+      setSuggestions({
+        campaign: dashboardData.optimizationSuggestions.campaign,
+        funnel: dashboardData.optimizationSuggestions.funnel
+      });
+      
       toast({
         title: "Erro ao carregar dados",
         description: "Não foi possível carregar os dados do dashboard.",
@@ -79,8 +153,10 @@ export const useDashboardData = () => {
   };
 
   useEffect(() => {
-    loadData();
-  }, []);
+    if (isAuthenticated) {
+      loadData();
+    }
+  }, [isAuthenticated]);
 
   return {
     isLoading,
@@ -88,6 +164,9 @@ export const useDashboardData = () => {
     campaigns,
     monthlyData,
     metrics,
+    issues,
+    suggestions,
     loadData,
+    isAuthenticated
   };
 };

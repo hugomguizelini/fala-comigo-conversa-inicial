@@ -25,7 +25,10 @@ export default function DashboardContent() {
     campaigns,
     monthlyData,
     metrics,
+    issues,
+    suggestions,
     loadData,
+    isAuthenticated
   } = useDashboardData();
 
   // Define the chart data type
@@ -57,7 +60,7 @@ export default function DashboardContent() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Bem-vindo</h1>
+        <h1 className="text-3xl font-bold">Bem-vindo{isAuthenticated ? "" : " (Modo Demonstração)"}</h1>
         
         <div className="flex items-center gap-3">
           <div className="relative flex items-center">
@@ -84,8 +87,8 @@ export default function DashboardContent() {
       <MetricsTable metrics={metrics} />
       
       <ProblemsSuggestionsPanel 
-        issues={dashboardData.identifiedIssues}
-        suggestions={dashboardData.optimizationSuggestions}
+        issues={issues || dashboardData.identifiedIssues}
+        suggestions={suggestions || dashboardData.optimizationSuggestions}
       />
       
       <div className="grid gap-6 md:grid-cols-2">

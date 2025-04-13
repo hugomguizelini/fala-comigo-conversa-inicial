@@ -18,9 +18,14 @@ export const getCampaigns = async (): Promise<CampaignData[]> => {
 };
 
 export const insertCampaign = async (campaign: CampaignData): Promise<CampaignData> => {
+  const { data: userData } = await supabase.auth.getUser();
+  
   const { data, error } = await supabase
     .from('campaign_data')
-    .insert(campaign)
+    .insert({
+      ...campaign,
+      user_id: userData.user?.id
+    })
     .select()
     .single();
   
@@ -30,4 +35,32 @@ export const insertCampaign = async (campaign: CampaignData): Promise<CampaignDa
   }
   
   return data;
+};
+
+export const updateCampaign = async (id: string, campaign: Partial<CampaignData>): Promise<CampaignData> => {
+  const { data, error } = await supabase
+    .from('campaign_data')
+    .update(campaign)
+    .eq('id', id)
+    .select()
+    .single();
+  
+  if (error) {
+    console.error('Error updating campaign:', error);
+    throw error;
+  }
+  
+  return data;
+};
+
+export const deleteCampaign = async (id: string): Promise<void> => {
+  const { error } = await supabase
+    .from('campaign_data')
+    .delete()
+    .eq('id', id);
+  
+  if (error) {
+    console.error('Error deleting campaign:', error);
+    throw error;
+  }
 };

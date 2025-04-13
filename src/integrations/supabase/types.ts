@@ -25,6 +25,7 @@ export type Database = {
           status: string
           total_cost: string | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           budget?: string | null
@@ -41,6 +42,7 @@ export type Database = {
           status?: string
           total_cost?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           budget?: string | null
@@ -57,6 +59,43 @@ export type Database = {
           status?: string
           total_cost?: string | null
           updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      identified_issues: {
+        Row: {
+          affected_campaigns: string[]
+          created_at: string | null
+          description: string
+          id: string
+          issue: string
+          related_to: string
+          severity: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          affected_campaigns: string[]
+          created_at?: string | null
+          description: string
+          id?: string
+          issue: string
+          related_to: string
+          severity: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          affected_campaigns?: string[]
+          created_at?: string | null
+          description?: string
+          id?: string
+          issue?: string
+          related_to?: string
+          severity?: string
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -70,6 +109,7 @@ export type Database = {
           impressions: number
           month: string
           updated_at: string
+          user_id: string | null
           year: number
         }
         Insert: {
@@ -81,6 +121,7 @@ export type Database = {
           impressions?: number
           month: string
           updated_at?: string
+          user_id?: string | null
           year: number
         }
         Update: {
@@ -92,7 +133,50 @@ export type Database = {
           impressions?: number
           month?: string
           updated_at?: string
+          user_id?: string | null
           year?: number
+        }
+        Relationships: []
+      }
+      optimization_suggestions: {
+        Row: {
+          created_at: string | null
+          description: string
+          id: string
+          impact: string
+          target_audience: string | null
+          target_campaigns: string[] | null
+          target_pages: string[] | null
+          title: string
+          type: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          id?: string
+          impact: string
+          target_audience?: string | null
+          target_campaigns?: string[] | null
+          target_pages?: string[] | null
+          title: string
+          type: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          id?: string
+          impact?: string
+          target_audience?: string | null
+          target_campaigns?: string[] | null
+          target_pages?: string[] | null
+          title?: string
+          type?: string
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
