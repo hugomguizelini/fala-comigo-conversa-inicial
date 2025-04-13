@@ -27,23 +27,37 @@ const Architecture = () => {
       setIsGeneratingPDF(true);
       toast("Gerando PDF, por favor aguarde...");
 
-      // Hide download button during PDF generation
-      const downloadButton = document.getElementById("download-button");
-      const backButton = document.getElementById("back-button");
+      // Hide header completely during PDF generation
+      const header = document.querySelector("header");
+      const origHeaderStyle = header ? header.style.display : "flex";
+      if (header) header.style.display = "none";
       
-      if (downloadButton) downloadButton.style.display = "none";
-      if (backButton) backButton.style.display = "none";
+      // Capture current theme state to ensure we keep dark mode for PDF
+      const htmlElement = document.documentElement;
+      const currentTheme = htmlElement.classList.contains("dark") ? "dark" : "light";
+      
+      // Ensure dark mode is enabled for PDF generation
+      if (currentTheme !== "dark") {
+        htmlElement.classList.add("dark");
+      }
       
       const content = contentRef.current;
       const canvas = await html2canvas(content, {
-        scale: 1,
+        scale: 2, // Higher scale for better quality
         useCORS: true,
-        logging: false
+        logging: false,
+        backgroundColor: "#1A1F2C", // Match dark theme background
+        windowWidth: document.documentElement.offsetWidth,
+        windowHeight: document.documentElement.offsetHeight,
       });
       
-      // Show buttons again
-      if (downloadButton) downloadButton.style.display = "flex";
-      if (backButton) backButton.style.display = "block";
+      // Restore header visibility
+      if (header) header.style.display = origHeaderStyle;
+      
+      // Restore original theme if needed
+      if (currentTheme !== "dark") {
+        htmlElement.classList.remove("dark");
+      }
       
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF({
