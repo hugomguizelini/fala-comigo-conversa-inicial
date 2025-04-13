@@ -23,7 +23,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background">
       {/* Sidebar - visible on larger screens */}
-      <aside className="hidden md:flex w-64 flex-col bg-sidebar border-r border-sidebar-border">
+      <aside className="hidden md:flex w-72 flex-col bg-sidebar border-r border-sidebar-border">
         <div className="p-4">
           <div className="flex items-center gap-2 mb-6">
             <div className="h-8 w-8 rounded-md bg-purple-500 flex items-center justify-center">

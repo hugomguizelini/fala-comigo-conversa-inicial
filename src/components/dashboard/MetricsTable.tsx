@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { 
   Table, 
   TableBody, 
@@ -10,7 +10,15 @@ import {
   TableRow 
 } from "@/components/ui/table";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { ArrowUp, ArrowDown, TrendingUp, Target, ArrowRight, Eye, MousePointer, CreditCard } from "lucide-react";
+import { ArrowUp, ArrowDown, TrendingUp, Target, ArrowRight, Eye, MousePointer, CreditCard, Filter } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 type MetricsProps = {
   metrics: {
@@ -24,6 +32,14 @@ type MetricsProps = {
 };
 
 export const MetricsTable = ({ metrics = {} }: MetricsProps) => {
+  // Estado para controle dos filtros
+  const [filters, setFilters] = useState({
+    showAll: true,
+    showPositive: false,
+    showNegative: false,
+    showNeutral: false,
+  });
+
   // Helper para determinar se uma variação é positiva ou negativa
   const getVariationStatus = (variation: string = "0%") => {
     return variation.startsWith('+') ? "increase" : variation.startsWith('-') ? "decrease" : "neutral";
@@ -90,6 +106,33 @@ export const MetricsTable = ({ metrics = {} }: MetricsProps) => {
     }
   ];
 
+  // Filtrar métricas com base nos filtros selecionados
+  const filteredMetrics = metricsData.filter(metric => {
+    if (filters.showAll) return true;
+    if (filters.showPositive && metric.status === "increase") return true;
+    if (filters.showNegative && metric.status === "decrease") return true;
+    if (filters.showNeutral && metric.status === "neutral") return true;
+    return false;
+  });
+
+  // Manipulador para alternar filtros
+  const toggleFilter = (filterName: string) => {
+    if (filterName === 'showAll') {
+      setFilters({
+        showAll: true,
+        showPositive: false,
+        showNegative: false,
+        showNeutral: false
+      });
+    } else {
+      setFilters(prev => ({
+        ...prev,
+        showAll: false,
+        [filterName]: !prev[filterName as keyof typeof prev]
+      }));
+    }
+  };
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-start justify-between">
@@ -97,6 +140,50 @@ export const MetricsTable = ({ metrics = {} }: MetricsProps) => {
           <CardTitle className="text-lg">Métricas Detalhadas</CardTitle>
           <CardDescription>Análise individual de cada métrica da campanha</CardDescription>
         </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="h-8 gap-1">
+              <Filter className="h-3.5 w-3.5" />
+              <span>Filtrar</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuCheckboxItem 
+              checked={filters.showAll}
+              onCheckedChange={() => toggleFilter('showAll')}
+            >
+              Todas métricas
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuCheckboxItem 
+              checked={filters.showPositive}
+              onCheckedChange={() => toggleFilter('showPositive')}
+              disabled={filters.showAll}
+            >
+              <span className="flex items-center gap-1">
+                <ArrowUp className="h-3.5 w-3.5 text-green-500" />
+                Positivas
+              </span>
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem 
+              checked={filters.showNegative}
+              onCheckedChange={() => toggleFilter('showNegative')}
+              disabled={filters.showAll}
+            >
+              <span className="flex items-center gap-1">
+                <ArrowDown className="h-3.5 w-3.5 text-red-500" />
+                Negativas
+              </span>
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem 
+              checked={filters.showNeutral}
+              onCheckedChange={() => toggleFilter('showNeutral')}
+              disabled={filters.showAll}
+            >
+              <span>Sem variação</span>
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </CardHeader>
       <CardContent>
         <Table>
@@ -110,7 +197,7 @@ export const MetricsTable = ({ metrics = {} }: MetricsProps) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {metricsData.map((metric) => (
+            {filteredMetrics.map((metric) => (
               <TableRow key={metric.name}>
                 <TableCell className="flex items-center gap-2 font-medium">
                   {metric.icon}
