@@ -11,7 +11,7 @@ const Dashboard = () => {
       "Dica: Faça upload de arquivos CSV para ver os dados no dashboard. Use arquivos com 'campaign' ou 'campanha' no nome para dados de campanhas."
     );
     
-    // Second toast message about data display, removing the 'delay' property
+    // Second toast message about data display
     setTimeout(() => {
       toast.info(
         "Caso os dados não apareçam após o upload, verifique se o arquivo CSV tem o formato correto com colunas como 'nome', 'impressões', 'cliques', etc."

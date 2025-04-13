@@ -22,9 +22,10 @@ type CampaignsTableProps = {
   onDataReset?: () => Promise<void>;
 };
 
-// Função para verificar se uma campanha possui dados relevantes
+// Modificada para incluir todas as campanhas, não apenas aquelas com dados "significativos"
 const hasMeaningfulData = (campaign: CampaignData): boolean => {
-  return campaign.impressions > 0 || campaign.clicks > 0 || campaign.conversions > 0;
+  // Agora retorna true para todas as campanhas, incluindo aquelas com valores zerados
+  return true;
 };
 
 export const CampaignsTable = ({ campaigns, onDataReset }: CampaignsTableProps) => {
@@ -102,7 +103,7 @@ export const CampaignsTable = ({ campaigns, onDataReset }: CampaignsTableProps) 
               {meaningfulCampaigns.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={10} className="text-center py-6 text-muted-foreground">
-                    Nenhuma campanha com dados relevantes encontrada. Faça upload de dados para começar.
+                    Nenhuma campanha encontrada. Faça upload de dados para começar.
                   </TableCell>
                 </TableRow>
               ) : (

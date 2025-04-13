@@ -8,7 +8,19 @@ import { toast } from "sonner";
 // Função para extrair valor numérico de uma string formatada
 export const extractNumericValue = (valueStr: string): number => {
   if (!valueStr) return 0;
-  return parseFloat(valueStr.replace(/[^0-9.-]+/g, "")) || 0;
+  
+  // Melhorar o tratamento de valores numéricos
+  try {
+    // Remover caracteres não numéricos, mantendo pontos e vírgulas
+    const cleanValue = valueStr.toString().replace(/[^\d.,]/g, "");
+    // Substituir vírgula por ponto para parsing correto
+    const normalizedValue = cleanValue.replace(",", ".");
+    // Converter para float
+    return parseFloat(normalizedValue) || 0;
+  } catch (error) {
+    console.error("Erro ao extrair valor numérico:", error);
+    return 0;
+  }
 };
 
 // Função para extrair porcentagem de uma string
@@ -41,6 +53,9 @@ export const processCsvFile = (file: File): Promise<Papa.ParseResult<any>> => {
 
 // Normalizar dados de campanhas sem depender de nomes de colunas específicos
 const normalizeCampaignData = (row: any): CampaignData => {
+  // Logging para debugging
+  console.log("Processando linha do CSV:", row);
+  
   // Mapear campos comuns com seus possíveis nomes alternativos
   const nameField = row.nome || row.name || row.campanha || "Campanha sem nome";
   const statusField = row.status || "active";
@@ -54,14 +69,32 @@ const normalizeCampaignData = (row: any): CampaignData => {
   const totalCostField = row.total_cost || row.custo_total || row.custo || "R$ 0,00";
   const roasField = row.roas || row.retorno || "0%";
   
+  // Debug log dos campos extraídos
+  console.log("Campos extraídos:", {
+    nome: nameField,
+    impressoes: impressionsField,
+    cliques: clicksField
+  });
+  
+  // Processamento melhorado dos valores numéricos
+  const impressions = extractNumericValue(String(impressionsField));
+  const clicks = extractNumericValue(String(clicksField));
+  const conversions = extractNumericValue(String(conversionsField));
+  
+  console.log("Valores processados:", {
+    impressoes: impressions,
+    cliques: clicks,
+    conversoes: conversions
+  });
+  
   return {
     name: String(nameField),
     status: String(statusField),
     budget: extractMonetaryValue(String(budgetField)),
-    impressions: extractNumericValue(String(impressionsField)),
-    clicks: extractNumericValue(String(clicksField)),
+    impressions: impressions,
+    clicks: clicks,
     ctr: extractPercentage(String(ctrField)),
-    conversions: extractNumericValue(String(conversionsField)),
+    conversions: conversions,
     conversion_type: String(conversionTypeField),
     cpc: extractMonetaryValue(String(cpcField)),
     total_cost: extractMonetaryValue(String(totalCostField)),
