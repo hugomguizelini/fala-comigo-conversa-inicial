@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { ArrowUp, Search, Filter, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ import { resetAllData } from "@/services/dataResetService";
 import { GptAnalysisResult } from "@/hooks/dashboard/useGptAnalysis";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type DashboardContentProps = {
   onOpenAiChat?: (analysis: GptAnalysisResult | null) => void;
@@ -26,6 +28,7 @@ export default function DashboardContent({
 }: DashboardContentProps) {
   const [timeRange, setTimeRange] = useState<string>("month");
   const [activeMetric, setActiveMetric] = useState<string>("impressions");
+  const isMobile = useIsMobile();
 
   const {
     isLoading,
@@ -102,55 +105,76 @@ export default function DashboardContent({
     }
   };
 
-  return <div className="space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <h1 className="text-3xl font-bold mx-0 px-0 my-[30px] text-purple-600">          Insights com IA</h1>
+  return <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <h1 className={`text-2xl sm:text-3xl font-bold mx-0 px-0 ${isMobile ? "mt-4 mb-2" : "my-[30px]"} text-purple-600`}>
+          Insights com IA
+        </h1>
         
-        <div className="flex items-center gap-3 flex-wrap">
-          <div className="relative flex items-center">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <div className="relative flex items-center flex-1 sm:flex-none">
             <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
-            <input type="search" placeholder="Pesquisar..." className="h-10 w-[250px] rounded-md border border-input bg-background pl-8 pr-4 text-sm" />
+            <input type="search" placeholder="Pesquisar..." className="h-9 sm:h-10 w-full sm:w-[250px] rounded-md border border-input bg-background pl-8 pr-4 text-sm" />
           </div>
           
-          <Button variant="outline" size="sm" className="flex items-center gap-1">
-            <Filter className="h-4 w-4" />
-            <span>Filtrar</span>
-          </Button>
-          
-          <Button variant="outline" size="sm" className="flex items-center gap-1" onClick={() => loadData()} disabled={isLoading}>
-            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-            <span>{isLoading ? "Carregando..." : "Atualizar"}</span>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size={isMobile ? "xs" : "sm"} className="flex items-center gap-1">
+              <Filter className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="text-xs sm:text-sm">Filtrar</span>
+            </Button>
+            
+            <Button variant="outline" size={isMobile ? "xs" : "sm"} className="flex items-center gap-1" onClick={() => loadData()} disabled={isLoading}>
+              {isLoading ? <Loader2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin" /> : <Download className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
+              <span className="text-xs sm:text-sm">{isLoading ? "Carregando..." : "Atualizar"}</span>
+            </Button>
+          </div>
         </div>
       </div>
       
-      <div className="text-sm text-muted-foreground">
+      <div className="text-xs sm:text-sm text-muted-foreground">
         {formattedLastUpdate}
       </div>
       
-      <MetricsTable metrics={metrics} />
+      <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+        <MetricsTable metrics={metrics} />
+      </div>
       
       <GptAnalysisPanel isLoading={isAiLoading} analysis={gptAnalysis} onAnalyze={runAiAnalysis} onChat={handleOpenChat} />
       
       <ProblemsSuggestionsPanel issues={issues || []} suggestions={suggestions || {
-      campaign: [],
-      funnel: []
-    }} />
+        campaign: [],
+        funnel: []
+      }} />
       
-      <div className="grid gap-6 md:grid-cols-2">
-        {chartData.length > 0 ? <PerformanceChart chartData={chartData} timeRange={timeRange} setTimeRange={setTimeRange} activeMetric={activeMetric} setActiveMetric={setActiveMetric} isLoading={isLoading} /> : <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border shadow-sm flex flex-col items-center justify-center min-h-[300px]">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
+        {chartData.length > 0 ? 
+          <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0 md:overflow-visible md:px-0 md:mx-0">
+            <PerformanceChart 
+              chartData={chartData} 
+              timeRange={timeRange} 
+              setTimeRange={setTimeRange} 
+              activeMetric={activeMetric} 
+              setActiveMetric={setActiveMetric} 
+              isLoading={isLoading} 
+            />
+          </div>
+          : 
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border shadow-sm flex flex-col items-center justify-center min-h-[200px] sm:min-h-[300px]">
             <p className="text-center text-muted-foreground mb-4">
               Nenhum dado de desempenho mensal disponível.
             </p>
-            <p className="text-sm text-center text-muted-foreground">
+            <p className="text-xs sm:text-sm text-center text-muted-foreground">
               Faça upload de um arquivo CSV com dados mensais para visualizar o gráfico.
             </p>
-          </div>}
+          </div>
+        }
 
         <StatisticsCard isLoading={isLoading} metrics={metrics} onAnalyzeClick={handleOpenChat} />
       </div>
 
-      <CampaignsTable campaigns={campaigns} onDataReset={handleResetData} />
+      <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+        <CampaignsTable campaigns={campaigns} onDataReset={handleResetData} />
+      </div>
 
       <FileUploadCard onFilesProcessed={loadData} isLoading={isLoading} setIsLoading={setIsLoading} />
 
