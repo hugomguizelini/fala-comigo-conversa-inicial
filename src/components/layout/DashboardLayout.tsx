@@ -1,13 +1,12 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Bell, LogOut, Search, Menu, Settings } from "lucide-react";
+import { User, Bell, LogOut, Menu, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/contexts/ThemeContext";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import SidebarNav from "./SidebarNav";
-import { Input } from "@/components/ui/input";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -22,10 +21,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   };
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex h-screen w-full overflow-hidden bg-background">
       {/* Sidebar - visible on larger screens */}
       <aside className="hidden md:flex w-64 flex-col bg-sidebar border-r border-sidebar-border">
-        <div className="p-6">
+        <div className="p-4">
           <div className="flex items-center gap-2 mb-6">
             <div className="h-8 w-8 rounded-md bg-purple-500 flex items-center justify-center">
               <span className="text-white font-bold">I</span>
@@ -37,7 +36,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </aside>
 
       {/* Main content area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col w-full overflow-hidden">
         {/* Header */}
         <header className="h-16 border-b flex items-center justify-between px-4 bg-background">
           {/* Mobile menu */}
@@ -49,7 +48,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="bg-sidebar w-64 p-0">
-                <div className="p-6">
+                <div className="p-4">
                   <div className="flex items-center gap-2 mb-6">
                     <div className="h-8 w-8 rounded-md bg-purple-500 flex items-center justify-center">
                       <span className="text-white font-bold">I</span>
@@ -62,7 +61,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             </Sheet>
           </div>
 
-          <div className="flex-1 md:flex-none flex items-center ml-4">
+          <div className="flex-1 md:flex-none flex items-center ml-2">
             <h2 className="text-lg font-medium hidden md:block">Relatório</h2>
           </div>
 
@@ -81,7 +80,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         </header>
 
         {/* Main content */}
-        <main className="flex-1 overflow-auto p-4 md:p-6 bg-muted/30">
+        <main className="flex-1 overflow-auto bg-muted/30">
           {children}
         </main>
       </div>
