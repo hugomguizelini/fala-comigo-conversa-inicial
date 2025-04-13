@@ -1,6 +1,5 @@
-
 import React from "react";
-import { Facebook, Twitter, Instagram, Linkedin, GitHub } from "lucide-react";
+import { Facebook, Twitter, Instagram, Linkedin, Github } from "lucide-react";
 import { InsighorLogo } from "@/components/auth/InsighorLogo";
 import { useBreakpoint } from "@/hooks/use-mobile";
 
@@ -58,7 +57,7 @@ const SalesFooter: React.FC = () => {
     { name: "Twitter", icon: <Twitter size={20} />, href: "#" },
     { name: "Instagram", icon: <Instagram size={20} />, href: "#" },
     { name: "LinkedIn", icon: <Linkedin size={20} />, href: "#" },
-    { name: "GitHub", icon: <GitHub size={20} />, href: "#" },
+    { name: "GitHub", icon: <Github size={20} />, href: "#" },
   ];
 
   return (

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -126,13 +125,13 @@ const SalesPage: React.FC = () => {
       <SalesHeader />
       
       {/* Hero Section */}
-      <section ref={(ref) => addSectionRef('hero', ref)} className="relative">
+      <section ref={(ref) => addSectionRef('hero', ref as HTMLDivElement)} className="relative">
         <SalesHero />
       </section>
       
       {/* Statistics Section */}
       <section 
-        ref={(ref) => addSectionRef('statistics', ref)} 
+        ref={(ref) => addSectionRef('statistics', ref as HTMLDivElement)} 
         className={`py-20 ${breakpoint === "xs" || breakpoint === "sm" ? "px-4" : "px-8 md:px-12 lg:px-24"}`}
       >
         <motion.div 
@@ -167,7 +166,7 @@ const SalesPage: React.FC = () => {
 
       {/* Features Section */}
       <section 
-        ref={(ref) => addSectionRef('features', ref)} 
+        ref={(ref) => addSectionRef('features', ref as HTMLDivElement)} 
         className={`py-20 ${breakpoint === "xs" || breakpoint === "sm" ? "px-4" : "px-8 md:px-12 lg:px-24"} bg-[#12121e]`}
       >
         <motion.div 
@@ -204,7 +203,7 @@ const SalesPage: React.FC = () => {
 
       {/* Testimonial Section */}
       <section 
-        ref={(ref) => addSectionRef('testimonials', ref)} 
+        ref={(ref) => addSectionRef('testimonials', ref as HTMLDivElement)} 
         className={`py-20 ${breakpoint === "xs" || breakpoint === "sm" ? "px-4" : "px-8 md:px-12 lg:px-24"}`}
       >
         <motion.div 
@@ -228,7 +227,7 @@ const SalesPage: React.FC = () => {
 
       {/* Pricing Section */}
       <section 
-        ref={(ref) => addSectionRef('pricing', ref)} 
+        ref={(ref) => addSectionRef('pricing', ref as HTMLDivElement)} 
         className={`py-20 ${breakpoint === "xs" || breakpoint === "sm" ? "px-4" : "px-8 md:px-12 lg:px-24"} bg-[#12121e]`}
       >
         <motion.div 
@@ -252,7 +251,7 @@ const SalesPage: React.FC = () => {
 
       {/* CTA Section */}
       <section 
-        ref={(ref) => addSectionRef('cta', ref)} 
+        ref={(ref) => addSectionRef('cta', ref as HTMLDivElement)} 
         className="py-20 relative overflow-hidden"
       >
         <div className="absolute inset-0 z-0">
@@ -295,7 +294,7 @@ const SalesPage: React.FC = () => {
 
       {/* FAQ Section */}
       <section 
-        ref={(ref) => addSectionRef('faq', ref)} 
+        ref={(ref) => addSectionRef('faq', ref as HTMLDivElement)} 
         className={`py-20 ${breakpoint === "xs" || breakpoint === "sm" ? "px-4" : "px-8 md:px-12 lg:px-24"} bg-[#12121e]`}
       >
         <motion.div 
@@ -319,7 +318,7 @@ const SalesPage: React.FC = () => {
 
       {/* Contact Section */}
       <section 
-        ref={(ref) => addSectionRef('contact', ref)} 
+        ref={(ref) => addSectionRef('contact', ref as HTMLDivElement)} 
         className={`py-20 ${breakpoint === "xs" || breakpoint === "sm" ? "px-4" : "px-8 md:px-12 lg:px-24"}`}
       >
         <motion.div 
