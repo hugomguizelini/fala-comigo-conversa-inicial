@@ -9,16 +9,41 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ChartBar, ArrowRight } from "lucide-react";
+import { ChartBar, ArrowRight, Trash2 } from "lucide-react";
 import { CampaignData } from "@/types/dataTypes";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 type CampaignsTableProps = {
   campaigns: CampaignData[];
+  onDataReset?: () => Promise<void>;
 };
 
-export const CampaignsTable = ({ campaigns }: CampaignsTableProps) => {
+// Função para verificar se uma campanha possui dados relevantes
+const hasMeaningfulData = (campaign: CampaignData): boolean => {
+  return campaign.impressions > 0 || campaign.clicks > 0 || campaign.conversions > 0;
+};
+
+export const CampaignsTable = ({ campaigns, onDataReset }: CampaignsTableProps) => {
+  // Filtra as campanhas para mostrar apenas aquelas com dados relevantes
+  const meaningfulCampaigns = campaigns.filter(hasMeaningfulData);
+  
+  const handleResetData = async () => {
+    if (onDataReset) {
+      try {
+        toast.loading("Excluindo dados...");
+        await onDataReset();
+        toast.success("Todos os dados foram excluídos com sucesso!");
+      } catch (error) {
+        console.error("Error resetting data:", error);
+        toast.error("Erro ao excluir dados. Tente novamente.");
+      }
+    }
+  };
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-start justify-between">
@@ -29,6 +54,32 @@ export const CampaignsTable = ({ campaigns }: CampaignsTableProps) => {
           </CardTitle>
           <CardDescription>Visão detalhada de todas as suas campanhas</CardDescription>
         </div>
+        
+        {onDataReset && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="destructive" className="flex items-center gap-1" size="sm">
+                <Trash2 className="h-4 w-4" />
+                Limpar Dados
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Excluir todos os dados</DialogTitle>
+                <DialogDescription>
+                  Esta ação excluirá permanentemente todos os dados de campanhas e desempenho mensal. 
+                  Esta ação não pode ser desfeita.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button variant="outline" className="mr-2">Cancelar</Button>
+                <Button variant="destructive" onClick={handleResetData}>
+                  Confirmar exclusão
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">
@@ -48,14 +99,14 @@ export const CampaignsTable = ({ campaigns }: CampaignsTableProps) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {campaigns.length === 0 ? (
+              {meaningfulCampaigns.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={10} className="text-center py-6 text-muted-foreground">
-                    Nenhuma campanha encontrada. Faça upload de dados para começar.
+                    Nenhuma campanha com dados relevantes encontrada. Faça upload de dados para começar.
                   </TableCell>
                 </TableRow>
               ) : (
-                campaigns.map((campaign) => (
+                meaningfulCampaigns.map((campaign) => (
                   <TableRow key={campaign.id}>
                     <TableCell className="font-medium max-w-[200px] truncate">
                       {campaign.name}
@@ -85,6 +136,11 @@ export const CampaignsTable = ({ campaigns }: CampaignsTableProps) => {
           </Table>
         </div>
       </CardContent>
+      {meaningfulCampaigns.length > 0 && campaigns.length !== meaningfulCampaigns.length && (
+        <CardFooter className="text-sm text-muted-foreground">
+          {campaigns.length - meaningfulCampaigns.length} campanhas sem dados relevantes foram ocultadas.
+        </CardFooter>
+      )}
     </Card>
   );
 };

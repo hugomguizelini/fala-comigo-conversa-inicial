@@ -1,9 +1,9 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import DashboardContent from "@/components/dashboard/DashboardContent";
 
-const Index = () => {
+const Dashboard = () => {
   return (
     <DashboardLayout>
       <DashboardContent />
@@ -11,4 +11,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Dashboard;

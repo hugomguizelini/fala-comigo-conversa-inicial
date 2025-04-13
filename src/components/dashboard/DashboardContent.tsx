@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { ArrowUp, Search, Filter, Download, Loader2 } from "lucide-react";
+import { ArrowUp, Search, Filter, Download, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import { MetricsTable } from "./MetricsTable";
@@ -13,6 +13,7 @@ import FeatureCards from "./FeatureCards";
 import GptAnalysisPanel from "./GptAnalysisPanel";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { Issue, Suggestion } from "@/types/dataTypes";
+import { resetAllData } from "@/services/dataResetService";
 
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -59,6 +60,22 @@ export default function DashboardContent() {
   const formattedLastUpdate = lastLoadTime 
     ? format(lastLoadTime, "'Última atualização em' dd 'de' MMMM', às' HH:mm", {locale: ptBR})
     : "Dados não carregados";
+
+  // Função para resetar todos os dados
+  const handleResetData = async () => {
+    if (isLoading) return;
+    
+    setIsLoading(true);
+    try {
+      await resetAllData();
+      // Recarregar a página após limpar os dados para redefini-los
+      await loadData();
+    } catch (error) {
+      console.error("Error resetting data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -142,7 +159,10 @@ export default function DashboardContent() {
         />
       </div>
 
-      <CampaignsTable campaigns={campaigns} />
+      <CampaignsTable 
+        campaigns={campaigns} 
+        onDataReset={handleResetData}
+      />
 
       <FileUploadCard
         onFilesProcessed={loadData}
