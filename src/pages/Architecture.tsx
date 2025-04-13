@@ -1,9 +1,12 @@
+
 import React, { useState, useRef } from "react";
 import { InsighorLogo } from "@/components/auth/InsighorLogo";
 import { 
   Layers, Database, Users, ArrowRight, Server, 
   LayoutDashboard, Settings, FileText, Monitor,
-  CircleUser, BarChart3, LineChart, BrainCircuit, Download
+  CircleUser, BarChart3, LineChart, BrainCircuit, Download,
+  LogIn, UserPlus, Home, Bell, MessageSquare, BarChart2,
+  PieChart, ShoppingCart, Search, Calendar
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -317,80 +320,283 @@ const Architecture = () => {
             <section id="screens" className="space-y-6">
               <h2 className="text-2xl font-semibold tracking-tight">Telas do Sistema</h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Autenticação</CardTitle>
-                    <CardDescription>Login e Cadastro de usuários</CardDescription>
+                    <CardTitle>Mapa de Telas</CardTitle>
+                    <CardDescription>Visão geral das telas do sistema</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
-                      <div className="text-center p-4 border-2 border-dashed border-muted-foreground rounded-md">
-                        <CircleUser className="h-12 w-12 mx-auto mb-2 text-muted-foreground" />
-                        <p className="text-sm text-muted-foreground">Tela de Login/Cadastro</p>
+                    <div className="bg-muted rounded-lg p-8">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {/* Primeiro grupo - Autenticação */}
+                        <div className="space-y-6 border-2 border-primary/30 p-4 rounded-lg bg-background/80">
+                          <div className="flex items-center justify-center gap-2 mb-4">
+                            <CircleUser className="h-5 w-5 text-primary" />
+                            <h3 className="font-semibold">Autenticação</h3>
+                          </div>
+                          
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2 border border-muted p-3 rounded-md bg-background">
+                              <LogIn className="h-4 w-4 text-primary/80" />
+                              <span className="text-sm">Tela de Login</span>
+                            </div>
+                            
+                            <div className="flex items-center gap-2 border border-muted p-3 rounded-md bg-background">
+                              <UserPlus className="h-4 w-4 text-primary/80" />
+                              <span className="text-sm">Tela de Cadastro</span>
+                            </div>
+                            
+                            <div className="flex items-center gap-2 border border-muted p-3 rounded-md bg-background">
+                              <Circle className="h-4 w-4 text-primary/80" />
+                              <span className="text-sm">Recuperação de Senha</span>
+                            </div>
+                          </div>
+                          
+                          <p className="text-xs text-muted-foreground mt-2">
+                            Interfaces de autenticação com opções de login, cadastro e recuperação de senha
+                          </p>
+                        </div>
+                        
+                        {/* Segundo grupo - Dashboard */}
+                        <div className="space-y-6 border-2 border-primary/30 p-4 rounded-lg bg-background/80">
+                          <div className="flex items-center justify-center gap-2 mb-4">
+                            <LayoutDashboard className="h-5 w-5 text-primary" />
+                            <h3 className="font-semibold">Dashboard</h3>
+                          </div>
+                          
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2 border border-muted p-3 rounded-md bg-background">
+                              <Home className="h-4 w-4 text-primary/80" />
+                              <span className="text-sm">Página Inicial</span>
+                            </div>
+                            
+                            <div className="flex items-center gap-2 border border-muted p-3 rounded-md bg-background">
+                              <BarChart2 className="h-4 w-4 text-primary/80" />
+                              <span className="text-sm">Resumo de KPIs</span>
+                            </div>
+                            
+                            <div className="flex items-center gap-2 border border-muted p-3 rounded-md bg-background">
+                              <Bell className="h-4 w-4 text-primary/80" />
+                              <span className="text-sm">Alertas</span>
+                            </div>
+                          </div>
+                          
+                          <p className="text-xs text-muted-foreground mt-2">
+                            Área principal com visão geral de métricas e acesso rápido a funcionalidades essenciais
+                          </p>
+                        </div>
+                        
+                        {/* Terceiro grupo - Relatórios */}
+                        <div className="space-y-6 border-2 border-primary/30 p-4 rounded-lg bg-background/80">
+                          <div className="flex items-center justify-center gap-2 mb-4">
+                            <FileText className="h-5 w-5 text-primary" />
+                            <h3 className="font-semibold">Relatórios</h3>
+                          </div>
+                          
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2 border border-muted p-3 rounded-md bg-background">
+                              <PieChart className="h-4 w-4 text-primary/80" />
+                              <span className="text-sm">Análise de Campanhas</span>
+                            </div>
+                            
+                            <div className="flex items-center gap-2 border border-muted p-3 rounded-md bg-background">
+                              <LineChart className="h-4 w-4 text-primary/80" />
+                              <span className="text-sm">Desempenho no Tempo</span>
+                            </div>
+                            
+                            <div className="flex items-center gap-2 border border-muted p-3 rounded-md bg-background">
+                              <FileText className="h-4 w-4 text-primary/80" />
+                              <span className="text-sm">Exportações</span>
+                            </div>
+                          </div>
+                          
+                          <p className="text-xs text-muted-foreground mt-2">
+                            Relatórios detalhados com filtros avançados e análises comparativas
+                          </p>
+                        </div>
+                        
+                        {/* Quarto grupo - Configurações */}
+                        <div className="space-y-6 border-2 border-primary/30 p-4 rounded-lg bg-background/80">
+                          <div className="flex items-center justify-center gap-2 mb-4">
+                            <Settings className="h-5 w-5 text-primary" />
+                            <h3 className="font-semibold">Configurações</h3>
+                          </div>
+                          
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2 border border-muted p-3 rounded-md bg-background">
+                              <CircleUser className="h-4 w-4 text-primary/80" />
+                              <span className="text-sm">Perfil do Usuário</span>
+                            </div>
+                            
+                            <div className="flex items-center gap-2 border border-muted p-3 rounded-md bg-background">
+                              <Users className="h-4 w-4 text-primary/80" />
+                              <span className="text-sm">Gestão de Time</span>
+                            </div>
+                            
+                            <div className="flex items-center gap-2 border border-muted p-3 rounded-md bg-background">
+                              <Layers className="h-4 w-4 text-primary/80" />
+                              <span className="text-sm">Integrações</span>
+                            </div>
+                          </div>
+                          
+                          <p className="text-xs text-muted-foreground mt-2">
+                            Configurações de conta, preferências e integrações com plataformas
+                          </p>
+                        </div>
+                        
+                        {/* Quinto grupo - Campanhas */}
+                        <div className="space-y-6 border-2 border-primary/30 p-4 rounded-lg bg-background/80">
+                          <div className="flex items-center justify-center gap-2 mb-4">
+                            <ShoppingCart className="h-5 w-5 text-primary" />
+                            <h3 className="font-semibold">Campanhas</h3>
+                          </div>
+                          
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2 border border-muted p-3 rounded-md bg-background">
+                              <Calendar className="h-4 w-4 text-primary/80" />
+                              <span className="text-sm">Calendário de Campanhas</span>
+                            </div>
+                            
+                            <div className="flex items-center gap-2 border border-muted p-3 rounded-md bg-background">
+                              <BarChart3 className="h-4 w-4 text-primary/80" />
+                              <span className="text-sm">Monitoramento</span>
+                            </div>
+                            
+                            <div className="flex items-center gap-2 border border-muted p-3 rounded-md bg-background">
+                              <Search className="h-4 w-4 text-primary/80" />
+                              <span className="text-sm">Explorador</span>
+                            </div>
+                          </div>
+                          
+                          <p className="text-xs text-muted-foreground mt-2">
+                            Gestão e monitoramento de campanhas de marketing nos diversos canais
+                          </p>
+                        </div>
+                        
+                        {/* Sexto grupo - Suporte */}
+                        <div className="space-y-6 border-2 border-primary/30 p-4 rounded-lg bg-background/80">
+                          <div className="flex items-center justify-center gap-2 mb-4">
+                            <MessageSquare className="h-5 w-5 text-primary" />
+                            <h3 className="font-semibold">Suporte</h3>
+                          </div>
+                          
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2 border border-muted p-3 rounded-md bg-background">
+                              <MessageSquare className="h-4 w-4 text-primary/80" />
+                              <span className="text-sm">Chat de Suporte</span>
+                            </div>
+                            
+                            <div className="flex items-center gap-2 border border-muted p-3 rounded-md bg-background">
+                              <FileText className="h-4 w-4 text-primary/80" />
+                              <span className="text-sm">Base de Conhecimento</span>
+                            </div>
+                            
+                            <div className="flex items-center gap-2 border border-muted p-3 rounded-md bg-background">
+                              <BrainCircuit className="h-4 w-4 text-primary/80" />
+                              <span className="text-sm">IA de Ajuda</span>
+                            </div>
+                          </div>
+                          
+                          <p className="text-xs text-muted-foreground mt-2">
+                            Recursos de suporte incluindo chat ao vivo e documentação de ajuda
+                          </p>
+                        </div>
                       </div>
                     </div>
-                    <p className="mt-4 text-sm">
-                      Interface para autenticação de usuários, com opções de login por email/senha,
-                      recuperação de senha e cadastro de novas contas.
-                    </p>
                   </CardContent>
                 </Card>
                 
                 <Card>
                   <CardHeader>
-                    <CardTitle>Dashboard Principal</CardTitle>
-                    <CardDescription>Visão geral das métricas</CardDescription>
+                    <CardTitle>Fluxos Entre Telas</CardTitle>
+                    <CardDescription>Diagrama de interação entre as principais áreas do sistema</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
-                      <div className="text-center p-4 border-2 border-dashed border-muted-foreground rounded-md">
-                        <LayoutDashboard className="h-12 w-12 mx-auto mb-2 text-muted-foreground" />
-                        <p className="text-sm text-muted-foreground">Dashboard com KPIs</p>
+                    <div className="bg-muted rounded-lg p-6">
+                      <div className="relative w-full min-h-[400px] overflow-x-auto">
+                        {/* Diagrama de fluxo principal */}
+                        <div className="flex flex-col items-center justify-center gap-8">
+                          {/* Autenticação */}
+                          <div className="flex flex-col items-center">
+                            <div className="border-2 border-primary/50 rounded-lg px-6 py-3 bg-background flex items-center gap-2 font-medium">
+                              <CircleUser className="h-4 w-4" />
+                              <span>Autenticação</span>
+                            </div>
+                            <ArrowRight className="rotate-90 h-6 w-6 my-2 text-primary/60" />
+                          </div>
+                          
+                          {/* Dashboard e subfluxos */}
+                          <div className="flex flex-col items-center">
+                            <div className="border-2 border-primary/50 rounded-lg px-6 py-3 bg-background flex items-center gap-2 font-medium">
+                              <LayoutDashboard className="h-4 w-4" />
+                              <span>Dashboard Principal</span>
+                            </div>
+                            
+                            {/* Conexões a partir do Dashboard */}
+                            <div className="mt-8 grid grid-cols-3 gap-x-24 gap-y-12">
+                              {/* Relatórios */}
+                              <div className="flex flex-col items-center">
+                                <ArrowRight className="rotate-90 -mt-8 h-6 w-6 text-primary/60" />
+                                <div className="border-2 border-primary/30 rounded-lg px-4 py-2 bg-background flex items-center gap-2">
+                                  <FileText className="h-4 w-4" />
+                                  <span>Relatórios</span>
+                                </div>
+                                <div className="mt-4 flex gap-4">
+                                  <div className="border rounded px-2 py-1 text-xs bg-background">Análises</div>
+                                  <div className="border rounded px-2 py-1 text-xs bg-background">Exportação</div>
+                                </div>
+                              </div>
+                              
+                              {/* Campanhas */}
+                              <div className="flex flex-col items-center">
+                                <ArrowRight className="rotate-90 -mt-8 h-6 w-6 text-primary/60" />
+                                <div className="border-2 border-primary/30 rounded-lg px-4 py-2 bg-background flex items-center gap-2">
+                                  <ShoppingCart className="h-4 w-4" />
+                                  <span>Campanhas</span>
+                                </div>
+                                <div className="mt-4 flex gap-4">
+                                  <div className="border rounded px-2 py-1 text-xs bg-background">Criação</div>
+                                  <div className="border rounded px-2 py-1 text-xs bg-background">Monitoramento</div>
+                                </div>
+                              </div>
+                              
+                              {/* Configurações */}
+                              <div className="flex flex-col items-center">
+                                <ArrowRight className="rotate-90 -mt-8 h-6 w-6 text-primary/60" />
+                                <div className="border-2 border-primary/30 rounded-lg px-4 py-2 bg-background flex items-center gap-2">
+                                  <Settings className="h-4 w-4" />
+                                  <span>Configurações</span>
+                                </div>
+                                <div className="mt-4 flex gap-4">
+                                  <div className="border rounded px-2 py-1 text-xs bg-background">Perfil</div>
+                                  <div className="border rounded px-2 py-1 text-xs bg-background">Integrações</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Legenda do diagrama */}
+                        <div className="mt-8 border-t pt-4">
+                          <h4 className="text-sm font-medium mb-2">Legenda:</h4>
+                          <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
+                            <div className="flex items-center gap-1">
+                              <div className="w-3 h-3 border-2 border-primary/50 rounded-sm"></div>
+                              <span>Tela Principal</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <div className="w-3 h-3 border-2 border-primary/30 rounded-sm"></div>
+                              <span>Área Secundária</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <ArrowRight className="h-3 w-3 text-primary/60" />
+                              <span>Fluxo de Navegação</span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <p className="mt-4 text-sm">
-                      Dashboard principal com resumo de KPIs, gráficos de desempenho e acesso
-                      rápido às campanhas ativas e recomendações.
-                    </p>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Relatórios Detalhados</CardTitle>
-                    <CardDescription>Análise aprofundada de dados</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
-                      <div className="text-center p-4 border-2 border-dashed border-muted-foreground rounded-md">
-                        <FileText className="h-12 w-12 mx-auto mb-2 text-muted-foreground" />
-                        <p className="text-sm text-muted-foreground">Relatórios e Métricas</p>
-                      </div>
-                    </div>
-                    <p className="mt-4 text-sm">
-                      Tela de relatórios detalhados com filtros avançados, comparação de
-                      períodos e exportação de dados em diversos formatos.
-                    </p>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Configurações</CardTitle>
-                    <CardDescription>Personalização da plataforma</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
-                      <div className="text-center p-4 border-2 border-dashed border-muted-foreground rounded-md">
-                        <Settings className="h-12 w-12 mx-auto mb-2 text-muted-foreground" />
-                        <p className="text-sm text-muted-foreground">Configurações e Preferências</p>
-                      </div>
-                    </div>
-                    <p className="mt-4 text-sm">
-                      Interface para configuração de integrações, preferências de notificação,
-                      gerenciamento de usuários e ajustes de conta.
-                    </p>
                   </CardContent>
                 </Card>
               </div>
