@@ -10,6 +10,7 @@ import PerformanceChart from "./PerformanceChart";
 import StatisticsCard from "./StatisticsCard";
 import FileUploadCard from "./FileUploadCard";
 import FeatureCards from "./FeatureCards";
+import GptAnalysisPanel from "./GptAnalysisPanel";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { Issue, Suggestion } from "@/types/dataTypes";
 
@@ -22,13 +23,16 @@ export default function DashboardContent() {
   
   const {
     isLoading,
+    isAiLoading,
     setIsLoading,
     campaigns,
     monthlyData,
     metrics,
     issues,
     suggestions,
+    gptAnalysis,
     loadData,
+    runAiAnalysis,
     isAuthenticated,
     lastLoadTime
   } = useDashboardData();
@@ -98,6 +102,12 @@ export default function DashboardContent() {
       </div>
       
       <MetricsTable metrics={metrics} />
+      
+      <GptAnalysisPanel 
+        isLoading={isAiLoading}
+        analysis={gptAnalysis}
+        onAnalyze={runAiAnalysis}
+      />
       
       <ProblemsSuggestionsPanel 
         issues={issues || []}

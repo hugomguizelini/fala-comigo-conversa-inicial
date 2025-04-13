@@ -5,6 +5,7 @@ import { useAuthStatus } from "./dashboard/useAuthStatus";
 import { useCampaignData } from "./dashboard/useCampaignData";
 import { useMetricsData } from "./dashboard/useMetricsData";
 import { useAnalyticsData } from "./dashboard/useAnalyticsData";
+import { useGptAnalysis, GptAnalysisResult } from "./dashboard/useGptAnalysis";
 import { toast } from "sonner";
 import { Issue, Suggestion } from "@/types/dataTypes";
 
@@ -22,6 +23,7 @@ export const useDashboardData = () => {
   const { campaigns, monthlyData, isLoading, setIsLoading, loadCampaignData } = useCampaignData();
   const { metrics, updateMetrics } = useMetricsData(campaigns);
   const { issues, suggestions, loadAnalyticsData } = useAnalyticsData();
+  const { isLoading: isAiLoading, analysis: gptAnalysis, runGptAnalysis } = useGptAnalysis();
   const [lastLoadTime, setLastLoadTime] = useState<Date | null>(null);
   
   const loadData = async () => {
@@ -49,6 +51,16 @@ export const useDashboardData = () => {
       setIsLoading(false);
     }
   };
+
+  const runAiAnalysis = async () => {
+    try {
+      return await runGptAnalysis(campaigns, monthlyData);
+    } catch (error) {
+      console.error("Error running AI analysis:", error);
+      toast.error("Erro ao executar análise de IA. Tente novamente mais tarde.");
+      return null;
+    }
+  };
   
   useEffect(() => {
     // No MVP, carregamos os dados independentemente da autenticação
@@ -61,13 +73,16 @@ export const useDashboardData = () => {
 
   return {
     isLoading,
+    isAiLoading,
     setIsLoading,
     campaigns,
     monthlyData,
     metrics,
     issues,
     suggestions,
+    gptAnalysis,
     loadData,
+    runAiAnalysis,
     isAuthenticated,
     lastLoadTime
   };
